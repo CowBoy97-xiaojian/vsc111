@@ -1,0 +1,5 @@
+1、执行脚本   回填中间表:136机器:nohup sh /data/bin/event_di.sh 2023-05-01 &
+ps -ef | grep event_di
+2、查询中间表数据:select dt,hour,count(1) from ham_jituan.dwd_client_event_di where dt = '2023-05-01' group by dt,hour order by dt,hour;
+    这个就可以查看都有哪几个小时入进去了
+3、清理cm001江苏的对应账期。

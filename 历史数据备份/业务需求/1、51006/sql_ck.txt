@@ -1,0 +1,87 @@
+#! /bin/bash
+
+DT=$1
+hour=$2
+
+clickhouse-client -h 10.253.248.73 -m --receive_timeout=3600 --format_csv_delimiter=$'\x01' --query="
+select rowNumberInAllBlocks()+1
+       ,daytime
+       ,ip
+       ,channel_id
+       ,page_id
+       ,seller_id
+       ,dcsdat
+       ,wtchannelid
+       ,ck_id
+       ,event
+       ,url
+       ,mc_ev
+       ,wtsellerid
+       ,wtpageid
+       ,last_pageid
+       ,last_url
+       ,last_pagename
+       ,current_url
+       ,current_pagename
+       ,module_no
+       ,module_name
+       ,point_position
+       ,member
+       ,goods_no
+       ,login_status
+       ,next_pageid
+       ,next_url
+       ,next_pagename
+       ,component_id
+       ,user_agent
+       ,referer
+       ,mobile
+       ,ss_id
+       ,input_sfz
+       ,environment
+       ,ip_prov
+       ,plat
+       ,si_x
+       ,si_n
+       ,si_s
+       ,goods_id
+       ,sku_id
+       ,prepare1
+       ,event_type
+       ,envname
+       ,errcode
+       ,errmsg
+       ,prov
+       ,city
+       ,mc_ev_name
+       ,trmnl_style
+       ,tbd
+       ,sr
+       ,appid
+       ,cid
+       ,userbrand
+       ,loginprovince
+       ,logincity
+       ,nodeid
+       ,tv
+       ,vt_f_tlh
+       ,vtvs
+       ,branch
+       ,dcsuri
+       ,ti
+       ,et
+       ,markid
+       ,serial_no
+       ,act_str_step_id
+       ,group_id
+       ,mr_id
+       ,ad_step
+       ,touch_tm
+       ,ed
+       ,xy
+       ,ip_city
+from webtrends.event_hi_dcslog_all
+where dt = '${DT}'
+and hour = '${hour}'
+FORMAT CSV
+"

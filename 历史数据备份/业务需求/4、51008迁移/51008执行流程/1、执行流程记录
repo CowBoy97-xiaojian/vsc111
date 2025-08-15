@@ -1,0 +1,18 @@
+1、维表入库
+    id_zdy_d
+    work_order_d
+    ord_info_d
+2、两张码表入库
+    dim_client_city_all
+    dim_client_h5_all
+3、两个工单表入库（重复、非重复）
+    tmp_c_cth_cm_log_d_01_all
+    tmp_c_cth_cm_log_d_02_all
+
+
+    
+4、调试12个sql语句
+ck下标 从一开始
+    select splitByChar('_','asdadada_dasdasda_dasdadad')[1];
+hive下标从零开始
+    select split('asdadada_dasdasda_dasdadad','_')[1];

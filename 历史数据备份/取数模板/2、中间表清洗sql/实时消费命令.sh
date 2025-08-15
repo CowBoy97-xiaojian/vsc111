@@ -1,0 +1,3 @@
+kafka-console-consumer --bootstrap-server cache-core-1:9092,cache-core-2:9092,cache-core-3:9092,cache-core-4:9092,cache-core-5:9092 --topic gio-basicflow-aa410d5cd21666f5 | grep WT_ac | head -1 | jq .
+
+kafka-console-consumer --bootstrap-server cache-core-1:9092,cache-core-2:9092,cache-core-3:9092,cache-core-4:9092,cache-core-5:9092 --topic gio-basicflow-abd580f08cf381e0 | grep WT_ac | head -1 | jq .

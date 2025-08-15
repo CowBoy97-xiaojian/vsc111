@@ -1,0 +1,20 @@
+
+100 dim_order_detail_all   数据入库准确 ---46574
+
+101 dim_order_activity_all 数据入库准确 ---16112
+
+200	dim_order_channel_all  数据入库准确 ---119824
+
+201 dim_order_page_all     数据入库准确 ---3004689
+
+202 dim_order_product_all  数据入库准确 ---6334
+
+权益
+dim_qycs_component_all   
+
+
+
+
+51003
+51001 - 04-05-04 51138 52015
+51004 				15976129    272519

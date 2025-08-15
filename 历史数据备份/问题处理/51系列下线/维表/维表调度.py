@@ -1,0 +1,171 @@
+from airflow.operators.dummy import DummyOperator
+from pendulum import timezone
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.providers.dingding.operators.dingding import DingdingOperator
+from airflow.models import Variable
+
+
+def failure_callback(context):
+    """
+    The function that will be executed on failure.
+
+    :param context: The context of the executed task.
+    :type context: dict
+    """
+    message = 'lftp获取订单信息 AIRFLOW TASK FAILURE TIPS:\n' \
+              'DAG:             {}\n' \
+              'TASKS:           {}\n' \
+              'EXECUTION_DATE:  {}\n' \
+              'Reason:          {}\n' \
+        .format(context['task_instance'].dag_id,
+                context['task_instance'].task_id,
+                context['execution_date'],
+                context['exception'])
+    return DingdingOperator(
+        task_id='dingding_failure_callback',
+        dingding_conn_id='dingding_default',
+        message_type='text',
+        message=message,
+        at_all=False,
+        at_mobiles=['18951846665','17612930601','18338395282','15309476679','13921442403','18715511862','13814022856']
+    ).execute(context)
+
+
+
+dfmt = '{{ execution_date.add(hours=8).strftime("%Y%m%d") }}'
+
+lftp_cmd_qycs = 'set ssl:verify-certificate no;lftp -u report_chama,OQC2RkMSpsPPemFB -p 32299 sftp://10.253.35.137/upload'
+#lftp_cmd = 'lftp -u report_chama,OQC2RkMSpsPPemFB -p 8016 sftp://117.132.186.14/upload'
+#lftp_cmd = "lftp -u 'sftp_coc270,SFtp_cOc270!' -p 3964 sftp://10.252.180.2/incoming/chama-270/"
+lftp_cmd = "lftp -u 'sftp_coc270,SFtp_cOc270!' -p 3968 sftp://10.252.180.2/incoming/chama-270/"
+
+dir_cmd = f'rm -rf /home/udbac/af_input/{dfmt} && mkdir -p /home/udbac/af_input/{dfmt} '
+
+default_args = {
+    'owner': 'udbac',
+    'depends_on_past': False,
+    'start_date': datetime(2020, 7, 8, tzinfo=timezone("Asia/Shanghai")),
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5),
+    'on_failure_callback': failure_callback
+}
+
+with DAG('get_order_daily_test',
+         default_args=default_args,
+         catchup=False,
+         max_active_tasks=8,
+         max_active_runs=12,
+         schedule_interval='30 1 * * *'
+         ) as dag:
+
+    get_order_d_rm_mkdir = BashOperator(
+        task_id="get_order_d_rm_mkdir",
+        bash_command=f"""{dir_cmd}
+         """,
+        dag=dag,
+    )
+
+    get_order_d_100 = BashOperator(
+        task_id="get_order_d_100",
+        bash_command=f"""cd /home/udbac/af_input/{dfmt}
+        {lftp_cmd}/51002  -e "mget {dfmt}/0002_00100_{dfmt}*; exit"
+        if [ -f "0002_00100_{dfmt}.txt.gz" -a -f "0002_00100_{dfmt}.txt.gz.md5" ]; 
+        then
+            echo '100文件存在'
+            md5sum -c 0002_00100_{dfmt}.txt.gz.md5
+            sh /home/udbac/af_input/put_order_100.sh {dfmt}
+        else
+            echo '缺少文件'
+            sh -x /home/udbac/bin/nonexistent.sh
+        fi
+         """,
+        dag=dag,
+    )
+
+    get_order_d_101 = BashOperator(
+        task_id="get_order_d_101",
+        bash_command=f"""cd /home/udbac/af_input/{dfmt}
+        {lftp_cmd}/51002  -e "mget {dfmt}/0002_00101_{dfmt}*; exit"
+        if [ -f "0002_00101_{dfmt}.txt.gz" -a -f "0002_00101_{dfmt}.txt.gz.md5" ]; 
+        then
+            echo '101文件存在'
+            md5sum -c 0002_00101_{dfmt}.txt.gz.md5
+            sh /home/udbac/af_input/put_order_101.sh {dfmt}
+        else
+            echo '缺少文件'
+            sh -x /home/udbac/bin/nonexistent.sh
+        fi
+         """,
+        dag=dag,
+    )
+
+    get_order_d_200 = BashOperator(
+        task_id="get_order_d_200",
+        bash_command=f"""cd /home/udbac/af_input/{dfmt}
+        {lftp_cmd}/51002  -e "mget {dfmt}/0002_00200_{dfmt}*; exit"
+        if [ -f "0002_00200_{dfmt}.txt.gz" -a -f "0002_00200_{dfmt}.txt.gz.md5" ]; 
+        then
+            echo '200文件存在'
+            md5sum -c 0002_00200_{dfmt}.txt.gz.md5
+            sh /home/udbac/af_input/put_order_200.sh {dfmt}
+        else
+            echo '缺少文件'
+            sh -x /home/udbac/bin/nonexistent.sh
+        fi
+         """,
+        dag=dag,
+    )
+# 20240102下线
+#    get_order_d_201 = BashOperator(
+#        task_id="get_order_d_201",
+#        bash_command=f"""
+#        while true;do
+#            cd /home/udbac/af_input/{dfmt}
+#            {lftp_cmd}/51002  -e "mget {dfmt}/0002_00201_{dfmt}*; exit"
+#            if [ -f "0002_00201_{dfmt}.txt.gz" -a -f "0002_00201_{dfmt}.txt.gz.md5" ]; 
+#            then
+#                echo '201文件存在'
+#                md5sum -c 0002_00201_{dfmt}.txt.gz.md5
+#                sh /home/udbac/af_input/put_order_201.sh {dfmt}
+#                break;
+#            fi
+#            sleep 300
+#        done
+#         """,
+#        dag=dag,
+#    )
+
+    get_order_d_202 = BashOperator(
+        task_id="get_order_d_202",
+        bash_command=f"""cd /home/udbac/af_input/{dfmt}
+        {lftp_cmd}/51002  -e "mget {dfmt}/0002_00202_{dfmt}*; exit"
+        if [ -f "0002_00202_{dfmt}.txt.gz" -a -f "0002_00202_{dfmt}.txt.gz.md5" ]; 
+        then
+            echo '202文件存在'
+            md5sum -c 0002_00202_{dfmt}.txt.gz.md5
+            sh /home/udbac/af_input/put_order_202.sh {dfmt}
+        else
+            echo '缺少文件'
+            sh -x /home/udbac/bin/nonexistent.sh
+        fi
+         """,
+        dag=dag,
+    )
+    get_qycs_component = BashOperator(
+        task_id="get_qycs_component",
+        bash_command=f"""cd /home/udbac/input/jy_qycs_component
+        rm -f QYCS_EventTrackingMapping.csv
+        {lftp_cmd_qycs}/qycsmap  -e "mget QYCS_EventTrackingMapping.csv; exit"
+        hdfs dfs -put -f QYCS_EventTrackingMapping.csv /user/hive/warehouse/ham.db/dim_qycs_component/
+         """,
+        dag=dag,
+    )
+
+    get_order_d_rm_mkdir >> get_order_d_100
+    get_order_d_rm_mkdir >> get_order_d_101
+    get_order_d_rm_mkdir >> get_order_d_200
+# 20240102下线
+#    get_order_d_rm_mkdir >> get_order_d_201
+    get_order_d_rm_mkdir >> get_order_d_202

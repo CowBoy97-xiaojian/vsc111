@@ -1,0 +1,2 @@
+etl_dwd_dcslog_event_di.hql
+etl_dwd_client_event_di.hql

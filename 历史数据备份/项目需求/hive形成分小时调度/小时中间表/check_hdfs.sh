@@ -1,0 +1,16 @@
+#! /bin/bash
+#检查文件是否上传成功
+tries=3
+DT=$1
+HH=$2
+while true;
+do
+        ct=`hdfs dfs -ls /flume/$3/${DT}/${HH}/ | grep "_COPYING_" | wc -l`
+        if [ $ct -gt 0 ];then
+             sleep 120
+        else
+             tries=$[$tries - 1]
+             if [ ${tries} -eq 0 ]; then break; fi
+             sleep 10
+        fi
+done

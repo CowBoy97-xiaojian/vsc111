@@ -1,0 +1,47 @@
+#!/bin/bash
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_detail DROP partition(dt='$1');"
+        hdfs dfs -rm -r -f /data/order/dim_order_detail/$1
+        hdfs dfs -mkdir /data/order/dim_order_detail/$1
+        hdfs dfs -put -f /home/udbac/af_input/$1/"0002_00100_"$1".txt.gz" /data/order/dim_order_detail/$1
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_detail ADD partition(dt='$1') LOCATION '/data/order/dim_order_detail/$1';" 
+        
+#!/bin/bash
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_activity DROP partition(dt='$1');"
+        hdfs dfs -rm -r -f /data/order/dim_order_activity/$1
+        hdfs dfs -mkdir /data/order/dim_order_activity/$1
+        hdfs dfs -put -f /home/udbac/af_input/$1/"0002_00101_"$1".txt.gz" /data/order/dim_order_activity/$1
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_activity ADD partition(dt='$1') LOCATION '/data/order/dim_order_activity/$1';"
+        
+
+#!/bin/bash
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_channel DROP partition(dt='$1');"
+        hdfs dfs -rm -r -f /data/order/dim_order_channel/$1
+        hdfs dfs -mkdir /data/order/dim_order_channel/$1
+        hdfs dfs -put -f /home/udbac/af_input/$1/"0002_00200_"$1".txt.gz" /data/order/dim_order_channel/$1
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_channel ADD partition(dt='$1') LOCATION '/data/order/dim_order_channel/$1';"
+
+#!/bin/bash
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_page DROP partition(dt='$1');"
+        hdfs dfs -rm -r -f /data/order/dim_order_page/$1
+        hdfs dfs -mkdir /data/order/dim_order_page/$1
+        hdfs dfs -put -f /home/udbac/af_input/$1/"0002_00201_"$1".txt.gz" /data/order/dim_order_page/$1
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_page ADD partition(dt='$1') LOCATION '/data/order/dim_order_page/$1';"
+
+#!/bin/bash
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_product DROP partition(dt='$1');"
+        hdfs dfs -rm -r -f /data/order/dim_order_product/$1
+        hdfs dfs -mkdir /data/order/dim_order_product/$1
+        hdfs dfs -put -f /home/udbac/af_input/$1/"0002_00202_"$1".txt.gz" /data/order/dim_order_product/$1
+        beeline -u 'jdbc:hive2://master01:10000/ham' -n udbac -e "ALTER TABLE ham.dim_order_product ADD partition(dt='$1') LOCATION '/data/order/dim_order_product/$1';"
+        
+        
+#!/bin/bash
+
+dfmt=$1
+cd /home/udbac/output/af_ydhb/${dfmt}
+mkdir /home/udbac/sftplogs/
+echo "${dfmt}_2020yidonghuoban.csv" >>/home/udbac/sftplogs/`date +%Y%m%d`_rpt_ydhb_hi.log
+
+lftp -u report_chama,OQC2RkMSpsPPemFB -p 32299 sftp://10.253.35.137/upload/2020yidonghuoban_baobiao -e "put -e ${dfmt}_2020yidonghuoban.csv; exit" >> /home/udbac/sftplogs/`date +%Y%m%d`_rpt_ydhb_hi.log 2>&1
+date "+%Y-%m-%d %H:%M:%S" >> /home/udbac/sftplogs/`date +%Y%m%d`_rpt_ydhb_hi.log
+echo  "####################################################" >>/home/udbac/sftplogs/`date +%Y%m%d`_rpt_ydhb_hi.log

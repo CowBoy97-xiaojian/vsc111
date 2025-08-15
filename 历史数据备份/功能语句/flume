@@ -1,0 +1,45 @@
+#定义组件名称
+logstream_jituan.sources = shotpot
+logstream_jituan.channels = memoryCore memoryDMZ
+logstream_jituan.sinks = kafkaCore kafkaDMZ
+
+#日志源采集设置
+logstream_jituan.sources.shotpot.type = TAILDIR
+logstream_jituan.sourcesshotpot.positionFile = /var/lib/flume-ng/taildir-position_for_flink_jituan.json
+logstream_jituan.sources.shotpot.filegroups = 2p4f 2e4p 9o7g 5q5k
+logstream_jituan.sources.shotpot.filegroups.2p4f = /home/udbac/shotpot/logs/dcs47gbrugonmg3u1x8njabg1_2p4f.log
+logstream_jituan.sources.shotpot.fileroups.2e4p = /home/udbac/shotpot/ogs/svc dcs0cxkozfonmars8afnw57g1 2e4p.log
+logstream_jituan.sources.shotpot.filearoups.9o7g = /home/udbac/shotpot/oas/svc dcsaswzxehonmarc8hz5w67g1_9o7q.log
+logstream_jituan.sources.shotpot.filegroups.5a5k = /home/udbac/shotpot/logs/dcs4311adgonmgj23shb4oqyy_5q5k.log
+
+
+# 流通道: Kafka
+logstream_jituan.sources.shotpot.channels = memoryCore memoryDMZ
+logstream_jituan.sinks.kafkaCore.channel = memoryCore
+logstream_jituan.sinks.kafkaDMZ.channel = memoryDMZ
+
+# 核心域Kafka设置
+logstream_jituan.sinks.kafkaCore.type = org.apache.flume.sink.kafka.KafkaSink
+logstream_jituan.sinks.kafkaCore.kafka.bootstra.servers = lave-core-2:9092 slave-core-4:9092 slave-core-6:9092 siave-core-8.909
+logstream_jituan.sinks.kafkaCore.kafka.topic = streams-raw
+logstream_jituan.sinks.kafkaCore.flumeBatchSize = 1000
+logstream_jituan.sinks.kafkaCore.kafka.producer.acks = 1
+logstream_jituan.sinks.kafkaCore.kafka.producer.compression.type = snappy
+
+
+# DMZ域Kafka设置
+logstream_jituan.sinks.kafkaDMZ.type = org.apache.flume.sink.kafka.KafkaSink
+logstream_jituan.sinks.kafkaDMZ.brokerList = zk-kfk01:9092zk-kfk02:9092,zk-kfk03:9092
+logstream_jituan.sinks.kafkaDMZ.topic = streams-raw
+logstream_jituan.sinks.kafkaDMzflumeBatchSize = 1000
+logstream_jituan.sinks.kafkaDMZ.kafka.producer.acks = 1
+logstream_jituan.sinks.kafkaDMZ.kafka.producer.compression.type = snappy
+
+
+# Memorv通道设置
+logstream_jituan.channels.memoryCore.type = memory
+logstream_jituan.channels.memoryCore.capacity = 100000
+logstream_jituan.channels.memoryCore.transactionCapacity = 20000
+ogstream_jituan.channels.memoryDMZ.type = memory
+logstream_jituan.channels.memoryDMZ.capacity = 100000
+logstream_jituan.channels.memoryDMZ.transactionCapacity = 20000

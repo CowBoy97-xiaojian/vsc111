@@ -1,0 +1,1064 @@
+[udbac@shotpot01 lib]$ cat proc_shotpot.lua
+-- 根据URL及参数，判断返回GIF或直接跳转
+--
+-- Shotpot ver: 12.6.3
+--   * 增加插码返回值控制
+-- Shotpot ver: 12.6.2
+--   * 增加插码兼容性
+-- Shotpot ver: 12.6.1
+--   * 核心同步至Tengine-2.3.3
+-- Shotpot ver: 12.4.1
+--   * 不在采用OpenResty发布中内嵌的LuaJIT引擎，而是直接用LuaJIT的openResty分支
+--   * 采用动态链接方式挂载系统自带的SSL、PCRE库
+--   * 增加手机号解密、实时等功能模块的控制开关
+-- Shotpot ver: 12.0
+--   * 引擎升至OpenResty-1.13.6.1/Tengine-2.2.2
+--   * 持HTTP/Kafka/Redis实时订阅接口，conf/realhook.json
+--   * shot事件参数化
+-- Shotpot ver: 11.6.1
+--   * 增加对媒体直接携带进站的WT.mc_id参数的兼容性
+
+-- 2020-03-31 解决某些原生App的\xHH类插码导致后端无法分析的问题
+
+---2023-02-17新增
+---1.useragent放到header,replaceAll(if(user_agent is null,'',user_agent),'\\|','_') as user_agent OK
+---2.cs_hose放到domain OK
+---3.删除cookie OK
+---1)ck_id逻辑：首先取cookie的WT_FPC=id=[0-9a-zA-Z]+，如果没有，取WT_co_f OK，如果为null，用'--'代替。OK
+---2)WT_vtvs逻辑：取cookie的ss=1676598627088，如果有就给WT_vtvs赋值
+---4.替换\t\n\r为"" OK
+---5.补齐WT_channelid字段，如果WT_channelid为null，需要更正为'--'字符串 OK
+---6.channelid从链接WT_es里面截取channelId=([0-9a-zA-z]+)（12位的P码）
+---7.如果WT_pageid为null，需要更正为'--'字符串
+---8.pageId从链接WT_es里面截取pageId=([0-9a-zA-z]+)（19位的P码）
+---9.如果WT_sellerid为null，需要更正为'--'字符串
+---10.sellerId从链接WT_es里面取sellerId=([0-9a-zA-z]+)
+---11.果WT_extendid为null，需要更正为'--'字符串
+---12.extendId从链接WT_es里面取extendId=([0-9a-zA-z]+)
+---13.eventName后面加上4位dcsid OK
+---14.dcsid_full删除 OK
+
+---2023-03-02新增
+--去掉array数组循环，将算法改为ngx.req.set_uri_args(post_logstr)
+--优化其他如去掉json校验及状态返回等
+
+---2023-03-04新增
+--对cs_referer进行二次解密
+
+---2023-03-23新增
+--对WT_XY进行encode处理，方便下游进行JSON转换
+
+---2023-03-26新增
+--WT_vtvs、WT_channelid、channelId、WT_pageid、pageId、WT_sellerid、sellerId、WT_extendid、extendId、userId、device_id字段去掉空格、换行符等处理
+
+--2023-03-29新增
+--attributes增加XY属性
+
+-- SDC客户端参数替换说明：
+--  https://producthelp.webtrends.com/streams/webtrends-basic-parameters/sdc-parameter-override-parameters/
+-- 常用参数：
+--  dcsuri:  cs-uri-stem
+--  dcsref:  cs(Referer)
+--  dcssip:  cs-host
+--  dcsua:   cs(User-Agent)
+--  dcsuri:  uri-stem           -- 集团未使用此参数
+--  dcspro:  cs-version
+--  dcsqry:  cs-uri-query
+--  dcsaut:  cs-username
+--  dcsmet:  cs-methond
+--  dcssta:  sc-status
+--  dcsbyt:  sc-bytes
+--  dcscip:  c-ip
+
+
+
+--[[----------------------------------------------------------------------
+--
+-- 运行配置参数
+--
+--]]----------------------------------------------------------------------
+
+-- 是否启动调试信息输出
+DEBUG = false;
+
+
+local zlib = require('zlib');   -- https://github.com/brimworks/lua-zlib
+
+
+-- 控制开关：手机号解密。按移动新安全要求，日志中不能包含敏感信息。
+--   true   解密手机号，明文保存为WT.mobile，密文保存为WT.mobenc
+--   false  不解密手机号，密文保存为WT.mobile
+local flgMobileEnc = true;      -- true加密手机号，false解密手机号
+local flgMobileRaw = true;      -- true日志中保存明文手机号，false日志中保存脱敏手机号
+local flgUAdecode = true;       -- true解密UA，false加密UA
+
+-- 控制参数：解析URL类参数的最大递归深度，默认为不进行递归解析。
+local parse_deep = 1;
+
+-- 参数内容长度限制
+local ArgLenLimit = 16384;
+
+
+--[[----------------------------------------------------------------------
+--
+-- 插码解析及规整化函数
+--
+--]]----------------------------------------------------------------------
+
+-- 截断插码参数长度至ArgLenLimit的限定值
+-- TODO 根据插码的重要性，依次生成日志，保证日志行的总长度不变
+function truncate(item)
+    if item == nil then return nil; end
+    if ArgLenLimit > 0 then
+        return string.sub(item, 1, ArgLenLimit);
+    else
+        return item;
+    end
+end
+
+-- 在一次插码事件中，同一插码有可能存在多个码值，选择最后一个有值的码值
+-- 注意：由于WT参数都是有值的，因此对于无参数插码，只取最后有值的，即：
+--   foo=bar&foo=&foo  <-- checkdcs()将返回bar
+function checkdcs(dcsarg)
+    if dcsarg == nil then return nil; end
+    if type(dcsarg) == 'table' then
+        for i = #dcsarg, 1, -1 do
+            local v = dcsarg[i];
+            if v ~= nil and type(v) == 'string' and #v > 0 then
+                return tostring(v);
+            end
+        end
+    else
+        return tostring(dcsarg);
+    end
+end
+
+-- 规整插码参数，尤其是多次转码问题
+function transchr(item)
+    if type(item) ~= 'string' then return item; end
+    return ngx.re.gsub(string.gsub(item, ' ', '%%20'), '%(25)+', '%');
+end
+
+-- 解码营销活动参数
+function decodemcid(mcid, item)
+    local _qry,_reg = '','(%w+)_([%w._-]+)';
+    if item == nil then
+        item = { WT={}, UX={} };
+        _reg = 'WT.mc_id='.._reg;
+    end
+
+    local adid,encs = string.match(mcid or '', _reg);
+    if adid ~= nil and #adid == 20 and encs ~= nil and #encs >= 20 then
+        item.WT.mc_id = adid;
+        item.UX = item.UX or {};
+        _qry = 'WT.mc_id=';
+        if #encs >= 45 and string.match(encs, 'wm0x.*xm0w') ~= nil then
+            item.UX.aucm = string.sub(encs, 1, 20);
+
+            local encs = string.sub(encs, 21);
+            local tbl = {};
+            for v in string.gmatch(encs, '(%d+)') do
+                table.insert(tbl, v);
+            end
+            if #tbl ~= 8 or tbl[3] ~= '0' or tbl[8] ~= '0' then
+                item.UX.aucm = item.UX.aucm..encs;
+                _qry = _qry..adid..'&'..'UX.aucm='..encs;
+            else
+                item.UX.tick = string.format('%s.%03d', os.date('%Y%m%d_%H%M%S', tbl[1]), tbl[2]);
+                item.UX.addr = tbl[4]..'.'..tbl[5]..'.'..tbl[6]..'.'..tbl[7];
+                _qry = _qry..adid..'&UX.aucm='..item.UX.aucm..'&UX.tick='..item.UX.tick..'&UX.addr='..item.UX.addr;
+            end
+        else
+            item.UX.aucm = encs;
+            _qry = _qry..adid..'&'..'UX.aucm='..encs;
+        end
+    else
+        item.WT.mc_id = mcid;
+        _qry = _qry..mcid;
+    end
+
+    return _qry;
+end
+
+function encmobi(mobi)
+    if #tostring(mobi) ~= 11 then return mobi; end
+
+    local sm = string.match;
+    local ok = false;
+    local segs = {
+        '^1%d%d%d%d%d%d%d%d%d%d$',      -- 由于号段会不定期更新，因此不做太多限制
+        '^13%d%d%d%d%d%d%d%d%d$',
+        '^15[0-35-9]%d%d%d%d%d%d%d%d$',
+        '^18%d%d%d%d%d%d%d%d%d$',
+        '^14[57]%d%d%d%d%d%d%d%d$',
+        '^17[678]%d%d%d%d%d%d%d%d$',
+    };
+    for _,sr in pairs(segs) do
+        if sm(mobi, sr) ~= nil then
+            ok = true;
+            break;
+        end
+    end
+    if not ok then return mobi; end
+
+    local mm,sf,ss = math.modf,string.format,string.sub;
+    local d3 = sf('%04x', mm(random()));
+    local d4 = sf('%04x', mm(random()));
+    local d1 = sf('%04x', mm(random()));
+    local d2 = sf('%04x', mm(random()));
+
+    local m3 = ss(mobi,1,2)..ss(d3,3,4);
+    local m4 = ss(mobi,3,5)..ss(d4,4,4);
+    local m1 = ss(d1,1,1)..ss(mobi,6,8);
+    local m2 = ss(d2,1,1)..ss(mobi,9,11);
+
+    local m5 = sf('%d-%d-%d-%d', tonumber(m1,16),tonumber(m2,16),tonumber(m3,16),tonumber(m4,16));
+    dump(m5);
+    return m5;
+end
+function decmobi(shot)
+    local wtmob = shot.WT.mobile;
+    if wtmob == nil or #tostring(wtmob) < 11 then return; end
+
+    local tbl = {};
+    for k in string.gmatch(wtmob, '(%d+)') do
+        table.insert(tbl, k);
+    end
+
+    if ngx.var.mobi_enc == 'dec_des' and ngx.var.mobi_enc_key and #tbl ~= 4 then
+        shot.WT.mobenc = shot.WT.mobile;
+        shot.WT.mobraw = dec_des(shot.WT.mobile, ngx.var.mobi_enc_key);
+        shot.WT.mobile = ss(ngx.md5('WT.mobile='..wtmob), 1,11);
+        if flgMobileRaw then shot.WT.mobile = shot.WT.mobraw; end
+
+    elseif #tbl == 4 then
+        local ss,sf = string.sub,string.format;
+
+        -- JS手机号加密
+        local m3 = sf('%04x', tbl[1]);
+        local m4 = sf('%04x', tbl[2]);
+        local m1 = sf('%04x', tbl[3]);
+        local m2 = sf('%04x', tbl[4]);
+        local m5 = m1..m2..m3..m4;
+
+        shot.WT.mobraw = ss(m5,1,2)..ss(m5,5,7)..ss(m5,10,12)..ss(m5,14);
+        shot.WT.mobile = ss(ngx.md5(shot.WT.mobraw), 1,11);
+        shot.WT.mobenc = wtmob;
+        if flgMobileRaw then shot.WT.mobile = shot.WT.mobraw; end
+
+    elseif #tbl == 1 or #tbl == 2 then
+        local ss,sf = string.sub,string.format;
+        local m1,m2 = tostring(tbl[1]),tostring(tbl[2]);
+        if #m1 < 11 and #m2 >= 11 then wtmob = m2; end
+        wtmob = string.sub(wtmob, -11);
+        mbenc = encmobi(wtmob);
+        if wtmob ~= mbenc then
+            shot.WT.mobraw = wtmob;
+            shot.WT.mobile = ss(ngx.md5('WT.mobile='..wtmob), 1,11);
+            shot.WT.mobenc = mbenc;
+            if flgMobileRaw then shot.WT.mobile = shot.WT.mobraw; end
+        end
+    end
+
+    dump('decmobi(): mobile='..obj2str(shot.WT.mobile) ..' mobenc='..obj2str(shot.WT.mobenc) ..' mobraw='..obj2str(shot.WT.mobraw));
+end
+
+-- 递归解码插码参数
+function parse_qury_v1(item, qury, deep)
+    if type(qury) ~= 'table' then return; end
+    function proc_url(url, deep)
+        if deep < parse_deep and type(url) == 'string' and string.find(url, '^[Hh][Tt][Tt][Pp][Ss]?') == 1 then
+            local path,qury = string.match(url, '([^?]+)[?](.*)');
+            if path ~= nil then
+                local tbl = {};
+                tbl.__url = string.lower(path);
+                parse_qury_v1(tbl, ngx.decode_args(qury), deep);
+                return tbl;
+            end
+        end
+        return url;
+    end
+
+    for k,v in pairs(qury) do
+        deep = deep or 0;
+        local w,t = string.match(k, '([Ww][Tt])[.]([%w_]+)');
+        if w ~= nil and t ~= nil then
+            item.WT = item.WT or {};
+            local wt = string.lower(t);
+            if wt == 'mc_id' then
+                decodemcid(checkdcs(v), item);
+            else
+                item.WT[wt] = proc_url(checkdcs(v), deep+1);
+            end
+        elseif type(v) ~= 'boolean' then
+            item[k] = proc_url(checkdcs(v), deep+1);
+        end
+    end
+end
+
+-- UA中是否为明码UA
+function chkua(s)
+    local uapart = {
+        -- 包含下述字符串的，视为明码UA
+        iphone    = '__YES__',
+        ipad      = '__YES__',
+        ios       = '__YES__',
+        android   = '__YES__',
+        phone     = '__YES__',
+        windows   = '__YES__',
+        linux     = '__YES__',
+        darwin    = '__YES__',
+        mozilla   = '__YES__',
+        dalvik    = '__YES__',
+        cfnetwork = '__YES__',
+        nettype   = '__YES__',
+        curl      = '__YES__',
+        http      = '__YES__',
+        java      = '__YES__',
+        python    = '__YES__',
+    };
+    return uapart[s] or s;
+end
+
+
+
+--[[----------------------------------------------------------------------
+--
+-- 获取URL请求参数、payload等
+--
+--]]----------------------------------------------------------------------
+
+-- 获取参数
+local method = ngx.var.request_method;
+local args,qarg = {},'';
+if method == 'POST' then
+    ngx.req.read_body();
+    args = ngx.req.get_post_args() or {};
+
+    -- 是否需要解压缩
+    if string.find(string.lower(ngx.req.get_headers()['Content-Encoding'] or ''), 'gzip') ~= nil then
+        local body = ngx.req.get_body_data();
+
+        if body then
+            local stream = zlib.inflate();
+            ngx.req.clear_header('Content-Encoding')
+            ngx.req.clear_header('Content-Length')
+            qarg = stream(body);
+        end
+    else
+        qarg = ngx.req.get_body_data() or '';
+    end
+else
+    args = ngx.req.get_uri_args() or {};
+    qarg = ngx.var.args or '';
+end
+dump('qarg='..qarg);
+dump('url='..ngx.var.document_uri);
+
+
+
+-- User Agent解码
+local uagn = checkdcs(args.dcsua) or string.gsub(ngx.var.http_user_agent or '', ' ', '+');
+-- 如果需要加密UA
+if not flgUAdecode and string.find(string.gsub(string.lower(uagn), '(%w+)', chkua), '__YES__') ~= nil then
+    uagn = encrypt(uagn);
+end
+-- 如果需要解密UA
+if flgUAdecode and string.find(string.gsub(string.lower(uagn), '(%w+)', chkua), '__YES__') == nil then
+    uagn = decrypt(uagn);
+end
+
+
+-- 插码事件对象
+local shot = {
+    WT = {};
+};
+shot['dcsid']         = ngx.var.dcsid or '-';
+shot['cs_user_agent'] = uagn;
+shot['s_timestamp']   = os.date('%Y-%m-%d %H:%M:%S', ngx.time() - 8*3600);
+shot['cs_cookie']     = string.gsub(string.gsub(ngx.var.ckie or '',
+                            ' ', ';'),
+                            ';;', ';+');
+
+
+-- 由于现网未必能在URL中包含/v2/之类的版本信息，应通过插码URL和内容，综合判断插码版本
+local spver = 1;
+if (string.find(qarg, '"static":%{')~=nil and string.find(qarg, '"events":%[')) then
+    spver = 2;
+end
+-- local t1 = string.find(ngx.var.document_uri, '/v2/');
+-- local t2 = string.find(qarg, '"static":%{');
+-- local t3 = string.find(qarg, '"events":%[');
+-- dump('/v2/:'..t1..'  static:'..t2..'  events:'..t3);
+-- dump('spver='..spver);
+
+-- 服务器时间戳
+local sdcdat = string.sub(string.gsub(ngx.req.start_time(), '[.]', '')..'000', 1,13);
+-- 日志中的cs-uri-query字段
+local _qury = '';
+
+
+
+--[[----------------------------------------------------------------------
+--
+-- V2版插码协议解码
+--
+-- V2版协议，上报的内容为JSON串，在日志中，写入proto=v2&WT.sdcdat={epoch}&body={JSON}
+--
+--]]----------------------------------------------------------------------
+
+--1.指定文件【追加 / 覆盖】写入【字符串 / 列表】内容
+----2.wContent 的值可以时列表，也可以时字符串
+----3.当 operatType = nil 或 0 时为追加写入，= 1 时为覆盖写入
+function writeText(filePath, wContent, operatType)
+   local openFile
+   if operatType == 0 or not operatType then
+     openFile = io.open(filePath, "a")
+   elseif operatType == 1 then
+      openFile = io.open(filePath, "w")
+   end
+   assert(openFile, "write file is nil")
+   io.output(openFile)
+   if type(wContent) == "table" then
+    for wc in listIterator(wContent) do
+        io.write(wc.."\n")
+    end
+   else
+     io.write(wContent.."\n")
+   end
+   io.close(openFile)
+end
+
+
+if spver == 2 then
+
+-- 对上报的字符串进行解码
+local query = string.gsub(string.gsub(string.gsub(string.gsub(string.gsub(qarg or '',
+            '[\r\n]', ''),
+            '&', '%%26'),
+            '\\/', '/'),
+            '\\', '%%5c'),
+            ' ', '%%20');
+
+--if type(query) ~= "string" then
+--    writeText('/home/udbac/shotpot/lib/error_query20230617.txt',query,0);
+--end
+
+
+-- 将上报的字符串解码为JSON
+local qjson = JSON.decode(query);
+
+function convqrery()
+    if #qjson.events > 0 and next(qjson.events[1]) then
+        return 'proto=V2&WT.sdcdat='..sdcdat..'&payload='..query;
+    else
+        local tbl = {};
+        for k,v in pairs(qjson.static) do
+            -- dump(obj2str(k)..'='..obj2str(v));
+
+            if type(v) == 'table' then
+                v = JSON.encode(v);
+            end
+
+            local w,t = string.match(k, '([Ww][Tt])[.]([%w_]+)');
+            if w ~= nil and t ~= nil then
+                shot.WT[t] = v;
+            else
+                shot[k] = v;
+            end
+
+            if k == 'dcsuri' then
+                qjson.dcsuri = v;
+            end
+
+            if t == 'mobile' then
+                decmobi(shot);
+                local mob = 'WT.mobile='..shot.WT.mobile;
+                if shot.WT.mobenc then
+                    mob = mob..'&WT.mobenc='..shot.WT.mobenc;
+                end
+                table.insert(tbl, mob);
+            else
+                table.insert(tbl, k..'='..v);
+            end
+        end
+        return table.concat(tbl, '&')..'&WT.sdcdat='..sdcdat;
+    end
+end
+
+_qury = convqrery(qarg);
+dump('V2 query: '.._qury);
+
+shot['c_ip']          = ngx.var.remote_addr;
+shot['cs_username']   = '-';
+shot['cs_host']       = '-';
+shot['cs_method']     = ngx.var.request_method;
+shot['cs_uri_stem']   = qjson.dcsuri or '-';
+shot['sc_status']     = '200';
+shot['sc_bytes']      = '-';
+shot['cs_version']    = 'HTTP/1.0';
+shot['cs_referer']    = '-';
+
+end     -- V2版协议解码
+
+
+
+--[[----------------------------------------------------------------------
+--
+-- V1版插码协议解码
+--
+-- V1版，早期上报协议
+--
+--]]----------------------------------------------------------------------
+
+if spver == 1 then
+
+parse_qury_v1(shot, args);
+parse_qury_v1(shot, ngx.decode_args(checkdcs(args.dcsqry) or ''));
+decmobi(shot);
+
+-- 插码参数dcsdat是客户端时间戳，写入日志参数WT.dcsdat，并将服务器时间戳写入日志参数WT.sdcdat
+-- XXX 已经发现Session乱序问题，通过更新实时时钟可以解决，需要视现场需求而定
+--ngx.update_time()
+shot.WT.sdcdat = sdcdat;
+shot.WT.dcsdat = checkdcs(shot.WT.dcsdat or shot.WT.ets or args.dcsdat);    -- 客户端时间戳，原生App的客户端时间戳插码为WT.ets
+
+-- 原始插码参数
+--shot['$sp_orig'] = args
+
+-- SDC采集参数
+shot['c_ip']          = checkdcs(args.dcscip) or ngx.var.remote_addr;
+shot['cs_username']   = checkdcs(args.dcsaut) or '-';
+shot['cs_host']       = checkdcs(args.dcssip) or '-';
+shot['cs_method']     = checkdcs(args.dcsmet) or ngx.var.request_method;
+shot['cs_uri_stem']   = ngx.escape_uri(checkdcs(args.dcsuri) or ngx.var.uri or '/');
+shot['sc_status']     = checkdcs(args.dcssta) or '200';
+shot['sc_bytes']      = checkdcs(args.dcsbyt) or '-';
+shot['cs_version']    = checkdcs(args.dcspro) or 'HTTP/1.0';
+shot['cs_referer']    = checkdcs(args.dcsref) or '-';
+
+_qury = checkdcs(args['dcsqry'] or '');
+-- XXX 注释以下这一行，将保留所有原始的dcs参数，以便于在日志中调试
+__qry = string.gsub(qarg or '', '[^.]dcs[a-z]+=[^&]+', '');
+_qury = _qury .. '&'..(__qry or '');
+if shot.WT.dcsdat then
+    _qury = 'WT.dcsdat='..shot.WT.dcsdat .. '&'.._qury;
+end
+if shot.WT.mobenc ~= nil then
+    _qury = string.gsub(_qury, 'WT.mobile=[0-9-]+', 'WT.mobile='..shot.WT.mobile..'&WT.mobenc='..shot.WT.mobenc);
+    _qury = string.gsub(_qury, 'WT.mobile%%3[dD][0-9-]+'..shot.WT.mobile, 'WT.mobile%%3D'..shot.WT.mobile..'&WT.mobenc%%3D'..shot.WT.mobenc);
+end
+if shot.WT.sdcdat then
+    _qury = (_qury or '') ..'&WT.sdcdat='..shot.WT.sdcdat;
+end
+_qury = truncate(ngx.re.gsub(string.gsub(string.gsub(string.gsub(string.gsub(string.gsub(string.gsub(_qury or '',
+        '([^%w_=%&.~ -])', function(c) return string.format('%%%02X', string.byte(c)); end),
+        '(WT.mc_id=[^&]*)', decodemcid),
+        '&[&?]+', '&'),
+        '&$', ''),
+        '^[?&]*', ''),
+        ' ', '%%20'),
+        '(?i)(%(25)+|%5Cx)', '%'));
+-- _qury = string.gsub(_qury, 'WT.mobile=[^&]+', 'WT.mobile='..shot.WT.mobile..'&WT.mobenc='..shot.WT.mobenc);
+if _qury == '' then _qury = '-'; end
+dump('V1 qarg: '..qarg);
+dump('V1 _qury: '.._qury);
+dump('V1 shot: '..obj2str(shot));
+
+end     -- V1版协议解码
+
+
+
+--[[----------------------------------------------------------------------
+--
+-- 生成日志字符串
+--
+--]]----------------------------------------------------------------------
+
+function todcs(s, t)
+    local r = t or '-';
+    if s ~= nil and #s > 0 then
+        r = s;
+    end
+    r = string.gsub(r, ' ', '%%20');
+    return r;
+end
+
+local logstr = shot['s_timestamp'];
+logstr = logstr..' '..todcs(shot['c_ip']);
+logstr = logstr..' '..todcs(shot['cs_username']);
+logstr = logstr..' '..todcs(shot['cs_host']);
+logstr = logstr..' '..todcs(shot['cs_method']);
+logstr = logstr..' '..todcs(shot['cs_uri_stem']);
+logstr = logstr..' '.._qury;
+logstr = logstr..' '..todcs(shot['sc_status'], '200');
+logstr = logstr..' '..todcs(shot['sc_bytes']);
+logstr = logstr..' '..todcs(shot['cs_version']);
+--logstr = logstr..' '..todcs(shot['cs_user_agent']);
+logstr = logstr..' '..todcs(uagn);
+logstr = logstr..' '..todcs(shot['cs_cookie']);
+logstr = logstr..' '..todcs(shot['cs_referer']);
+logstr = logstr..' '..todcs(shot['dcsid']);
+ngx.var.sdc_log = logstr;
+
+if ngx.var.module == 'test' then
+    ngx.header.content_type = 'application/json';
+    shot.sdc_log = logstr;
+    ngx.say(JSON.encode(shot));
+elseif ngx.var.module == 'json' then
+    ngx.header.content_type = 'application/json';
+    ngx.say('{}');
+elseif ngx.var.module == 'html' then
+    ngx.header.content_type = 'text/html';
+    ngx.say('<html></html>');
+elseif ngx.var.module == 'plain' then
+    ngx.header.content_type = 'text/plain';
+    ngx.say(' ');
+else
+    ngx.header.content_type = 'image/gif';
+    ngx.say(EmptyGIF)
+end
+
+-- 转发至新采集集群
+--陈刚新增方法
+--解决WT_等问题
+function serialize(obj)
+    local lua = ""
+    local t = type(obj)
+    if t == "number" then
+        lua = lua .. obj
+    elseif t == "boolean" then
+        lua = lua .. tostring(obj)
+    elseif t == "string" then
+        lua = lua .. string.format("%q", obj)
+    elseif t == "table" then
+        lua = lua .. "{\n"
+    for k, v in pairs(obj) do
+        lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ",\n"
+    end
+    local metatable = getmetatable(obj)
+    if metatable ~= nil and type(metatable.__index) == "table" then
+        for k, v in pairs(metatable.__index) do
+            lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ",\n"
+        end
+    end
+    lua = lua .. "}"
+    elseif t == "nil" then
+    return nil
+    else
+        error("can not serialize a " .. t .. "type.")
+    end
+    return lua
+end
+
+function unserialize(lua)
+    local t = type(lua)
+    if t == "nil" or lua == "" then
+        return nil
+    elseif t == "number" or t == "string" or t == "boolean" then
+        lua = tostring(lua)
+    else
+        error("can not unserialize a " .. t .. " type.")
+    end
+        lua = "return " .. lua
+    local func = load(lua)
+    if func == nil then
+        return nil
+    end
+    return func()
+end
+
+local function escape(s)
+     s = string.gsub(s, "([^%w%.%- ])", function(c) return string.format("%%%02X", string.byte(c)) end)
+    return string.gsub(s, " ", "+")
+end
+
+local function unescape(s)
+    if type(query) ~= "string" then
+        s = serialize(s)
+    end
+    s = string.gsub(s, '%%(%x%x)', function(h) return string.char(tonumber(h, 16)) end)
+    return s
+end
+
+
+function split(input, delimiter)
+    input = tostring(input)
+    delimiter = tostring(delimiter)
+    if (delimiter == "") then return false end
+    local pos, arr = 0, {}
+    for st, sp in function() return string.find(input, delimiter, pos, true) end do
+        table.insert(arr, string.sub(input, pos, st - 1))
+        pos = sp + 1
+    end
+    table.insert(arr, string.sub(input, pos))
+    return arr
+end
+
+
+
+--数组去重函数
+function removeRepeat(a)
+    local b = {}
+    for k,v in ipairs(a) do
+        vv = split(v,"=")[1];
+        if(#b == 0) then
+            b[1]=v;
+        else
+            local index = 0
+            for i=1,#b do
+                if(vv == split(b[i],"=")[1]) then
+                    break
+                end
+                index = index + 1
+            end
+            if(index == #b) then
+                b[#b + 1] = v;
+            end
+        end
+    end
+    return b
+end
+
+
+local post_logstr = '';
+local post_qury =  string.gsub(_qury, "WT%.", "WT_");
+
+
+local my_dcsid = todcs(shot['dcsid']);
+local post_dcsid = '' ;
+if my_dcsid ~=  nil and my_dcsid ~= '' then
+    local my_dcsid_array = split(my_dcsid,"_");
+    post_dcsid = my_dcsid_array[table.getn(my_dcsid_array)];
+end
+
+post_logstr = post_logstr .. 's_timestamp=' .. shot['s_timestamp'];
+post_logstr = post_logstr .. '&c_ip=' .. todcs(shot['c_ip']);
+post_logstr = post_logstr .. '&cs_username=' .. todcs(shot['cs_username']);
+--post_logstr = post_logstr .. '&cs_host=' .. todcs(shot['cs_host']);
+post_logstr = post_logstr .. '&cs_method=' .. todcs(shot['cs_method']);
+--post_logstr = post_logstr .. '&cs_uri_stem=' .. todcs(shot['cs_uri_stem']);
+post_logstr = post_logstr .. '&' .. post_qury ;
+post_logstr = post_logstr .. '&sc_status=' .. todcs(shot['sc_status'], '200');
+post_logstr = post_logstr .. '&sc_bytes=' .. todcs(shot['sc_bytes']);
+post_logstr = post_logstr .. '&cs_version=' .. todcs(shot['cs_version']);
+--post_logstr = post_logstr .. '&user_agent=' .. todcs(uagn);
+--post_logstr = post_logstr .. '&cs_cookie=' .. todcs(shot['cs_cookie']);
+--post_logstr = post_logstr .. '&cs_referer=' .. todcs(shot['cs_referer']);
+post_logstr = post_logstr .. '&dcsid=' .. post_dcsid;
+--post_logstr = post_logstr .. '&dcsid_full=' .. todcs(shot['dcsid']);
+
+
+local my_host = todcs(shot['cs_host']);
+if string.find(my_host, '%%')  ~= nil then
+    my_host = unescape(my_host);
+end
+my_host = string.gsub(my_host, "\"", "");
+my_host = string.gsub(my_host, "\t", "");
+my_host = string.gsub(my_host, "\r", "");
+my_host = string.gsub(my_host, "\n", "");
+--my_host = string.gsub(my_host, "|", "_");
+my_host = escape(my_host);
+
+local my_stem = todcs(shot['cs_uri_stem']);
+if string.find(my_stem, '%%')  ~= nil then
+    my_stem = unescape(my_stem);
+end
+my_stem = string.gsub(my_stem, "\"", "");
+my_stem = string.gsub(my_stem, "\t", "");
+my_stem = string.gsub(my_stem, "\r", "");
+my_stem = string.gsub(my_stem, "\n", "");
+--my_stem = string.gsub(my_stem, "|", "_");
+my_stem = escape(my_stem);
+
+local my_referer = todcs(shot['cs_referer']);
+if string.find(my_referer, '%%')  ~= nil then
+    my_referer = unescape(my_referer);
+end
+if string.find(my_referer, '%%')  ~= nil then
+    my_referer = unescape(my_referer);
+end
+my_referer = string.gsub(my_referer, "\"", "");
+my_referer = string.gsub(my_referer, "\t", "");
+my_referer = string.gsub(my_referer, "\r", "");
+my_referer = string.gsub(my_referer, "\n", "");
+--my_referer = string.gsub(my_referer, "|", "_");
+my_referer = escape(my_referer);
+
+post_logstr = post_logstr .. '&cs_uri_stem=' .. my_stem;
+post_logstr = post_logstr .. '&cs_referer=' .. my_referer;
+
+local my_agent = todcs(uagn);
+if my_agent == nil or my_agent == '' then
+    my_agent = '--'
+else
+    if string.find(my_agent, '%%')  ~= nil then
+        my_agent = unescape(my_agent);
+    end
+    my_agent = string.gsub(my_agent, "\"", "");
+    my_agent = string.gsub(my_agent, "\t", "");
+    my_agent = string.gsub(my_agent, "\r", "");
+    my_agent = string.gsub(my_agent, "\n", "");
+    --my_agent = string.gsub(my_agent, "|", "_");
+    my_agent = escape(my_agent);
+end
+----1.useragent放到header
+ngx.req.set_header('user_agent', my_agent)
+
+
+local my_cookie = todcs(shot['cs_cookie']);
+if string.find(my_cookie, '%%')  ~= nil then
+    my_cookie = unescape(my_cookie);
+end
+
+
+ngx.req.set_uri_args(post_logstr)
+local uri_args = ngx.req.get_uri_args()
+
+
+local timestamp1 = uri_args['WT_dcsdat']
+local timestamp2 = uri_args['WT_ets']
+local timestamp3 = uri_args['WT_sdcdat']
+local device_id = ''
+local userId = uri_args['WT_mobile']
+local eventName = 'codeless_track'
+local eventType = 'CUSTOM'
+local dataSourceId = todcs(shot['dcsid'])
+local WT_vtvs = '--'
+local WT_channelid = uri_args['WT_channelid']
+local WT_XY = uri_args['WT_XY']
+local XY_str = ''
+
+
+--attributes增加XY属性
+if WT_XY ~= nil and WT_XY ~= '' then
+    local xy_ok, json_xy_table = pcall(JSON.decode, WT_XY)
+    if xy_ok then
+        for key, value in pairs(json_xy_table) do
+            value = checkdcs(value)
+            if value ~= nil then
+                value = string.gsub(value, "\"", "")
+                value = string.gsub(value, "\t", "")
+                value = string.gsub(value, "\r", "")
+                value = string.gsub(value, "\n", "")
+                XY_str = XY_str .. '\"XY_' .. key .. '\":\"' .. value .. '\",'
+            end
+        end
+    end
+    WT_XY = escape(WT_XY)
+end
+
+
+if WT_channelid == nil or WT_channelid == '' then
+    WT_channelid = '--'
+end
+local WT_pageid = uri_args['WT_pageid']
+if WT_pageid == nil or WT_pageid == '' then
+    WT_pageid = '--'
+end
+local WT_sellerid = uri_args['WT_sellerid']
+if WT_sellerid == nil or WT_sellerid == '' then
+    WT_sellerid = '--'
+end
+local WT_extendid = uri_args['WT_extendid']
+if WT_extendid == nil or WT_extendid == '' then
+    WT_extendid = '--'
+end
+
+local WT_es = uri_args['WT_es']
+local WT_et = uri_args['WT_et']
+if WT_et ~= nil and WT_et ~= '' then
+    eventName = WT_et
+end
+
+
+local my_id_kv = string.match(my_cookie,"WT_FPC=id=[0-9a-zA-Z]+")
+if my_id_kv  ~= nil and my_id_kv ~= '' and string.len(my_id_kv) >= 11 then
+    device_id = string.sub (my_id_kv, 11 ,string.len(my_id_kv))
+end
+
+if device_id == '' then
+    device_id = uri_args['WT_co_f']
+end
+
+
+local my_ss = string.match(my_cookie,"ss=[0-9]+")
+if my_ss  ~= nil and my_ss ~= '' and string.len(my_ss) >= 4 then
+    WT_vtvs = string.sub (my_ss, 4 ,string.len(my_ss))
+end
+
+if WT_vtvs == '--' then
+    WT_vtvs = uri_args['WT_vtvs'] or '--'
+end
+
+
+---处理/channelId/pageId/sellerId/extendId
+local channelId = '--'
+local pageId = '--'
+local sellerId = '--'
+local extendId = '--'
+
+if WT_es ~= nil and WT_es ~= '' then
+    _WT_es = unescape(WT_es)
+    local _channelId = string.match(_WT_es,"channelId=[0-9a-zA-Z]+")
+    if _channelId  ~= nil and _channelId ~= '' and string.len(_channelId) >= 11 then
+        channelId = string.sub(_channelId, 11 ,string.len(_channelId))
+    end
+    local _pageId = string.match(_WT_es,"pageId=[0-9a-zA-Z]+")
+    if _pageId  ~= nil and _pageId ~= '' and string.len(_pageId) >= 8 then
+        pageId = string.sub(_pageId, 8 ,string.len(_pageId))
+    end
+    local _sellerId = string.match(_WT_es,"sellerId=[0-9a-zA-Z]+")
+    if _sellerId  ~= nil and _sellerId ~= '' and string.len(_sellerId) >= 10 then
+        sellerId = string.sub(_sellerId, 10 ,string.len(_sellerId))
+    end
+    local _extendId = string.match(_WT_es,"extendId=[0-9a-zA-Z]+")
+    if _extendId  ~= nil and _extendId ~= '' and string.len(_extendId) >= 10 then
+        extendId = string.sub(_extendId, 10 ,string.len(_extendId))
+    end
+end
+
+if uri_args['WT_vtvs'] ~=nil then
+    uri_args['WT_vtvs'] = nil
+end
+if uri_args['WT_channelid'] ~=nil then
+    uri_args['WT_channelid'] = nil
+end
+if uri_args['WT_pageid'] ~=nil then
+    uri_args['WT_pageid'] = nil
+end
+if uri_args['WT_sellerid'] ~=nil then
+    uri_args['WT_sellerid'] = nil
+end
+if uri_args['WT_extendid'] ~=nil then
+    uri_args['WT_extendid'] = nil
+end
+if uri_args['WT_XY'] ~=nil then
+    uri_args['WT_XY'] = nil
+end
+
+local kvStr = '{'
+
+for key, value in pairs(uri_args) do
+    value = checkdcs(value)
+    if value ~= nil then
+        value = string.gsub(value, "\"", "")
+        value = string.gsub(value, "\t", "")
+        value = string.gsub(value, "\r", "")
+        value = string.gsub(value, "\n", "")
+        kvStr = kvStr .. '\"' .. key .. '\":\"' .. value .. '\",'
+    end
+end
+
+WT_vtvs = string.gsub(WT_vtvs, "\t", "")
+WT_vtvs = string.gsub(WT_vtvs, "\r", "")
+WT_vtvs = string.gsub(WT_vtvs, "\n", "")
+
+WT_channelid = string.gsub(WT_channelid, "\t", "")
+WT_channelid = string.gsub(WT_channelid, "\r", "")
+WT_channelid = string.gsub(WT_channelid, "\n", "")
+
+channelId = string.gsub(channelId, "\t", "")
+channelId = string.gsub(channelId, "\r", "")
+channelId = string.gsub(channelId, "\n", "")
+
+WT_pageid = string.gsub(WT_pageid, "\t", "")
+WT_pageid = string.gsub(WT_pageid, "\r", "")
+WT_pageid = string.gsub(WT_pageid, "\n", "")
+
+
+pageId = string.gsub(pageId, "\t", "")
+pageId = string.gsub(pageId, "\r", "")
+pageId = string.gsub(pageId, "\n", "")
+
+WT_sellerid = string.gsub(WT_sellerid, "\t", "")
+WT_sellerid = string.gsub(WT_sellerid, "\r", "")
+WT_sellerid = string.gsub(WT_sellerid, "\n", "")
+
+sellerId = string.gsub(sellerId, "\t", "")
+sellerId = string.gsub(sellerId, "\r", "")
+sellerId = string.gsub(sellerId, "\n", "")
+
+
+WT_extendid = string.gsub(WT_extendid, "\t", "")
+WT_extendid = string.gsub(WT_extendid, "\r", "")
+WT_extendid = string.gsub(WT_extendid, "\n", "")
+
+extendId = string.gsub(extendId, "\t", "")
+extendId = string.gsub(extendId, "\r", "")
+extendId = string.gsub(extendId, "\n", "")
+
+kvStr = kvStr .. '\"WT_vtvs\":\"' .. WT_vtvs ..'\",'
+kvStr = kvStr .. '\"WT_channelid\":\"' .. WT_channelid ..'\",' .. '\"channelId\":\"'.. channelId ..'\",'
+kvStr = kvStr .. '\"WT_pageid\":\"' .. WT_pageid ..'\",' .. '\"pageId\":\"'.. pageId ..'\",'
+kvStr = kvStr .. '\"WT_sellerid\":\"' .. WT_sellerid ..'\",' .. '\"sellerId\":\"'.. sellerId ..'\",'
+kvStr = kvStr .. '\"WT_extendid\":\"' .. WT_extendid ..'\",' .. '\"extendId\":\"'.. extendId ..'\",'
+
+if WT_XY ~= nil and WT_XY ~= '' then
+    kvStr = kvStr .. '\"WT_XY\":\"' .. WT_XY ..'\",' .. XY_str
+end
+
+
+local timestamp =  timestamp1 or timestamp2 or timestamp3;
+timestamp = checkdcs(timestamp)
+
+local userId_str = '';
+if userId ~= nil and userId ~= '' then
+
+    userId = string.gsub(userId, "\t", "")
+    userId = string.gsub(userId, "\r", "")
+    userId = string.gsub(userId, "\n", "")
+
+    userId_str = '\"userId\": \"' .. userId .. '\",' ;
+end
+
+local device_id_str = '';
+if device_id ~= nil and device_id ~= '' then
+
+    device_id = string.gsub(device_id, "\t", "")
+    device_id = string.gsub(device_id, "\r", "")
+    device_id = string.gsub(device_id, "\n", "")
+
+    device_id_str = '\"device_id\": \"'.. device_id  .. '\",'
+    kvStr = kvStr .. '\"ck_id\":\"' .. device_id .. '\"}'
+else
+    kvStr = kvStr .. '\"ck_id\":\"--\"}'
+end
+
+
+--创建一个JSON对象
+----2.cs_hose放到domain
+if type(eventName) ~= "string" then
+    eventName = serialize(eventName);
+end
+
+if userId_str ~= '' or  device_id_str ~= ''  then
+    local req_param = '[{\"domain\":\"' .. my_host .. '\",\"dataSourceId\": \"'.. dataSourceId .. '\",' .. userId_str  .. device_id_str .. '\"eventType\": \"'.. eventType ..'\", \"timestamp\":\"' .. timestamp .. '\",\"eventName\": \"'.. eventName .. '_' .. post_dcsid ..'\",'
+
+    req_param = req_param .. '\"attributes\":' .. kvStr
+    req_param = req_param .. '}]'
+
+   --local iok, json_param_table = pcall(JSON.decode, req_param)
+    --if  not iok then
+    --    writeText('/home/udbac/shotpot/lib/error_json20230617.txt',req_param,0);
+    --else
+    --    writeText('/home/udbac/shotpot/lib/ok_json.txt',req_param,0);
+    --end
+
+
+    local res = ngx.location.capture('/api', {
+        method = ngx.HTTP_POST,
+        body = req_param,
+        always_forward_body = false
+    })
+
+    --if res.status ~= 204  then
+        --writeText('/home/udbac/shotpot/lib/res_log204.txt',res.status,0);
+    --end
+end
+
+---结束
+
+ngx.exit(ngx.HTTP_OK);
+-- vim:ai:cindent:et:sm:sw=4:ts=4
+You have new mail in /var/spool/mail/udbac

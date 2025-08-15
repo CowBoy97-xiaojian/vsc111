@@ -1,0 +1,25 @@
+select
+str_to_map(regexp_replace(regexp_replace(attributes,'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', ''), '^\\{"(.*)"\\}$', '$1'),'\",\"','\":\"') as attributes_str,
+attributes['WT_et']
+from ham_jituan.dwd_client_event_gio_di
+where dt = '2023-09-10' and hour = '11'
+limit 1;
+
+select
+str_to_map(regexp_replace(regexp_replace(attributes,'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', ''), '^\\{"(.*)"\\}$', '$1'),'\",\"','\":\"')['$path'] as attributes_str
+
+from ham_jituan.dwd_client_event_gio_di
+where dt = '2023-09-10' and hour = '11'
+limit 1;
+
+select
+str_to_map(regexp_replace(regexp_replace(attributes,'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', ''), '^\\{"(.*)"\\}$', '$1'),'\",\"','\":\"')['$path'] as path,
+str_to_map(regexp_replace(regexp_replace(attributes,'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', ''), '^\\{"(.*)"\\}$', '$1'),'\",\"','\":\"')['$title'] as title
+from ham_jituan.dwd_client_event_gio_di
+where dt = '2023-09-10' and hour = '11' and attributes like '%path%' limit 1;
+
+select
+xy
+from ham_jituan.dwd_client_event_gio_di
+where dt = '2023-09-10' and hour = '11' and xy is not null
+limit 1;

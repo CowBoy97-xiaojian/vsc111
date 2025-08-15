@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# ClickHouse连接信息
+HOST="localhost"
+PORT="8123"
+USER="default"
+PASSWORD=""
+# 查询和插入的表名
+SOURCE_TABLE="source_table"
+TARGET_TABLE="target_table"
+# 查询语句
+QUERY="SELECT * FROM $SOURCE_TABLE"
+# 每批次导出的数据量（行数）
+BATCH_SIZE=100000
+# 导出到本地的临时文件
+OUTPUT_FILE="/tmp/query_output.csv"
+
+# 确保输出文件不存在
+rm -f $OUTPUT_FILE
+
+# 获取查询结果的总行数
+TOTAL_ROWS=$(clickhouse-client -h $HOST -p $PORT --user $USER --password $PASSWORD -q "SELECT count() FROM ($QUERY) AS tmp")
+echo "总行数: $TOTAL_ROWS"
+
+# 根据每批次的数据量，计算分批次查询的次数
+BATCH_COUNT=$((($TOTAL_ROWS + $BATCH_SIZE - 1) / $BATCH_SIZE))
+echo "分批次查询次数: $BATCH_COUNT"
+
+# 分批次查询并插入数据
+for ((i = 0; i < $BATCH_COUNT; i++))
+do
+    # 分页查询语句
+    OFFSET=$(($i * $BATCH_SIZE))
+    PAGING_QUERY="$QUERY LIMIT $BATCH_SIZE OFFSET $OFFSET"
+    echo "查询语句: $PAGING_QUERY"
+
+    # 导出数据到本地临时文件
+    clickhouse-client -h $HOST -p $PORT --user $USER --password $PASSWORD -q "$PAGING_QUERY FORMAT CSV" > $OUTPUT_FILE
+
+    # 插入数据到目标表
+    clickhouse-client -h $HOST -p $PORT --user $USER --password $PASSWORD -q "INSERT INTO $TARGET_TABLE FORMAT CSV" < $OUTPUT_FILE
+
+    # 清空临时文件
+    rm -f $OUTPUT_FILE
+done
+
+echo "数据插入完成"
+
+
+
+#!/bin/bash
+
+# ClickHouse connection information
+host="localhost"
+port="8123"
+user="default"
+password=""
+database="default"
+
+# Query to get data from source table
+sql_query="SELECT * from source_table WHERE condition"
+
+# Batch insert size
+batch_size=10000
+
+# Destination table name and columns
+destination_table="destination_table"
+destination_columns="(col1, col2, col3)"
+
+# Connect to ClickHouse database
+clickhouse-client \
+--host "$host" \
+--port "$port" \
+--user "$user" \
+--password "$password" \
+--database "$database" \
+--query "INSERT INTO $destination_table $destination_columns VALUES"
+
+# Query data from source table in batches
+clickhouse-client \
+--host "$host" \
+--port "$port" \
+--user "$user" \
+--password "$password" \
+--database "$database" \
+--format_csv_no_header \
+--max_block_size="$batch_size" \
+--query "$sql_query" \
+| while read line; do
+  # Append data to insert query
+  echo -n "($line)," >> insert_query.txt
+
+  # Execute insert query when batch size is reached
+  if ((${LINENO} % $batch_size == 0)); then
+    insert_query=$(<insert_query.txt sed 's/,$//')
+    insert_query="$insert_query;"
+    clickhouse-client \
+    --host "$host" \
+    --port "$port" \
+    --user "$user" \
+    --password "$password" \
+    --database "$database" \
+    --query "${insert_query}"
+    rm insert_query.txt
+    touch insert_query.txt
+  fi  
+done
+
+# Insert remaining data
+if [ -s insert_query.txt ]; then
+  insert_query=$(<insert_query.txt sed 's/,$//')
+  insert_query="$insert_query;"
+  clickhouse-client \
+  --host "$host" \
+  --port "$port" \
+  --user "$user" \
+  --password "$password" \
+  --database "$database" \
+  --query "${insert_query}"
+  rm insert_query.txt
+fi

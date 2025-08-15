@@ -1,0 +1,43 @@
+┌─name────────────────────────────┐
+│ ads_hachi_jzyy_xtb2_51008_all   │
+│ ads_hachi_jzyy_xtb2_51008_local │
+│ dim_capacity_user_code          │
+│ dim_client_city                 │
+│ dim_client_city_all             │
+│ dim_client_city_local           │
+│ dim_client_h5                   │
+│ dim_client_h5_all               │
+│ dim_client_h5_local             │
+│ dim_client_ld_zdy_d             │
+│ dim_client_ld_zdy_d_all         │
+│ dim_client_ld_zdy_d_local       │
+│ dim_client_ld_zdy_d_tmp         │
+│ dim_client_ord_info_d           │
+│ dim_client_ord_info_d_all       │
+│ dim_client_ord_info_d_local     │
+│ dim_client_work_order_d         │
+│ dim_client_work_order_d_all     │
+│ dim_client_work_order_d_local   │
+│ dim_client_work_order_d_tmp  
+
+
+│ tmp_c_cth_cm_log_d_01_all       │
+│ tmp_c_cth_cm_log_d_01_local     │
+│ tmp_c_cth_cm_log_d_02_all       │
+│ tmp_c_cth_cm_log_d_02_local   
+
+
+regexp_replace   replaceRegexpAll
+regexp_extract   extract
+regexp				match
+
+
+
+
+select splitByChar('_','asdadada_dasdasda_dasdadad')[1];
+select split('asdadada_dasdasda_dasdadad','_')[1];
+
+
+
+
+

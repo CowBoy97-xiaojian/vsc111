@@ -1,0 +1,11 @@
+2024-05-04 02:28:56,
+112.12.192.219,
+h.app.coc.10086.cn,
+c1d1c8e1ca0d4a6087f881db0575b087758d999b28e37d139fa1ac485be8af65,
+A428EDA7-0994-4291-86A6-6A86C0649514,
+0577,
+13858855200,
+P00000082783,
+搜索输入页,NULL,NULL,NULL,NULL,NULL,NULL,https://h.app.coc.10086.cn/ngpsie/psiesearchsdk/?pageEntrance=5,NULL,NULL,NULL,
+b508a809cbbddd0b,
+NULL,APP_ios_9.2.5,20240504,NULL,2024-05-04 02:28:56,571,NULL,000_JTAPP,NULL,NULL,NULL,NULL,NULL,NULL,NULL,iOS,iPhone15,3,087BAC15D5414CB3AD95C6584064F2C2,NULL,,F09A547B-6AFC-4248-AEE0-631F6EF6607B,,NULL,NULL,NULL,NULL,ChinaMobile/231004105992500 CFNetwork/1494.0.7 Darwin/23.4.0,imp,NULL,通话剩余,iOS 17.4.1,NULL,NULL,NULL,--,F09A547B-6AFC-4248-AEE0-631F6EF6607B,01,571,0577,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,{"point_position":"1","asword_id":"beea545ca494bcedfc13798e95975c39","pageEntry":"分类页","asword_type":"2"},NULL,1714760936085,--,CUSTOM_EVENT,$basic_userId,h.app.coc.10086.cn,iPhone15,3,3.4.8-hotfix.1,--,--,iOS,iOS 17.4.1,--,{"$index":"0","XY_point_position":"1","area_id":"SSY_12","type":"once","WT_event":"P00000082783","XY_asword_id":"beea545ca494bcedfc13798e95975c39","WT_prov":"571","WT_envName":"通话剩余","WT_clientID":"087BAC15D5414CB3AD95C6584064F2C2","WT_plat":"000_JTAPP","WT_userBrand":"01","$device_type":"iPhone","WT_cid":"c1d1c8e1ca0d4a6087f881db0575b087758d999b28e37d139fa1ac485be8af65","WT_et":"imp","WT_es":"https://h.app.coc.10086.cn/ngpsie/psiesearchsdk/?pageEntrance=5","WT_loginProvince":"571","WT_ti":"搜索输入页","$path":"/ngpsie/psiesearchsdk/","WT_city":"0577","XY_pageEntry":"分类页","XY_asword_type":"2","$query":"pageEntrance=5","WT_loginCity":"0577"},,,NULL,9.2.5,2024-05-04,02

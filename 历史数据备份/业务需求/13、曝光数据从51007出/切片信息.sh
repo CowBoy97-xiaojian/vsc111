@@ -1,0 +1,136 @@
+<yandex>
+    <clickhouse_remote_servers>
+        <!--       shards_num = hosts_num / replicas_num , 分片的数量以 节点数除以副本数决定, 假如6台机器2副本，则shard自动变为3 -->
+        <!--        1. (cluster_gio_with_shard) cluster gio with shard   2. (cluster_gio_no_shard) (cluster gio all) with no shard-->
+            <cluster_gio_no_shard>
+                    <shard>
+                        <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-1</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-2</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-3</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-4</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-5</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-6</host>
+                            <port>9000</port>
+                        </replica>
+                    </shard>
+            </cluster_gio_no_shard>
+            <cluster_gio_with_shard>
+                    <shard>
+                        <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-1</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-2</host>
+                            <port>9000</port>
+                        </replica>
+                    </shard>
+                    <shard>
+                        <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-3</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-4</host>
+                            <port>9000</port>
+                        </replica>
+                    </shard>
+                    <shard>
+                        <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-5</host>
+                            <port>9000</port>
+                        </replica>
+                        <replica>
+                            <host>yewu-ck-6</host>
+                            <port>9000</port>
+                        </replica>
+                    </shard>
+            </cluster_gio_with_shard>
+            <cluster_gio_no_replica>
+                                        <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-1</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                            <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-2</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                            <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-3</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                            <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-4</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                            <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-5</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                            <shard>
+                    <internal_replication>true</internal_replication>
+                        <replica>
+                            <host>yewu-ck-6</host>
+                            <port>9000</port>
+                        </replica>
+                </shard>
+                        </cluster_gio_no_replica>
+
+    </clickhouse_remote_servers>
+
+    <macros>
+        <shard>0</shard>
+        <replica>yewu-ck-1</replica>
+    </macros>
+
+<zookeeper-servers>
+        <node index="1">
+            <host>yewu-ck-1</host>
+            <port>2181</port>
+        </node>
+        <node index="2">
+            <host>yewu-ck-2</host>
+            <port>2181</port>
+        </node>
+        <node index="3">
+            <host>yewu-ck-3</host>
+            <port>2181</port>
+        </node>
+
+</zookeeper-servers>
+</yandex>

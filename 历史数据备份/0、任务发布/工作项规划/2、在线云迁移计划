@@ -1,0 +1,321 @@
+资源情况：
+flink资源  14台bk1机器-400c700G
+hadoop资源 20台bk2机器-HDFS给了200T，Hive给了1100T
+
+【20240517】系统平台中心升级导致实时程序入hive出现问题，丢失1个小时的数据
+各位老师好：    
+    由于在线营服平台进行系统升级导致插码系统5月16日22点数据丢失，导致接口文件数据缺失，下游报表数据不完整。希望平台侧老师全力保障系统稳定。
+
+
+迁移情况
+1、中间态数据链路情况
+    已经申请实时计算资源200c300G，通过营服flink组件从ITcdpkafk消费数据解密发送到营服kafka，开发完成后进行性能测试。【5月1日前完成】。
+    调整消费速度。
+2、离线调度迁移情况
+    完成离线代码开发-CM系列开发。
+    完成dwd对数、51006、51007、51010ads层对数。
+    提升推送网状网速率，目前速度提升6倍，需要跳过负载开通网络策略，节后开通网络策略（五一封网）。
+    dwd层时间戳格式处理有点问题，今天调整。
+    wt_channleid  由%分割改为,号分割。
+    CM系列sql、数据量和数据内容对比,脏数据处理。【俊杰】
+    77011数据量及数据内容对比。【俊杰】
+    51007接口层数据对比。【仁辉】
+
+3、实时接口迁移情况
+    1、流处理函数编写,
+    2、51007代码开发。
+    3、分流程序开发。
+
+3、待开始事项
+    需要开通在线营服到网址网和磐道的网络策略，预计周二开通，周三进行网络测试。已经开通，15个线程推送达到300M/s。配置上传下载路由-周四
+    所有程序打开推送。
+
+    提升营服flink组件从ITcdpkafk消费数据解密发送到营服kafka的消费速率，提高并行度。
+    ip和ua适配。
+    
+    CM系列接口数据核对。【完成】
+    51001-51005接口数据核对。【完成】
+    智慧中台4个调度数据核对。【完成】
+    营服flink解析protobuf的原始数据和IT解析的原始数据要一致【完成】
+    51007实时程序开发。【完成】
+    51007区域曝光程序开发【20240514】
+
+
+    创建营服数据目录
+        51系列、分省系列、监控系列、维表接口、智慧中台、其他接口。
+    【2024-05-09】
+    1、增加IT云newkafka中cdp-event-collect的topic分区,由100增加到200，@王峰需要编写上线文档。
+    2、@单沛丰和苏克云联调ua和ip函数。
+    3、在cache-core-new集群新增解析protobuf的topic@单沛丰，@王峰负责均衡磁盘。【完成】。
+    3、@王峰搭建clinkhouse集群，回收compute机器。【已经搭建】
+
+1、机器下线的时间，机器预算。1、月底cdh集群全部下线。2、cdh 6月初全部下线(保障在线云月初稳定)
+2、15号  15cdh、10台compute=25
+
+
+4、迁移节点日期
+    1、【20240515】分省CM001、CM002、CM003离线接口切换至在在线云。
+        晓燕老师好：
+            由于插码系统正在迁移至在线云系统，需要对离线CM系列接口进行割接，预计在20240515账期进行
+        数据切换，需要分省侧的老师进行数据验证，如有问题第一时间告知我们，插码侧进行数据调整。
+    2、【20240515】77011离线接口
+        各位老师好：
+            由于插码系统正在迁移至在线云系统，需要对离线77011接口进行割接，预计在20240515账期进行
+        数据切换，需要各位老师进行数据验证，如有问题第一时间告知我们，插码侧进行数据调整。
+    
+
+    3、网状网切换至磐道
+        各位老师好：
+            现插码采集系统应集团中心领导要求，回迁至在线机房，要求今年5月份完成数据接口迁移，涉及面广，影响面大。现插码系统在IT云的硬件租金费用已存在超支风险，插码系统每天的租金费用为2万，迁移事项迫在眉睫。磐道离线接口数据传输问题是集团考核项，同时决定着本次迁移的总体进程。请网状网侧确保5月16日完成苏池磐道转发至梧桐、营服平台账号下的路由配置，保证接口文件正常转发，感谢各位老师对本次迁移事项的大力支持。
+
+
+
+
+4、营服磁盘空间处理
+营服磁盘空间处理
+发件人： dengyouyou@cmos.chinamobile.com
+发送时间： 2024-04-30 11:41
+收件人： majianzx; bianliansheng; chenyang6
+抄送： 谢江涛; 李燕; 齐展锋; 李雯昕
+主题： 渠道支撑中心租户（csap665）分区值不合理，无法有效删除，导致存储快速增长，请及时处理
+各位好：
+  近几天渠道支撑中心租户（csap665）存储使用率快速增长，经核查，其中部分表分区值不合理，导致历史数据无法有效删除。日期类型分区值为yyyymmdd，小时分区类型应为yyyymmddhh，当前渠道支撑中心租户（csap665）分区存在yyyy-mm-dd,小时分区为hh的模型，请及时改造处理，避免存储无序增长，引发稳定性风险。
+在营服平台上检查一下自己负责的调度、程序和模型有存在以上问题的及时更正，没有投入使用的任务进行删除。
+
+5、机器情况
+@潘湘飞 @王峰 依据公文“系统〔2024〕3号_关于《2024年服营系统技术支撑服务项目》相关服务／产品定价的说明”以及现在执行的结算模式，建议如下：
+1、产生费用地方，除了机器，包不包括账号、F5等其他的方面；
+答复：插码系统服务器全部是裸金属交付的，全部以裸金属单价/月模式结算。F5不单独结算。
+2、已到货每台机器的费用是多少，以及其开始计费的时间；
+答复：计算方式为已交付服务器台数*C数/63C*2184.92 或者 已交付服务器台数*内存数/293G*2184.92，取最大值，单价：裸金属 64C/256G	2184.92元（不含税）/台/月。当月交付的服务器，不够一个月按一个月计算，双方确认有出入的另行沟通。
+3、未到货的机器费用，以及预计开始计费的时间。
+答复：未到货的服务器预计5月中询到货，建议6月份开始做结算。
+另外，销售分公司负责内部结算的同事：王保淳(15967106520)，如有疑问建议内部先行沟通。
+
+
+1、工单类型。
+2、在每周三中午之前，完成下一个周的计划(需求名称、背景、内容)。
+
+lftp -u 'sftp_coc270sz,SFtp_coC1!%' -p 2302 sftp://10.250.33.7/incoming/
+
+经测试，15个线程推送接口文件
+51007 2071个文件，推送41分钟
+51006 271个文件 ，推送5分钟     
+51010 244个文件 ，推送2分钟
+
+
+
+【20240524迁移情况梳理】
+1、离线任务
+    完成77011、智慧中台及CM分省数据下发。
+    完成51001-51010接口迁移，网状网磐道双推。【20240521】
+    完成51001-51005完成验证【20240521】
+
+2、中间态第二阶段
+    扩容topic的分区数。
+    ua和ip适配。
+3、实时任务
+    数据链路的规划：分省网络、数据接收方式。
+    flume数据传输正在沟通。
+    实时程序开发。
+    实时topic整理创建,规划创建。
+    实时数据核对。
+
+
+
+flume程序下线
+@pop @平常心要开心 @Jarod 平台不支持flume组件，只能用其他方案替代。插码系统预算已经不足，插码实时资源预计6月中旬之前全部下线，6月7日之前完成所有实时程序迁移。我们需要在这之前进行数据切换，望两位老师理解，共同商讨解决方案。
+
+各位老师好：
+    现插码采集系统应集团中心领导要求，回迁至在线机房，要求今年5月份完成数据接口迁移，涉及面广，影响面大。现插码系统在IT云的硬件租金费用已存在超支风险，插码系统每天的租金费用为2万，迁移事项迫在眉睫。实时程序迁移决定着本次迁移的总体进程。
+    当前部署在插码侧实时程序主要是通过flink程序消费kafka的数据发送到下游的flume组件中，现在线营服平台流数据处理系统不支持flume组件数据传输，无法进行数据传输，因此需要重新规划数据传输方案。插码侧已于2024年5月14日开始和数据使用方进行数据传输方案的沟通，实时程序迁移截止日期为2024年6月7日。请数据接收方尽快确定数据传输方案，届时如果没有比较完整的技术方案支撑，这部分数据将暂时停止下发，待技术方案确定后进行程序开发，恢复数据传输。
+
+重保文件推送流程
+
+	
+cache-core-zxkafka地址
+2409:808e:4980:504::3b:9092,2409:808e:4980:504::3c:9092,2409:808e:4980:504::3d:9092,2409:808E:4980:504::62:9092,2409:808E:4980:504::63:9092,2409:808E:4980:504::64:9092
+
+
+cache-kafka
+gio-test1
+gio-test2
+gio-test3
+gio-test4
+gio-test5
+
+
+cdp-kafka
+gio-test1
+gio-test2
+gio-test3
+gio-test4
+gio-test5
+gio-basicflow-a47b49395334c862
+gio-basicflow-9e488aa27d948855
+gio-basicflow-b8d9fd437de471e4
+gio-basicflow-875444ff6e049f33
+gio-basicflow-94bbabc3a9686c5a
+gio-basicflow-other
+wt-basicflow-other
+
+
+三个程序
+flume邮件已发，还没有反馈。
+分流程序已经完成，正在进行资源调整，观察稳定性。
+质量纳管正在开发。
+
+
+
+数据监控
+
+kafka网络
+在线插码分省Kafka集群访问沟通会议纪要：
+1、目前在线插码分省Kafka集群的IPV6的硬件条件不具备，无法对各分省提供IPV6网络访问网络；
+2、采用V4地址通信，需要源目端均配置域名映射，绑定在线Kafka集群的承载网地址；
+3、其他的分省访问在线Kafka集群方式，等禹果老师沟通确认后，再反馈；
+4、下一步工作：在线云这边，插码侧需要提域名申请单和提IPV4策略单，并协调广东省配合提单。
+
+
+
+kafka1.cdp-cache.core.cmos:9092,kafka2.cdp-cache.core.cmos:9092,kafka3.cdp-cache.core.cmos:9092,kafka4.cdp-cache.core.cmos:9092,kafka5.cdp-cache.core.cmos:9092,kafka6.cdp-cache.core.cmos:9092
+
+
+(
+    "$referrer_domain",
+    "$os", "$os_version",
+    "$client_version",
+    "$channel",
+    "$device_brand",
+    "$device_model",
+    "$device_orientation",
+    "$language",
+    "$domain",
+    "$ip",
+    "$user_agent",
+    "$sdk_version",
+    "$platform",
+    "$data_source_id"
+    )
+
+新报文
+{
+    --原始字段值
+    "account_id": "9e4e5fa7244c6b6e",
+    "anonymous_user": "22de064b-51d0-4d07-a156-18dcf7407a65",
+    "client_time": "2024-05-08 15:14:07.595",                     ----1715569494026
+    "esid": "462",
+    "event_key": "pfm",
+    "event_time": "2024-05-08 15:14:16.338",                      ----1715569494026
+    "event_type": "CUSTOM_EVENT",
+    "location_latitude": "0.0",
+    "location_longitude": "0.0",
+    "package": "",
+    "session": "314e9056-8c86-403d-b424-78d5173e0be0",
+    "user_mobile": "sFqag7Lp4OLcGBCs2fTY0g==",
+    "user_key": "$basic_userId",
+
+    --新增字段值
+    "platform": "Android",                                        ----attributes["$platform"]
+    "referrer_domain": "",                                        ----attributes["$referrer_domain"]
+    "$device_brand",                                              ----attributes["$device_model"]
+    "client_version": "9.9.5",                                    ----attributes["$client_version"]
+    "channel": "A2222",                                           ----attributes["$channel"]
+    "device_type": "PHONE",                                       ----attributes["$device_type"]
+    "device_orientation": "PORTRAIT",                             ----attributes["$device_orientation"]
+    "language_code": "zh",                                        ----attributes["$language"]
+    "domain": "com.greenpoint.android.mc10086.activity",          ----attributes["$domain"]
+    "user_agent": "okhttp/3.14.9",                                ----attributes["$user_agent"]
+    "sdk_version": "3.5.3",                                       ----attributes["$sdk_version"]
+    "data_source_id": "a1f48d9ff4f42571",                         ----attributes["$data_source_id"]
+    "ip": "2409:8954:d872:b3f7:6c52:33ff:fe5f:3a5c|广东省|东莞市", ----attributes["$ip"]
+    "格式": "ip|ip_prov|ip_city",
+    "browser": "Android|Android 13|Vivo|Vivo Y35|Chrome Mobile WebView|Chrome Mobile",
+    "格式": "os|os_version|device_brand|device_model|browser| browser_version",
+    "project_id": "9e4e5fa7244c6b6e",
+    "attributes": {
+        "WT_a_dc":"002",
+        "WT_appId":"0000174724256158",
+        "XY_pfm":"VTRrX1GwJ2dodEMqo",
+        "$index":"0",
+        "WT_event":"pfm_mpxjsapireserr",
+        "WT_prov":"200",
+        "WT_qry":"channelId=null",
+        "WT_clientID":"Ac3elAP8ZcjTQUlg0YPdY7EMDm7QL3w==",
+        "WT_userBrand":"09",
+        "$url_scheme":"growing.6777ff5a95d8f9e9",
+        "WT_mobile":"sFqag7Lp4OLcGBCs2fTY0g==",
+        "$device_type":"PHONE",
+        "WT_cid":"Ac3elAP8ZcjTQUlgJ5CVFwc3kTJZTrdPj5apIusqRFjnB2UgFJirR9NYfr77aO056XzVIzJ0YPdY7EMDm7QL3w==",
+        "token":"k7M2ULW05",
+        "WT_et":"pfm",
+        "WT_loginProvince":"200",
+        "WT_channel":"A2222",
+        "WT_av":"APP_android_9.9.5",
+        "XY_xk":"504c274f6b1d049d52b8547",
+        "WT_city":"0769",
+        "WT_aav":"9.9.5",
+        "WT_loginCity":"0769"
+    }
+}
+
+
+老报文
+{
+    "accountId": "9e4e5fa7244c6b6e",
+    "anonymousUser": "9419fe50-d148-4b0e-bc29-f67d031dc69f",
+    "clientTime": 1715569493690,
+    "esId": 1,
+    "eventKey": "clk",
+    "eventTime": 1715569494026,
+    "eventType": "CUSTOM_EVENT",
+    "locationLatitude": 0,
+    "locationLongitude": 0,
+    "packageName": "",
+    "session": "71971ab3-9d13-45ec-b7a8-f65fc494f534",
+    "userId": "",
+    "userKey": "$anonymous_user",
+    "attributes": {
+        "$data_source_id": "b95440ef47ec01fc",
+        "$index": "0",
+        "$os": "web",
+        "$platform": "web",
+        "WT_markId": "10665",
+        "$ip": "117.11.240.252",
+        "WT_event": "qwbn2202020001",
+        "$device_orientation": "PORTRAIT",
+        "$user_agent": "Mozilla/5.0",
+        "$language": "zh-CN",
+        "WT_prov": "100",
+        "WT_clientID": "",
+        "WT_plat": "000_OTHER",
+        "WT_userBrand": "",
+        "$client_version": "1.0.0",
+        "WT_cid": "0",
+        "WT_loginProvince": "",
+        "WT_channel": "web",
+        "WT_av": "APP_0_0",
+        "$path": "/activity/transit/transferDownload.html",
+        "$sdk_version": "3.8.6",
+        "WT_adverType": "122",
+        "WT_city": "0",
+        "WT_aav": "0",
+        "$title": "中国移动客户端",
+        "$query": "pageId=99992308030942022&channfe81",
+        "WT_loginCity": "",
+        "$domain": "h.app.coc.10086.cn"
+    }
+}
+
+
+cdp-kafka
+大流量topic（TPS>1万）生命周期（4个小时），其他topic 生命周期（12个小时）
+磁盘使用量50%左右
+cpu使用率 < 25%
+内存使用率 <10%  内存主要用于pagecache
+
+cache-kafka
+大流量topic（TPS>1万）生命周期（4个小时），其他topic 生命周期（12个小时）
+磁盘使用量42%左右
+cpu使用率 <25%
+内存使用率 <10%  内存主要用于pagecache

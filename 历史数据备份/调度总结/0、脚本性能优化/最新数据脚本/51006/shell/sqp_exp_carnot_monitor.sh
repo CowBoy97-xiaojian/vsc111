@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+#TBNAME_TAIL=$1
+tp=$1
+
+
+QUERY="delete from dwd_monitor_dh where type='${tp}'and day='$2' and hour='$3' ;"
+sqoop eval --connect 'jdbc:postgresql://carnot01:6500/carnot' \
+           --username carnot --password carnot@123 \
+           --query "$QUERY"
+sqoop export --connect 'jdbc:postgresql://carnot01:6500/carnot' \
+           --username carnot --password carnot@123 \
+           --table "dwd_monitor_dh" \
+           --input-null-string '\\N' \
+           --fields-terminated-by '|' \
+           --export-dir /user/hive/warehouse/ham.db/dwd_monitor_dh_t/tp=${tp}/dt=$2/hour=$3

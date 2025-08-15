@@ -1,0 +1,5 @@
+    cat 0002_00201_"$1".txt | sed "s/\\\"/'/g" > 0002_00201_"$1"_sed.txt
+	clickhouse-client -h 10.253.248.73 -m --database="ham" --receive_timeout=3600 --query="truncate table ham.dim_order_page_tmp"
+	clickhouse-client -h 10.253.248.73 -m --database="ham" --receive_timeout=3600 --format_csv_delimiter=$'|' --query="insert into ham.dim_order_page_tmp FORMAT CSV" < /home/udbac/af_input/ck_input/$1/"0002_00201_"$1".txt"
+	clickhouse-client -h 10.253.248.73 -m --database="ham" --receive_timeout=3600 --query="alter table ham.dim_order_page_local on cluster cluster_gio_with_shard drop partition '$1'"
+	clickhouse-client -h 10.253.248.73 -m --database="ham" --receive_timeout=3600 --query="insert into ham.dim_order_page_all(statis_date,activity_type,page_id,page_type,page_name,app_name,channel_id,url,url_status,start_time,end_time,current_time) SELECT statis_date,activity_type,page_id,page_type,page_name,app_name,channel_id,url,url_status,start_time,end_time,'$1' FROM ham.dim_order_page_tmp;"	

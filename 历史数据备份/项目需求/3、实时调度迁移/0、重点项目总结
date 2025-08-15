@@ -1,0 +1,35 @@
+交接文档
+数据重传：3天内重新发邮件
+			10天要走工单
+
+51006 ： 关联维表关联不上prov city.
+		flink入中间表用ip2regiog（51006、51010）
+		
+51007：
+
+51008：
+
+rpt_cjhyx_di:场景化营销 
+
+实时程序质量纳管：10分钟入到pg库
+机器：10.253.182.81:8081
+路径：/home/udbac/app-cls/zlng-1.3.0.jar
+启动命令：启动命令：~/flink/bin/flink run -d -p8 -c com.atic.cm.stream.AppDcs ~/app-cls/zlng-1.3.0.jar --dev false
+pg库：
+psql -U clsuser cls_prod
+10.253.182.68 （质量纳管的pg库）
+10.253.182.168 （可视化的pg库）
+10.253.182.（pg库）
+
+查看表结构：\d cls_quality_monitor_ind;
+查看表数据： select * from cls_quality_monitor_ind limit 10;
+查看表：\d
+69机器上root,crontab -l就能看到脚本（定时任务，没10分钟拉一次，一共6个）---69的home/udbac/下面，脚本自动传出两个下游（亚信黄浩宇、俄文）
+ 
+故障：
+flink程序不能挂，挂了没有数据 。
+
+
+hive中间表
+	etl_dwd_dcslog_event_di.hql
+	etl_dwd_client_event_di.hql

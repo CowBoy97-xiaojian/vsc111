@@ -1,0 +1,5 @@
+a_10000_20230315_JZYY_XTB1_51010_00_112.dat.gz
+a_10000_20230307_JZYY_XTB1_51006_00_301.dat.gz
+a_10000_20230315_JZYY_XTB2_51007_00_0966.dat.gz
+
+nohup kafka-console-consumer --bootstrap-server slave-core-2:9092,slave-core-4:9092,slave-core-6:9092,slave-core-8:9092 --topic streams-raw  |grep 3l2h >/data1/kafka-3l2h-new.log &

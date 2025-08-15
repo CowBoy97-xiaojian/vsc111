@@ -1,0 +1,115 @@
+DcslogSourceEntity:
+    attrs,
+    daytime,
+    dcsid,
+    ip,
+    host,
+    userAgent,
+    referer
+input:
+    String page,
+    Long ed,
+    String mobile,
+    String cid,
+    String dcsdat,
+    String flag,
+    Long eventTime
+ouput:
+    String window_end,
+    String page,
+    Long uv,
+    Long load_avg,
+    Long access_avg
+
+
+8.20   8.20-8.30 
+
+1、处理安卓、IOS、H5数据
+2、InputFlatmap()--> flatMap(Giosoure entity, Collector<AccessDurationAvg.Input> out)
+
+    变量定义: 
+        变量一:private static final List<Tuple2<String, String>> pageList = ImmutableList.of(
+                    Tuple2.of("/cmcc-app/homeNew/homeNewIndexPage.html", "首页"),
+                    Tuple2.of("/cmcc-app/mobile/mobileChannelNew.html", "商城"),
+                    Tuple2.of("/cmcc-app/setMealSurplus/setMealSurplus.html", "套餐余量"),
+                    Tuple2.of("/cmcc-app/flow/flowHome.html", "流量查询"),
+                    Tuple2.of("/cmcc-app/personalBill/businessOrder.html", "已订业务"),
+                    Tuple2.of("/cmcc-app/personalBill/phoneBillsNew.html", "账单查询")
+        );
+        tuple2.f0、tuple2.f1
+
+        变量二:order.txt-->按照|分割成三个字段 String[] split = StringUtils.split(line, "|");
+        //https://h.app.coc.10086.cn/cmcc-app/homeNew/homeNewIndexPage.html |CT00058 |97_108204
+        split[0]、split[1]、split[2]
+
+        根据 Tuple2.f0去匹配order.txt-->line.contains(tuple2.f0)
+        startIdPageMap<split[2],tuple2.f1> //<97_108204,首页>
+
+
+    flatMap方法生成:
+        clientTime、WT_cid、WT_event、WT_mobile、WT_ed、event_time
+        String dcsdat(clientTime)=1689927492926;//客户端时间
+        String cid = attrs.get("WT_cid");
+        String event = attrs.getOrDefault("WT_event", StringUtils.EMPTY);
+        String mobile = attrs.get("WT_mobile");
+        long ed = Long.parseLong(attrs.getOrDefault("WT_ed", "0"));
+        Long event_time: 1689925282097;//服务段时间
+
+        if(cid不为空&&clientTime不为空){
+            if(!event.equalsIgnoreCase("H5PageShow")){
+                String startId = attrs.get("WT_adverType") + "_" + attrs.get("WT_markId");
+                if (startIdPageMap.containsKey(startId)) {
+                    out.collect(new AccessDurationAvg.Input(
+                                startIdPageMap.get(startId),
+                                ed,
+                                mobile,
+                                cid,
+                                dcsdat,
+                                "0",
+                                eventTime));
+                        break;
+                    }
+            }else {
+                if (attrs.getOrDefault("WT_es", StringUtils.EMPTY).contains(tuple2.f0)) {
+                    out.collect(new AccessDurationAvg.Input(
+                            tuple2.f1,
+                            ed,
+                            mobile,
+                            cid,
+                            dcsdat,
+                            "1",
+                            eventTime));
+                    break;
+                }
+            }
+        
+        }
+
+3、KeyedStream<AccessDurationAvg.Input, String>-->根据page(首页)进行分组
+4、ProcessWindowFunction<Input, Output, String, TimeWindow> -->根据窗口计算input成output。
+    String window_end = 窗口最后一条数据时间;
+    String page =   keyPagep(首页);
+    Long uv =   mobile取去重手机号计数;
+    Long load_avg = sum(ed)/ed条数;
+    Long access_avg =   if (start.getCid().equals(end.getCid()) && start.getFlag().equals("0") && end.getFlag().equals("1"))
+
+
+1、取字段
+    
+2、生成维表数据
+3、输出
+    input:
+        String page,
+        Long ed,
+        String mobile,
+        String cid,
+        String dcsdat,
+        String flag,
+        Long eventTime
+4、窗口计算
+    ouput:
+    String window_end,
+    String page,
+    Long uv,
+    Long load_avg,
+    Long access_avg

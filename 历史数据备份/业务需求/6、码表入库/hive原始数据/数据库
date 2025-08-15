@@ -1,0 +1,56 @@
+CREATE TABLE `dim_province_code`(
+  `code` int, 
+  `province` string)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://udbachdp1/user/hive/warehouse/ham.db/dim_province_code'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1591711978')
+
+
+
+  createtab_stmt
+CREATE TABLE `ham.ads_rpt_ev_ch_tr_di`(
+  `tr_id` int COMMENT '码表id', 
+  `busi_name` string, 
+  `page_name` string, 
+  `event_name` string, 
+  `event` string, 
+  `is_homepage` string, 
+  `channel_id` string, 
+  `channel_name` string, 
+  `channel_type` string, 
+  `page_id` string, 
+  `mark2` string, 
+  `mark3` string, 
+  `mark4` string, 
+  `mark5` string, 
+  `pv` int COMMENT '事件点击次数', 
+  `uv` int COMMENT 'ck_id去重统计')
+COMMENT 'tableau 事件渠道汇总统计'
+PARTITIONED BY ( 
+  `dt` string)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://udbachdp1/user/hive/warehouse/ham.db/ads_rpt_ev_ch_tr_di'
+TBLPROPERTIES (
+  'last_modified_by'='udbac', 
+  'last_modified_time'='1595403326', 
+  'serialization.null.format'='', 
+  'transient_lastDdlTime'='1595403326')

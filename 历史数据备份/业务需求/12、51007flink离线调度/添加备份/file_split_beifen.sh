@@ -1,0 +1,120 @@
+#!/bin/bash
+Njob=14 #任务总数
+daytime=$1 #数据日期eq：2023-05-06
+Nproc=$2 #最大并发进程数eq:6
+day=$3 #数据日期eq：20230506
+file_type=$4 #文件接口eq：51007
+cd /data2/udbac/output_ck/"$file_type"_daily/"$daytime"
+copy_path=/temp-shotpotlogbak/output_ck/"$file_type"_daily
+
+function PushQue {      #将PID值追加到队列中
+
+           Que="$Que $1"
+
+           Nrun=$(($Nrun+1))
+
+}
+
+function GenQue {       #更新队列信息，先清空队列信息，然后检索生成新的队列信息
+
+           OldQue=$Que
+
+           Que=""; Nrun=0
+
+           for PID in $OldQue; do
+
+                 if [[ -d /proc/$PID ]]; then
+
+                        PushQue $PID
+
+                 fi
+
+           done
+
+}
+
+
+function ChkQue {       #检查队列信息，如果有已经结束了的进程的PID，那么更新队列信息
+
+           OldQue=$Que
+
+           for PID in $OldQue; do
+
+                 if [[ ! -d /proc/$PID ]];   then
+
+                 GenQue; break
+
+                 fi
+
+           done
+
+}
+
+function file_transform(){
+time1=$(date "+%Y-%m-%d %H:%M:%S")
+echo "开始第"$hour"小时文件切割_当前时间"$time1
+zcat "$file_type"_*_"$hour".dat.gz | awk '{print NR "#_#" $0}' | sed "s/\\x23\\x5F\\x23/\\x80/g" | split -a 4 --additional-suffix=.dat -d -l 800000 -d --numeric-suffixes=1 - "$file_type"_"$hour"_
+rm -f "$file_type"_*_"$hour".dat.gz
+
+time2=$(date "+%Y-%m-%d %H:%M:%S")
+echo "开始第"$hour"小时文件压缩_当前时间"$time2
+dats=$(ls "$file_type"_"$hour"_*.dat 2> /dev/null)
+for f in ${dats}; do
+    echo "$f.gz,$(wc -c < $f),$(wc -l < $f),$day,$(date +%Y%m%d%H%M%S)" | iconv -t GBK | sed "s/\\x2c/\\x80/g" >> a_10000_"$day"_JZYY_XTB1_"$file_type"_00.verf
+    gzip -f $f
+    sleep 3
+  done
+time3=$(date "+%Y-%m-%d %H:%M:%S")
+echo "完成第"$hour"小时文件压缩_当前时间"$time3
+}
+
+
+for ((i=0; i<$Njob; i++)); do
+    if [ $i -lt 10 ];then
+        hour="0"$i
+    else 
+        hour=$i
+    fi
+
+    file_transform &
+
+    PID=$!
+
+    PushQue $PID
+
+    while [[ $Nrun -ge $Nproc ]]; do          # 如果Nrun大于Nproc，就一直ChkQue
+
+        ChkQue
+
+        sleep 0.1
+
+    done
+
+done
+
+wait
+
+time5=$(date "+%Y-%m-%d %H:%M:%S")
+echo "开始生成校验文件_当前时间"$time5
+filecount1=1
+for i in $(ls *.dat.gz); do
+  if [ $filecount1 -lt 10 ];then
+     mv $i a_10000_"$day"_JZYY_XTB1_"$file_type"_00_000"$filecount1".dat.gz
+     sed -i "s/$i/a_10000_"$day"_JZYY_XTB1_"$file_type"_00_000"$filecount1".dat.gz/g" a_10000_"$day"_JZYY_XTB1_"$file_type"_00.verf
+  elif [ $filecount1 -lt 100 ];then
+     mv $i a_10000_"$day"_JZYY_XTB1_"$file_type"_00_00"$filecount1".dat.gz
+     sed -i "s/$i/a_10000_"$day"_JZYY_XTB1_"$file_type"_00_00"$filecount1".dat.gz/g" a_10000_"$day"_JZYY_XTB1_"$file_type"_00.verf
+  elif [ $filecount1 -lt 1000 ];then
+     mv $i a_10000_"$day"_JZYY_XTB1_"$file_type"_00_0"$filecount1".dat.gz
+     sed -i "s/$i/a_10000_"$day"_JZYY_XTB1_"$file_type"_00_0"$filecount1".dat.gz/g" a_10000_"$day"_JZYY_XTB1_"$file_type"_00.verf
+  else
+     mv $i a_10000_"$day"_JZYY_XTB1_"$file_type"_00_"$filecount1".dat.gz
+     sed -i "s/$i/a_10000_"$day"_JZYY_XTB1_"$file_type"_00_"$filecount1".dat.gz/g" a_10000_"$day"_JZYY_XTB1_"$file_type"_00.verf
+  fi
+  filecount1=$[$filecount1 + 1]
+done
+time6=$(date "+%Y-%m-%d %H:%M:%S")
+echo "完成生成校验文件_当前时间"$time6
+scp * 10.253.182.84:$copy_path/$daytime
+time7=$(date "+%Y-%m-%d %H:%M:%S")
+echo "完成文件备份_当前时间"$time7

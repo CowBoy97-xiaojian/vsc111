@@ -1,0 +1,8 @@
+//redis连接参数
+public static final String REDIS_HOST1 = "10.253.176.212";
+public static final String REDIS_HOST2 = "10.253.176.215";
+public static final String REDIS_HOST3 = "10.253.176.216";
+
+public static final int REDIS_PORT = 6379;
+
+redis-cli -h 10.253.176.212 -p 6379
