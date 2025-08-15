@@ -1,0 +1,5105 @@
+插码开发工单申请
+
+渠道支撑中心-数据运维支撑团队
+
+【插码分省实时数据接入申请】
+【插码分省离线数据接入申请】
+【插码分省实时数据升级申请】
+【插码分省离线数据升级申请】
+【插码实时数据申请】
+【插码离线数据申请】
+【插码实时数据升级】
+【插码离线数据升级】
+【插码实时数据开发】
+【插码离线数据开发】
+
+
+#重点工作文档
+1、开发小组工作汇总
+
+2、湘飞周报
+https://docs.qq.com/doc/DVE5ZUnZXR0dwS0dr
+
+3、重点工作
+【腾讯文档】24年1月份重点工作
+https://docs.qq.com/sheet/DVFV0ZEt6TVlPQ0pu?tab=000001
+
+4、公司计提
+【腾讯文档】插码项目组2024年全年工作计划
+https://docs.qq.com/sheet/DTFZGck55aVJUZ25y?tab=BB08J2
+
+5、埋点管理平台工作量
+https://b6dxp9qu3x.feishu.cn/sheets/PhgXstrmzhnnLHtdj3scZjyUngb?sheet=nWtxn3
+
+
+#2024-01-03
+#1、和小程序性能开会讨论数据需求,梳理需求报告:01-09 【调整topic:小程序性能调整topic-1月9日】
+    和棉花小程序一起对接 另外WT_qry,之前文档说你们传WT_qry:但是现在传的wt_qry,这个也麻烦改下.
+    1、需求梳理,这个接口是做什么用的,应用在哪些业务上面。
+    2、具体口径确认
+        渠道号,字段
+#2、51007字段口径变更:1-8 【修改口径:确定把易数采集到的device_model参数下发时放在WT_dm中,各个接口都需要改-1月9日】
+3、51007新增字段 【新增两个字段,并释放之前gio的字段-1月9日】
+4、app区域曝光增加渠道限制 【增加安卓和ios的两个渠道数据进入曝光】
+5、权益口径变更 【51006-1月11日,51010-1月18日】
+#6、添加渠道号文档 【1月4日完成编写】
+7、77006app区域曝光调整为实时,后续增加安卓和ios的渠道号 【1月9日完成迁移,和阳阳已确认】
+#8、上线部署文档 【1月3日完成】
+
+#2024-01-04
+#1、增加渠道号文档、增加字段文档编写 【俊杰负责】
+#2、seatunnel链路迁移 【林仁辉】
+#3、广东cm001数据核对 【张建超】
+#4、增加51007渠道号,实时和离线 【岑俊杰、韩钰:1月11日周四】
+#5、系统参数解析udf编写 【张建超】
+
+#2024-01-05
+#1、整理与王国飞老师的会议纪要,都干了什么活 【张建超】
+#    1、离线调度梳理  2、实时程序梳理  3、hive自定义udf函数梳理  4、kafkatopic梳理  5、hive数据表整理
+#2、seatunnel代码嵌入udf函数 【林仁辉】
+#3、分流程序调整,并完成上线报告,增加渠道号。 【韩钰:1月9日上线-APP端内GIO插码改造沟通群,调整为01-11】
+#4、51007、51006、51010渠道号核对 【岑俊杰、韩钰】
+#5、刚总工作量平铺 【林仁辉】
+6、山东实时明细数据,之前山东业支接过一次,这次是电渠要接 【韩钰】
+    注:有工单号,记得走工单流程。
+    @牛仔很忙的:张老师,山东申请接入实时分省H5明细,研发云编号,202401037977,还请安排对接。山东对接人@小固.
+    群聊:【山东】一级APP数据同步-省电渠
+#7、clickhouse脚本优化 【林仁辉】
+
+#加班:调整clickhouse脚本,将文件放置compute-1----compute-10上去处理 【林仁辉、张建超】
+
+
+#2024-01-08
+#1、渠道梳理
+    总topic和总渠道号和线上一致(文档、实时程序、kafka)
+    分接口进行实时离线渠道号对比(文档、实时离线接口里面的)
+#2、大数据一级手厅在线大文件迁移磐道【系统平台中心、网状网、大数据】
+    打通到磐道的网络
+    新开账号,大文件输出
+    成本浏览计费
+    多打几个网络,呼池、。。。
+#3、湘飞整理的会议纪要
+    迁移在线云会议纪要
+    1.  系统平台中心反馈最快1月底完成arm部分硬件资源采购,加上机房实施时间,最快2月底具备正式迁移条件,基于此背景,渠道支撑中心建议在具备正式迁移条件前,由系统平台中心于1月份提供最小化的数据加工清洗组件(kafka、hive、flink、hashdata)等资源,以便渠道支撑中心插码团队进行前期测试环境搭建,系统平台中心协助。
+    2.  系统平台中心从统一管理角度出发,建议SSL证书放在F5上,渠道支撑中心根据前期插码系统高并发承载经验,评估SSL证书对F5性能消耗较大,建议SSL证书下放在Nginx软负载主机上,后续方案待进一步沟通验证。
+    3.  系统平台中心反馈在容器中不支持大批量文件落盘,考虑到插码collect服务程序需要频繁写文件落盘,关于collect服务的容器化需进一步沟通确认。
+    4.  渠道支撑中心插码团队基于前期经验,建议使用Seatunnel组件完成消费Kafka数据集成至hive库中,系统平台中心从统一管理角度建议使用Flink程序实现该功能,两种方案的性能对比需进一步验证。
+#4、wt_av口径调整
+    --51007 和 cm001 优先取WT_av,当wt_av为空时,利用SDK自采的字段拼接。os中Android和IOS均改为小写,如android和ios
+    case when data_source_id='原生' and wt_av is null then concat('APP_',os,'_',client_version) 
+    1、不为空的wt_av是不是符合要求
+    2、o
+    wt_av
+
+    app  版本
+    版本
+    null
+
+1、wt_av == null
+2、lower(os) in ('andorid','ios') and client_version !='1.0.0' 
+concat('APP_',os,'_',client_version) 
+1、wt_av == null
+2、lower(os) in ('andorid','ios') and client_version !='1.0.0' 
+3、data_source_id in ('b95440ef47ec01fc','a1f48d9ff4f42571','b508a809cbbddd0b')
+以上条件下 concat('APP_',os,'_',client_version) 作为wt_av,否则取wt_av
+
+case when  data_source_id in ('b95440ef47ec01fc','a1f48d9ff4f42571','b508a809cbbddd0b') and attributes['WT_av'] is null and lower(os) in ('andorid','ios') and client_version !='1.0.0' then concat('APP_',os,'_',client_version)
+else attributes['WT_av'] end  as wt_av,
+
+#上线版本
+os,client_version,case when data_source_id='a1f48d9ff4f42571',ios --Android原生渠道
+then concat('APP_',lower(os),'_',client_version) --拼接自动采集版本字段
+else end as wt_av, atrr['wt_av']
+
+select
+os,client_version,case when data_source_id in ('a1f48d9ff4f42571','b508a809cbbddd0b')
+then concat('APP_',lower(os),'_',client_version)
+else attributes['WT_av'] end as wt_av, attributes['WT_av']
+from(
+select 
+str_to_map(regexp_replace(regexp_replace(decode_url(attributes),'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', ''), '^\\{"(.*)"\\}$', '$1'),'\",\"','\":\"') as attributes,
+regexp_replace(decode_url(attributes),'\\n+|\\r+|(\\n\\r)+|\\t+|\\|', '') as attributes_str,
+os,
+client_version,
+data_source_id
+from ham_jituan.ods_client_event_gio_all
+where dt = '2024-01-22'
+and data_source_id in ('ac36424553dcd3e8','b95440ef47ec01fc','90be4403373b6463','86596eaccd0d746a','8aeb9b26885f3d8b','bdf908bd8e07b82c','938892fec03694af','b00057b79cbf85af','92f9b8b42859ed1c','94bbabc3a9686c5a','ad45b0b4c1ef7446','a9ae56608c62f805','ad3f51110dccb587','ad7c40e8ac8a0983','826f8be0db16938b','9328255238347f80','a930f2f2aee66a7c','b1b4618c1d4fac12','bee33e74dc5e9b38','aa4dbfdc0e193192','af82bebd8421abec','be5412a41f02e47a','8dd990e550265ae5','9c51cb5ab2e5d077','a20bffba73210972','9ead359aaf617556','98e2f7b831f876dd','aebed7d26ca2d38a','ab6b0c4315fa502b','9ed39aa37260081e','806586170173099d','ac34c865ecb163fa','a47b49395334c862','9e488aa27d948855','a1f48d9ff4f42571','b508a809cbbddd0b','ae1f482357600a77')
+) tb1
+where attributes['area_id'] is null 
+and attributes['type'] is null
+limit 10
+;
+    
+#2024-01-09
+#1、51007离线接口数据重传:20日到28日 【岑俊杰】
+    发给白茶宋明明 抄送 薛浩哲、张静、湘飞
+#2、小程序性能问题排查 检测不到数据F:\Users\19406\Documents\xiaojianWorkerspace\vsc\问题处理\01-09小程序性能问题处理.sql
+
+#2024-01-10
+#1、流量切面业务剖析
+2、权益大屏展示数据支撑
+    整体计划要排到春节之后了
+    1)建超确认51010对应实时接口是否包含权益业务外的分省数据; 【包含app和权益的数据】
+    2)51007对应实时接口按照页面链接WT_ES like 'https://h.app.coc.10086.cn/cmcc-app/myRights/myRights.html%' or 
+    'https://h.app.coc.10086.cn/cmcc-app/app-pages/newMyRights.html%'
+    3)一级超市流量后续安排扩容  【已经完成】
+    4)需求同步
+#3、小时调度数据异常处理 -由于flink入库延迟,过了一段时间又开始写入数据
+#4、51007实时口径变更
+    wt_dm:device_modle
+    vt_sid:session
+
+#5、51001接口保障:确定接口逻辑,数据流向。 【林仁辉】
+#6、邮箱磐道迁移邮箱
+panxiangfei@cmos.chinamobile.com
+chengang@startdt.com
+wangfeng@startdt.com
+zhangjianchao@startdt.com
+
+#2024-01-11
+#1、切割脚本升级
+2、compute集群安装hdfs 停止
+3、区域曝光补数,1到3;
+#4、系统平台中心重推邮件
+    由于51007离线接口20231220到20231228账期数据重复,应业务方需求进行数据重传,现已将需求工单流转到系统平台中心,希望各位老师支撑一下我们的工作。
+
+#6、@米粒 @Hawk  刚才和@肩负重任ing  沟通了,他说现在因为插码侧在做改造,要迁移到新的插码平台,然后页面运行监控这块当前不去排查优化了,到时候直接到新的sdk中去做,但是这个排期非常久,我了解的至少要到明天4月底:那么到这个时间段内,我们的数据都会缺失无法使用
+#7、和张静沟通调整实时字段
+    2.1 字段减少,对比一下大小,给个排期;
+    2.2 点位曝光换成区域曝光;
+    2.3 探索的视频tab切换也有一直发的问题
+    2.4 pfm独立一个接口,换成实时,马博先沟通下,再给个排期;
+    2.5 et的不正常的数据,联合刘昳敏去修改;
+    2.6 51007的曝光切出来独立的接口;
+    2.7 51008下线;
+    2.8 迁移后,日文件取消;
+
+#2024-01-12
+#1、51001 接口保障
+    读取博新中间表,关联dim_dcslog_event_busi和dim_order_channel,查询输出
+2、离线代码线上存储-git上面。
+#3、埋点管理平台-不需要我进行数据支撑
+4、51008下线
+5、pfm新接入接口
+
+ 
+#2024-01-14
+#1、和王熠确定渠道
+    dcscx966fo4l7j258ag0s874n_3w7x
+    dcsg4yobzk4bgdw3x3i02ujp5_7e9m
+    这两dcsid和这张表的p码
+#2、wt_av口径确认
+#3、周四调整一下权益超市的topic5个分区调整为10个分区
+
+#2024-01-16
+1、浙江对接分省实时:@牛仔很忙的;张老师,浙江申请接入3个实时插码明细,研发云编号:,还请安排对接。浙江对接人@陈锦锦
+    没有打开承载网地址
+2、工作汇报记录
+    24年一月重点工作,周一和周三准时更新.
+    项目组工作规划
+    1、与客户的工作界面
+    地址:https://docs.qq.com/sheet/DVFV0ZEt6TVlPQ0pu?tab=000001
+    更新:周一、周三
+    2、内部管理计划-《插码项目组2024年全年工作计划》
+    地址:https://docs.qq.com/sheet/DTFZGck55aVJUZ25y?tab=kl4fhg
+    更新:每周一上午更新上周、下周
+    工作量要和https://b6dxp9qu3x.feishu.cn/sheets/shtcnMAoyKMUyYvikkHSnOvRMyc?sheet=vKbxxm
+
+
+#2024-01-17
+#1、工作量描述
+#2、51007字段减少性能测试 【岑俊杰】
+
+收货人: 张建超
+手机号码: 13948869613
+所在地区: 浙江省杭州市上城区四季青街道
+详细地址: 泛海国际中心B座
+
+#2014-01-19
+#1、51007字段置为null
+#2、seatunnnel 转化成51006、51007、51010
+3、pfm性能接口离线转为实时
+4、小程序性能字段调整---统一字段格式、下发Mobile字段
+
+
+#1、中间表切换,直接入到中间表,不用seatunnel中间表的。
+#2、cdh和seatunnel随时切换。
+3、切换想法:
+    1、当前运行的ip函数要换(cdh里面)。
+    2、ip函数换库要通知下游,切换ip库进行ip数据校验。
+    3、两个问题要分开而论。
+
+
+#2024-01-22
+1、计提
+离线接口调度方案升级:将文件生成的脚本分摊到10台机器上进行,降低airflow调度集群负载。
+77006推送脚本优化:推送至营服的的脚本由单线程改为多线程推送,降低传输时长,提升传输效率
+渠道号监控调度开发:开发对每个采集渠道的数据量监控。
+seatunnel数据传输链路升级:将seatunnel中ods层的数据处理到dwd层,生成链路。
+UA自定义函数测试:userAgent自定义udf函数开发
+埋点管理平台码值表以及工单表调度升级:将工单表和码值表的数据存储到pg数据库中,解决数据维表延迟问题
+实时程序开发:根据权益的口径进行数据处理,将数据存储到pg数据库中,为埋点管理平台做数据支撑。
+实时口径调整:根据不同的业务需求进行数据口径调整。
+插码方案和自动核查平台页面前后端开发（包括码值表管理页面、插码方案管理页面、手机号白名单管理页面）。
+
+2、故障处理:一小时后:1、昨天账期的解决时间;2、今天账期的解决方案;3、本次延迟的研讨
+
+1、昨天有5个账期,预计晚上21点进行推送
+2、今天5个账期出现问题,在晚上12点之前能恢复,不影响明天账期推送。
+
+
+一、区域曝光数据优化
+1、读写分离
+2、批次小一点
+3、flinkCDC研究一下
+4、读写队列分离
+
+二、
+1、测试报告,精确到每一个字母,都需要写上线报告。
+2、测试环境问题讨论。
+3、数据上线测试,正式环境测试需要申请。
+    线上测试申请。
+    正式上线申请。
+
+
+三、后续程序测试和上线把握三个节点:
+1、程序开发或修改前,要有程序实现思路,要发出来备案;
+2、程序开发好具备上线条件,要有测试文档,发出来备案,进行上线;
+3、程序上线后要进入观察期,要有监测文档。
+
+
+#2024-01-23
+#1、51007、77006、77011字段置为null
+#2、wt_av上线
+#3、安卓下线
+#4、考核接口不用是不是可以停掉了
+#5、51001测试上线报告
+#6、51007优化调整topic分区-通知权益和袁浩
+#7、seatunnel链路切换
+
+
+各位老师好：
+插码侧已经于于1月23日切换51007中Android原生数据源为GIO，trmnly_style字段将会变为‘a1f48d9ff4f42571’，望周知。
+
+select trmnl_style,count(1) as cnt
+from ham_jituan.dwd_client_event_gio_di
+where dt='2024-01-22'
+and trmnl_style in ('b95440ef47ec01fc','90be4403373b6463','a1f48d9ff4f42571','b508a809cbbddd0b','ae1f482357600a77')
+group by trmnl_style;
+
+trmnl_style in ('b95440ef47ec01fc','90be4403373b6463','a1f48d9ff4f42571','b508a809cbbddd0b')
+
+
+select trmnl_style,count(1) from ads_hachi_jzyy_xtb2_51007_gio_dt_hour where dt='2024-01-22' group by trmnl_style;
+
+select trmnl_style,count(1) as cnt
+from ham_jituan.dwd_client_event_gio_di
+where
+dt='2024-01-22'
+and trmnl_style in ('a1f48d9ff4f42571','b508a809cbbddd0b')
+and wt_event in ('c_perf','FlowDataCollection')
+group by trmnl_style;
+    
+
+#2024-01-24
+1、上线文档维护
+    上线日期,上线描述,操作人,上线申请,上线报告,备注
+2、seatunnel链路切换邮件人员
+    发送：张鹏杰，薛浩哲，张阳，张静，昝慧，马建，夏颖
+    抄送：贾利华，谢江涛，曹庆，潘湘飞，陈刚，马博，林仁辉
+
+各位老师好：
+为提升源端数据的推送效率，进行seatunnel数据传输链路升级，将于2024年1月24日进行线路切换，离线接口20240124账期及以后账期用新链路进行数据传输，劳烦下游数据使用方进行数据监控，望周知。
+
+各位老师好：
+为提升插码系统离线接口数据的推送效率，使用seatunnel最新技术完成数据传输链路升级，插码系统将于2024年1月24日进行升级割接，离线接口（51系列及CM系列）20240124账期及以后账期用新链路进行数据传输，劳烦下游数据使用方进行数据监控及核对，望周知。
+
+
+
+#3、接口数据量记录 【岑俊杰】
+#4、小程序性能接口切换topic
+#5、51001实时程序上线
+#6、seatnnel优化时长对比
+
+【腾讯文档】2024-01-24上线报告
+https://docs.qq.com/doc/DVEhHUHNUclF3b21S
+【腾讯文档】2024-01-24上线申请表
+https://docs.qq.com/doc/DVG9IQ1BDV3RNVWZG
+
+
+#2024-01-25
+推送时间
+账期   接口   开始时间   结束时间 
+2024-01-20,51006,2024-01-21 01:26:25,2024-01-21 01:31:24
+2024-01-20,51007,2024-01-21 01:46:09,2024-01-21 02:24:16
+2024-01-20,51010,2024-01-21 01:28:20,2024-01-21 01:41:48
+
+2024-01-21,51006,2024-01-23 00:09:42,2024-01-23 00:16:41
+2024-01-21,51007,2024-01-23 01:22:30,2024-01-23 02:21:19
+2024-01-21,51010,2024-01-23 00:09:39,2024-01-23 00:27:07
+
+2024-01-22,51006,2024-01-23 04:09:15,2024-01-23 04:16:40
+2024-01-22,51007,2024-01-23 04:10:55,2024-01-23 04:48:12
+2024-01-22,51010,2024-01-23 06:30:02,2024-01-23 06:35:51
+
+2024-01-23,51006,2024-01-24 01:50:23,2024-01-24 01:54:25
+2024-01-23,51007,2024-01-24 01:51:17,2024-01-24 02:10:53
+2024-01-23,51010,2024-01-24 01:48:33,2024-01-24 01:57:23
+
+2024-01-24,51006,2024-01-25 00:50:32,2024-01-25 00:55:02
+2024-01-24,51007,2024-01-25 01:14:06,2024-01-25 01:30:28
+2024-01-24,51010,2024-01-25 00:57:16,2024-01-25 01:06:33
+
+1、在线云迁移会议纪要
+
+
+hdfs://10.104.92.229/flink/config/happyNewYear.properties
+
+
+#2024-01-26
+1、flume接入
+    王峰:
+    jzyx-kafka-01
+
+    王峰:
+    /data/flume
+
+2、51007字段口径变更
+substr(nullif(regexp_extract(decode_url(coalesce(attributes['$query'],parse_url(attributes['WT_es'], 'QUERY'),split(attributes['WT_es'],'\\?')[1])), 'pageId=([0-9a-zA-z]+)', 1),''), 0, 19) as pageid,
+regexp_extract(decode_url(coalesce(attributes['$query'],parse_url(attributes['WT_es'], 'QUERY'),split(attributes['WT_es'],'\\?')[1])), 'sellerId=([0-9-a-zA-z]+)',1) as sellerid,
+regexp_extract(decode_url(coalesce(attributes['$query'],parse_url(attributes['WT_es'], 'QUERY'),split(attributes['WT_es'],'\\?')[1])), 'extendId=([0-9-a-zA-z+-]+)',1) as extendid,
+nullif(substr(regexp_extract(decode_url(coalesce(attributes['$query'],parse_url(attributes['WT_es'], 'QUERY'),split(attributes['WT_es'],'\\?')[1])), 'channelId=([0-9a-zA-z]+)', 1),0,12),'') as channelid,
+
+
+substr(nullif(regexp_extract(decode_url(query['WT_es']), 'pageId=([0-9a-zA-z]+)', 1),''), 0, 19) as pageid,
+regexp_extract(decode_url(query['WT_es']), 'sellerId=([0-9-a-zA-z]+)',1) as sellerid,
+regexp_extract(decode_url(query['WT_es']), 'extendId=([0-9-a-zA-z+-]+)',1) as extendid,
+nullif(substr(regexp_extract(decode_url(query['WT_es']), 'channelId=([0-9a-zA-z]+)', 1),0,12),'') as channelid,
+
+#2024-01-26
+1、seatunnel交接
+2、在线云穿越体验
+3、工作量整理
+
+4、任务量更正
+77006曝光实时程序优化：
+1.使用样例数据，进行排查；
+2.修改数据处理逻辑，增加脏数据过滤方法；
+3,增加字符转义方法，适配所有转义符号；
+4.测试77006曝光实时程序程序，校验数据；
+5.重新上线77006曝光实时程序。
+
+
+今天21:30进行接口巡检培训,培训人:韩钰
+
+#2024-01-31
+    我们提的是实时接口的需求,和离线无关,这个需求处理不了就发个邮件说明一下原因和业务方告知一下。
+
+
+#2024-01-31
+1、3月12日 pfm实时程序下线。
+2、3月19日---到3月底 离线数据下线。
+
+
+各位好，2月1日02时00分情况反馈如下：
+一、系统巡检情况：
+1、nginx集群响应正常，证书处理和转发无异常报错；
+2、shotpot+collect采集集群正常，日志新增切割正常；
+3、生产flink：目前无堆积无延迟；
+4、生产seatunnel：目前无积压；
+
+二、接口巡检
+20240131账期
+51006于00:59推送完毕；
+51007于01:58推送完毕；
+51010于01:10推送完毕；
+以上，请阅知！
+
+二、接口巡检：
+1、181aiflow的51006的调度正在运行，任务调度无报错；
+2、181aiflow的51010的调度正在运行，任务调度无报错；
+3、181airflow的51007的调度正在运行，任务调度无报错；
+
+以上，请阅知！
+
+#2024-02-04
+
+
+2024-02-09号账期
+51006于2024-02-10日00:57推送完毕
+51010于2024-02-10日01:23推送完毕
+51007于2024-02-10日01:10推送完毕
+
+
+#2024-02-18
+1、分省停止下发wt博新的数据
+
+
+#2024-02-19
+
+1、分省cm001IOS和安卓数据源切换
+各位老师好:由于SDK升级,将CM001接口中安卓和IOS的trmnl_stylea字段进行调整,映射关系如下:
+    'ANDROID'调整为'a1f48d9ff4f42571'
+    'IOS'调整为'b508a809cbbddd0b'
+
+2、在线云体验账号资源分配
+    容器穿越、hashdata性能验证、hadoop性能验证
+    在线云桌面账号申请
+
+
+lftp -u 'pagerun,2wsx3EDC' -p 22 sftp://10.250.11.243/ngpsie/tyss/pagerun/workorder/ -e "mput -c /home/udbac/KHDJY_01_10MI_*; exit;"
+lftp -u 'pagerun,1qaz2wsx' -p 22 sftp://10.250.11.138/ngpsie/tyss/pagerun/workorder -e "mput -c /home/udbac/KHDJY_01_10MI_*.csv; exit;"
+
+
+
+kafka-topics.sh \
+--zookeeper <zookeeper_address>:<zookeeper_port> \
+--alter \
+--topic <topic_name> \
+--partitions <num_partitions> \
+--replication-factor 2
+
+--bootstrap-server cache-core-1:9092,cache-core-2:9092,cache-core-3:9092,cache-core-4:9092,cache-core-5:9092
+
+
+
+kafka-topics --bootstrap-server cache-core-1:9092,cache-core-2:9092,cache-core-3:9092,cache-core-4:9092,cache-core-5:9092 --alter --topic hy-test --partitions 10 --replication-factor 2
+
+kafka-topics --zookeeper cache-core-1:9092 --alter --topic hy-test --replication-factor 2
+
+
+
+
+
+{"version":1,"partitions":[
+{"topic":"hy-test","partition":0,"replicas":[4,3]},
+{"topic":"hy-test","partition":1,"replicas":[1,0]},
+{"topic":"hy-test","partition":2,"replicas":[2,1]},
+{"topic":"hy-test","partition":3,"replicas":[3,2]},
+{"topic":"hy-test","partition":4,"replicas":[0,4]}]
+}
+
+
+kafka-reassign-partitions --zookeeper cache-core-1:2181 --execute --reassignment-json-file hayutest.json
+
+
+营服处理 
+往营服和梧桐传输数据
+接口表
+营服，网状网
+
+
+10.161.*.*
+ftp://10.109.209.100
+ftp://10.109.209.150
+http://10.1.130.37
+http://10.255.72.123
+http://10.255.72.123
+http://10.57.0.76
+http://portal.it4a.cmit.cmcc
+https://117.132.187.4
+
+禁用win10
+要禁用Windows 10的自动更新，可以采取以下几种方法：
+
+禁用Windows Update服务。
+同时按下键盘上的Win键和R键，打开运行对话框，输入命令“services.msc”后按回车。1234567
+在服务列表中找到“Windows Update”服务，双击打开。
+在“Windows Update”属性窗口中，将启动类型设置为“禁用”，然后在恢复选项中将默认的“重新启动服务”改为“无操作”。
+通过组策略编辑器关闭自动更新。
+同时按下键盘上的Win键和R键，输入命令“gpedit.msc”后按回车。
+在组策略编辑器中，依次展开“计算机配置”“管理模板”“Windows组件”“Windows更新”。
+在“配置自动更新”设置中，将其设置为“已禁用”。
+还需要找到“删除使用所有Windows更新功能的访问权限”并设置为“已启用”。12467
+禁用任务计划程序中的自动更新。
+同时按下键盘上的Win键和R键，输入命令“taskschd.msc”后按回车。127
+在任务计划程序中，依次展开“任务计划程序库”“Microsoft”“Windows”“Windows Update”，将里面的项目设置为“禁用”。
+通过这些步骤，可以有效地禁用Windows 10的自动更新功能。
+
+crt命令准备
+slave-core-5 sh /opt/xitong/hssdbac.sh slave-core-5\n unset TMOUT\n
+cache-core-5 sh /opt/xitong/hssapp.sh cache-core-5\r\n
+logs-api01   sh /opt/xitong/hssdbac.sh logs-api01\n unset TMOUT\n
+api-core-1   sh /opt/xitong/hssdbac.sh api-core-1\n unset TMOUT\n
+application-2 sh /opt/xitong/hssapp.sh application-2\r\n
+
+[Info]
+Version=7.5
+Count=17
+[QuickButton]
+Button_5=logs-ck_airflow\n[1,0]cd /home/udbac/airflow/dags/ck_airflow/\r\n
+Button_13=collector\n[1,0]bash /home/dwcenjunjie/collector_warning.sh\r\n
+Button_4=logs-api01(69)\n[1,0]/opt/xitong/hssdbac.sh logs-api01\r\n\r\n\r\n\r\n
+Button_3=newairflow(136)\n[1,0]/opt/xitong/hssdbac.sh newairflow\r\n\r\n
+Button_2=slave5conf目录\n[1,0]cd realhook_stream/conf/\r\n
+Button_1=beel\n[1,0]/opt/xitong/hssdbac.sh logs-api01\r\n\r\nbeel\r\n
+Button_0=切换到slave5\n[1,0]/opt/xitong/hssdbac.sh slave-core-5\r\n
+Button_14=差数\n[1,0]cat /home/dwcenjunjie/count.txt\r\n
+Button_15=新cache\n[1,0]/opt/xitong/hssapp.sh 10.104.85.38\r\n
+Button_16=newkfk-6\n[1,0]/opt/xitong/hssapp.sh newkfk-6\r\n
+Button_9=airflow2\n[1,0]sh /opt/xitong/hssdbac.sh 10.104.81.181\r\n\r\n
+Button_8=api-core1(85)\n[1,0]/opt/xitong/hssdbac.sh api-core-1\r\n\r\n
+Button_10=root\n[1,0]bash /opt/xitong/bak/sro.sh\r\n
+Button_7=application-2\n[1,0]/opt/xitong/hssapp.sh application-2\r\n
+Button_11=传jar-slave5\n[1,0]sh /home/dwchenjingjing/psc1.sh flink-clickhouse-1.0.121.jar slave-core-5\r\n
+Button_6=cache5\n[1,0]/opt/xitong/hssapp.sh cache-core-5\r\n
+Button_12=cp-jar\n[1,0]sh cp.sh flink-clickhouse-1.0.121.jar\r\n
+
+
+#2024-02-22
+1、2024-02-27 权益口径上线
+
+'"wt_mobile":"178*"'
+""
+
+grep -n '"wt_mobile":"178*"'
+
+select wt_mobile,aes2_function(base64Decode(wt_mobile))
+from webtrends.evevent_hi_client_imp_all
+where dt='2024-01-29'
+and match(wt_mobile, '^[0-9]{11}$') = 0
+and wt_mobile !='--'
+limit 10;
+
+
+51006-gio
+1、对('a1f48d9ff4f42571','b508a809cbbddd0b')两个渠道数据中 (mc_ev is null
+    or (instr(mc_ev,'210315_QYCS')=0 and instr(mc_ev,'210902_QYLQTYY')=0))这部分数据进行domain维表关联
+2、对('a1f48d9ff4f42571','b508a809cbbddd0b')两个渠道数据中(((instr(mc_ev,'210315_QYCS') > 0 and !mc_ev REGEXP '^210315_QYCS_\\d+$')
+            or instr(mc_ev,'210902_QYLQTYY')>0))这部分数据不关联domain维表，获取这部分全量数据
+
+51010-gio
+1、对('a1f48d9ff4f42571','b508a809cbbddd0b')两个渠道数据中 (mc_ev is null
+    or (instr(mc_ev,'210315_QYCS')=0 and instr(mc_ev,'210902_QYLQTYY')=0))这部分数据进行domain维表关联
+2、对('a1f48d9ff4f42571','b508a809cbbddd0b')两个渠道数据中(mc_ev REGEXP '^210315_QYCS_\\d+$')这部分数据不关联domain维表，获取这部分全量数据
+
+51006口径:
+    1、mc_ev = '210315_QYCS' or mc_ev REGEXP '^210315_QYCS_[a-zA-Z]+$'(例:mc_ev = '210315_QYCS' or mc_ev = '210315_QYCS_abcd')
+    2、添加中金融科技-H5
+51010口径:
+    1、mc_ev REGEXP '^210315_QYCS_\\d+$'(例:mc_ev = '210315_QYCS_1234')
+    2、删除金融科技-H5
+
+51006口径:
+    1、(instr(mc_ev,'210315_QYCS')>0 and !mc_ev REGEXP '^210315_QYCS_\\d+$') || instr(mc_ev,'210902_QYLQTYY')>0
+
+51010口径:
+    1、mc_ev REGEXP '^210315_QYCS_\\d+$'
+
+
+51006口径:
+    (instr(mc_ev,'210315_QYCS') > 0 and !mc_ev REGEXP '^210315_QYCS_\\d+$') or instr(mc_ev,'210902_QYLQTYY')>0
+51010口径:
+    mc_ev REGEXP '^210315_QYCS_\\d+$'
+
+
+51006
+非权益超市domain  1 6092
+关联权益超市      34 5746
+
+只有domain       36 1818
+
+51010
+
+只有domain      625034
+
+非权益超市domain 232077
+关联权益超市     47214
+
+                 34 5746
+
+select count(1)
+from ham.dwd_dcslog_event_gio_di tb1 
+inner join (
+select distinct
+domain,
+interface
+from ham.dim_domain_interface_di
+where interface = '51010') tb4 
+on tb1.domain=tb4.domain
+where dt = '2024-02-20'
+and hour = '12'
+and trmnl_style in ('a1f48d9ff4f42571','b508a809cbbddd0b')
+and (mc_ev is null  or (instr(mc_ev,'210315_QYCS')=0 and instr(mc_ev,'210902_QYLQTYY')=0))
+;
+
+#2024-02-26
+数据对比
+1、数据量对比-分小时、分天
+2、数据表结构,字段值
+3、取两张表的同一条数据（筛选很多条），有值的数据格式一致，内容一致。没有值的数据
+    有枚举值的字段进行分组查询，同时对字段内容和数据量进行对比（event——key）
+    没有值的数据：条件筛选不为null
+4、ip: group by 进行省份数据量对比,
+   os
+   os_version
+   browser:
+    Android|Android 9|Huawei|JAT-AL00|Chrome Mobile WebView|Chrome Mobile WebView 79
+
+    os  |  os_version  |  device_brand  |  device_model  |  browser  | browser_version
+
+
+cdp-kafka 承载网地址
+10.255.96.148:9092,10.255.99.34:9092,10.255.99.60:9092,10.255.99.36:9092,10.255.99.35:9092,10.255.96.154:9092
+10.255.96.148,10.255.99.34,10.255.99.60,10.255.99.36,10.255.99.35,10.255.96.154
+
+小程序性能字段
+
+WT.cid          WT_cid
+WT.os           WT_os
+WT.av           WT_av
+WT.ct           WT_ct
+WT.dm           WT_dm
+trmnl_style     trmnl_style 
+XY.pfm          XY_pfm
+wt_qry          WT_qry
+wt_event        WT_event
+wt_appId        WT_appId
+
+新增
+XY.xk(唯一设备标识)、XY.token(密文中pfm_token的值)、WT.mobile(用户手机号码)
+XY.xk           XY_xk       
+XY.token        XY_token
+WT.mobile       WT_mobile
+
+select  
+attributes['XY.xk'],attributes['XY.token'],attributes['XY_xk'],attributes['XY_token']
+from olap.event_all
+where
+--data_source_id='a1f48d9ff4f42571' 
+ --event_time >= '1708411978099' and event_time <= '1708412343931'
+--and  user = 'iwmEDbUJajKEVKvan9FdVw=='
+ data_source_id in ('a1f48d9ff4f42571','dcs4311adgonmgj23shb4oqyy_5q5k','b508a809cbbddd0b','90be4403373b6463')
+ and attributes['WT_event'] in ('pfm_mpxwhitescr','pfm_mpxnetpermissionerr','pfm_mpxjserr','pfm_mpxjsapireserr','pfm_mpxreqreserr','pfm_mpxed','pfm_mpxdnloaded','pfm_mpxloaded','pfm_mpxdnloadedsum')
+and attributes['WT_et']='pfm'
+and (attributes['XY.xk'] is not null or attributes['XY_xk'] is not null)
+and (attributes['XY.token'] is not null or attributes['XY_token'] is not null)
+--group by ct
+limit 1 format CSV;
+
+
+
+
+3、11到14补数
+select
+    dt,
+    ct,
+    trmnl_style,
+    count(1) pv
+from
+    (
+        select
+            dt,
+            Date(click_time) ct,
+            trmnl_style,
+            wt_co_f
+        from
+            ham_jituan.ads_hachi_jzyy_xtb2_51007_dt_hour
+        where
+            dt between '2024-02-09'
+            and '2024-02-21'
+            -- and trmnl_style = 'H5'
+        union
+        all
+        select
+            dt,
+            Date(click_time) ct,
+            trmnl_style,
+            wt_co_f
+        from
+            ham_jituan.ads_hachi_jzyy_xtb2_51007_gio_dt_hour
+        where
+            dt between '2024-02-09'
+            and '2024-02-21'
+            -- and trmnl_style in ('b95440ef47ec01fc' , 'a1f48d9ff4f42571' , 'b508a809cbbddd0b')
+    ) a
+group by
+    dt,
+    ct,
+    trmnl_style;
+
+
+awk -F ' ' '{print $1}'
+
+分省怎么访问营服的实时程序
+
+权益口径变更
+不好意思权益领取有个分支业务遗漏了，WT_mc_ev=230417_QYLQ，麻烦下次发版时加一下
+
+
+
+开发组-在线云迁移工作计划
+子项            进展               开始时间         结束时间
+容器穿越体验     培训时长3天，每天1小时  开始时间
+ 往期培训录屏和资料已统一上传至云培训平台（http://px.10085.cn/login.html），搜索“数据平台”即可找到对应“数据平台-数据开发工具”课程，培训材料在课程内“资料区”可下载。
+1、新用户建议优先学习第8章的第1、2课时。
+tips：打开视频后单击鼠标右键，点击”在新标签页中打开视频“即可对视频进行快进播放，可按需查看学习。
+@刘东升 
+
+
+
+质量纳管
+1、页面性能监控。
+2、异常数据页面告警。
+3、新页面发布是否正常。
+
+
+离线实时接口培训
+离线：对插码离线接口任务详情，离线接口开发，离线接口部署，离线接口监控等场景进行培训。
+实时：对插码实时接口任务详情，实时版本适配，实时接口部署，实时接口监控，实时代码管理等场景进行培训。
+
+
+#2024-02-29
+1、质量纳管任务排查
+2、实时离线结果验收
+3、重保报告
+https://docs.qq.com/doc/DUk9RcVV0T3dERnpD
+
+#2024-03-01
+1、xy问题定位并解决
+    将attributes的decourl去到
+select attributes
+from ham_jituan.seatunnel_newudf
+where dt = '2024-02-29'
+and hour = '14'
+and data_source_id in ('b508a809cbbddd0b','a1f48d9ff4f42571')
+and user in ('17260258360','ScY/Sx4VdwVs2Y6g0jujYQ==')
+and get_json_object(attributes , '$.WT_event') = 'P00000078657'
+;
+
+select xy
+from ham_jituan.dwd_client_event_gio_di
+where dt = '2024-02-29'
+and hour = '14'
+and trmnl_style in ('b508a809cbbddd0b','a1f48d9ff4f42571')
+and wt_mobile in ('17260258360','ScY/Sx4VdwVs2Y6g0jujYQ==')
+and wt_event = 'P00000078657'
+;
+#select extract_xy_no_lag_lat('{"WT_a_dc":"002",
+#"$index":"0","WT_markId":"1074643005","WT_event":"P00000078657",
+#"WT_prov":"250","WT_envName":"顶部框架_在线客服","WT_clientID":"EEAEC6E34F93405ABD3A5083ECE831DE",
+#"WT_plat":"000_JTAPP","WT_userBrand":"03","WT_mobile":"ScY/Sx4VdwVs2Y6g0jujYQ==","$device_type":"iPhone","WT_cid":"","WT_et":"imp","WT_loginProvince":"250",
+#"WT_es":"https://wap.js.10086.cn/vw/navbar/YHHD?ch=7x&channelId=P00000025147&yx=1046273068","WT_channel":"appstore","WT_av":"APP_ios_v9.7.0",
+#"WT_next_url":"https://wx.10086.cn/website/customerService/auth/LtAsRURFTM5lNAJGX4uKmrNAtpLEROxd?ext={"scene":"中国移动APP-省二级开发营销页面-YX-固定型入口"}",
+#"WT_city":"0513","WT_aav":"9.7.0","WT_loginCity":"0513","XY_cs_type":"2"}');
+
+2、@陈刚 @王峰 @张建超 记得3月6日下班前填写在线文档反馈自查结果--俊杰负责
+
+#2024-03-04
+1、77006离线链路下线、数据补充
+2、权益新的实时程序上线
+3、51007补数
+4、
+
+
+营服平台使用
+ 1、kfk --》 hive   hive数据库
+ 2、sql流程   
+ 3、hdfs拉取文件  接口机
+
+ hashdata  数据入库平静
+ hive hdfs上传--- 
+
+问题
+ 1、probufer解析
+ 2、flink入hdfs
+
+
+
+工作量编写
+1、标记天数
+2、测试 0.5 上线 0.5 一天
+
+开发调度查数脚本【3天】
+    1、
+    2、
+    3、
+英文名 --- 中文名 
+
+#2024-03-05
+1、去掉安卓和IOS的area_id和 type
+代码调整需要等封网结束之后上线，预计3月21日上线
+1、营服51006、51007、51010离线代码编写  岑俊杰
+2、实时数据写hashdate                   韩钰
+3、实时数据写hive                      林仁辉
+
+生产vpn
+ip：117.159.207.15:8888
+账号：19564913926
+密码：19564913926
+
+报这个错误原因有:  
+1、数据量过大资源不足：等其他的调度执行完后或者直接停掉他们，就可以了
+2、表被锁死：解锁，继续执行调度
+3、脏数据：查看那条脏数据，去除这条脏数据后执行调度
+4、datanode磁盘不足：叫峰哥
+————————————
+首先我们看主机列表以及yarn资源界面查看是否占满资源，满了的话考虑第一个原因，否则通过CDH界面查看第四个原因，都不是再去看表是否被锁死，最后查看脏数据
+
+1、hive表被锁住的解决办法
+show locks tableName;//查看表有无被锁
+show locks tableName partition(dt='',hour='');//查看分区被锁情况
+show locks tableName extended;//查看哪条SQL锁住
+unlock table tableName partition(dt='',hour='');//解锁分区
+倒着查一遍
+执行查数SQL
+执行正常调度
+https://blog.51cto.com/u_13360/6888827
+
+
+77006离线数据量
+"2024-01-24",851180735
+"2024-01-25",136489315
+"2024-01-26",205682151
+"2024-01-27",889537774
+"2024-01-28",1359274528
+"2024-01-29",1636431406
+"2024-01-30",1770447162
+"2024-01-31",1810265875
+"2024-02-10",1743794292
+"2024-02-11",1298266847
+"2024-02-12",1318031415
+"2024-02-13",1317517551
+"2024-02-14",1378460178
+"2024-02-15",1846198343
+"2024-02-16",1996944587
+"2024-02-17",1461493986
+"2024-02-18",1585878473
+"2024-02-19",1591970408
+"2024-02-20",1410637407
+"2024-02-21",1466027510
+"2024-02-22",1315868191
+"2024-02-23",1249202275
+"2024-02-24",1358110506
+"2024-02-25",1447329280
+"2024-02-26",1382629004
+"2024-02-27",1013075693
+"2024-02-28",970598789
+"2024-02-29",1267943932
+"2024-03-01",973483056
+
+#2024-03-07
+1、区域曝光重传
+2、hashdata和openGuess
+3、51007、51006、51010 
+4、51007数据重传
+5、实时方法编写
+6、wt_ed、no变name口径变更
+7、51007区域曝光原生渠道放开
+8、迁移计划表
+
+
+
+近期信息技术中心牵头，组织各省公司及相关专业单位，完成服务融通需求可行性初步评估，在评估过程中发现，存在三四级敏感数据传输风险高（移动网络故障位置等）、大体积跨集省数据传输难（家宽报障录音等）、手厅埋点采集开发时间长（初步反馈2025年）等困难，拟组织各触点需求人员、各单位数据输出专家召开专项首轮讨论沟通会，研讨确定可行方案。请组织相关同事按时参会，谢谢！
+会议地点变更： B座916（云视讯会议）
+会议 ID :122748706
+密码：939113
+
+
+告警
+flink写入hive  经验分享，代码分享
+
+
+51006接口大小 压缩：60M  * 860  = 51G  ，记录数： 619219932  未压缩：120G
+51007接口大小 压缩：140M * 3645 = 498G ，记录数：2895635724  未压缩：932G
+51010接口大小 压缩：190M * 515  = 97G  ，记录数： 401847579  未压缩：210G
+
+#2024-03-11
+
+1、数据压测
+2、组件平移
+3、问题解决
+
+流程建设
+
+hive抽取
+shell脚本处理
+
+
+51008下线
+cm001统一
+
+cdp-kafka营服注册
+
+10.255.96.148:9092,10.255.99.34:9092,10.255.99.60:9092,10.255.99.36:9092,10.255.99.35:9092,10.255.96.154:9092
+
+加载maven-jar包到mavne仓库
+mvn install:install-file -DgroupId=org.lionsoul -DartifactId=ip2region -Dversion=1.0 -Dpackaging=jar -Dfile=F:\Users\19406\Desktop\工作\2、数据开发\5、flink程序开发\1、seatunel有关的java函数\ip2region-maker-1.0.jar
+
+seatunnel最新sql
+select accountId as project_id,eventKey as event_key,stm_udf(eventTime) as event_time,eventType as event_type,stm_udf(clientTime) as client_time,anonymousUser as anonymous_user,replace(userId,'\n','') as user,userKey as user_key,session,packageName as package,attr_get_udf(attributes,'$platform') as platform,attr_get_udf(attributes,'$referrer_domain') as referrer_domain,ua_all_udf(attributes) as browser,'' as browser_version,'' as os,'' as os_version,attr_get_udf(attributes,'$client_version') as client_version,attr_get_udf(attributes,'$channel') as channel,'' as device_brand,'' as device_model,attr_get_udf(attributes,'$device_type') as device_type,attr_get_udf(attributes,'$device_orientation') as device_orientation,attr_get_udf(attributes,'$language') as language,accountId as account_id,attr_get_udf(attributes,'$domain') as domain,ip_udf(attributes,'$ip') as ip,attr_get_udf(attributes,'$user_agent') as user_agent,attr_get_udf(attributes,'$sdk_version') as sdk_version,locationLatitude as location_latitude,locationLongitude as location_longitude,attr_get_udf(attributes,'$data_source_id') as data_source_id,esId as esid,attr_remove_udf(attributes) as attributes,dt_udf(eventTime) as dt,hour_udf(eventTime) as hour from kafka_data
+
+
+
+连接磐道命令更新
+
+181上：
+lftp -u 'sftp_coc270big,SFtp_coC1!%' -p 2302 sftp://10.104.116.251/outgoing/cmccsalses_khdwb/
+69 和85：
+lftp -u 'sftp_coc270big,SFtp_coC1!%' -p 2302 sftp://10.255.136.251/outgoing/cmccsalses_khdwb/
+
+lftp -u 'sftp_coc270big,SFtp_coC1!%' -p 2302 sftp://10.255.136.251/outgoing/cmccsalses_khdwb/ -e "mget *$1*; exit;"
+
+lftp -u 'sftp_coc270,SFtp_cOc270!' -p 3968 sftp://10.252.180.2/outgoing/cmccsalses_khdwb/ -e "mget *$1*; exit;"
+
+lftp -u 'sftp_coc270,SFtp_cOc270!' -p 3968 sftp://10.252.180.2/incoming/cmccsales_270cm/  -e "mput -c *.verf; exit;" 
+
+磐道地址:10.255.136.251
+网状网地址:10.252.180.2
+
+shotpot、collecotr功能、性能测试依赖于在线营服主机到位，暂未开始@王国飞。
+flink     流处理流程已经验证并测试，ip解析函数和userAgent解析函数目前还没有办法进行适配@苏克云。
+hiveUDF   已经将现存udf上传平台并测试。
+openGauss 已经完成流处理平台已经完成数据写入，批处理平台没有访问权限，暂未处理@齐展风。
+HashData  已经完成流处理平台已经完成数据写入，批处理平台没有访问权限，暂未处理@齐展风。
+
+ods-dwd
+营服批处理平台熟悉流程
+创建正式表-先创建模型-在开发者中进行数据上线
+数据（数据表）处理-在数据开发里面做
+临时表使用-用于中间数据过度使用，相当于子查询的功能
+flink入库ods层数据校验，flink数据是否入库完成，校验任务是定时跑，后面都是依赖，验证数据的脚本放到系统平台的脚本机上，可以访问到hdfs上。
+数据传输流程：确实数据抽取，处理流程，hdfs抽取到营服机器，然后从营服集群抽送到我们的接口机。
+
+
+数据交换
+数据交换依赖于数据开发
+数据交换里不能做任何sql交换的地方
+数据交换的上线流程
+
+
+10.128.17.23:9092,
+10.128.16.144:9092,
+10.128.16.147:9092,
+10.128.16.150:9092,
+10.128.16.145:9092,
+10.128.16.151:9092,
+10.128.16.154:9092,
+10.128.16.164:9092,
+10.128.16.161:9092,
+10.128.16.159:9092
+
+10.132.25.23:9092,
+10.132.24.144:9092,
+10.132.24.147:9092,
+10.132.24.150:9092,
+10.132.24.145:9092,
+10.132.24.151:9092,
+10.132.24.154:9092,
+10.132.24.164:9092,
+10.132.24.161:9092,
+10.132.24.159:9092
+
+
+小时文件处理流程
+1、删除15天之前的数据文件。
+2、创建当前小时的文件夹
+3、数据处理
+    nproc=20  # 并行压缩进程数
+    tries=5   # 整体尝试次数
+    step0:拉取数据文件
+       while true 死循环：
+              hdfs拉取文件
+              判断拉取的文件数不为0，退出死循环，break；
+              未拉取到文件，进行重试。
+    step1:解压缩文件，转换字符集
+       while true 死循环：
+              for循环遍历每一个压缩文件
+                     while true 死循环nproc进程控制，小于进程数，继续向下执行。
+                     解压数据到new-文件名.txt
+              while true 死循环
+                     等待解压和格式转换是否完成
+                     解压完成退出循环break
+              判断解压文件和压缩文件是否一致，一致后退出 break
+              解压文件和压缩文件不一致，进行重试，执行while循环
+    step1.1:for 循环删除压缩文件。
+    step2:文件标记行号、分割
+       while true 死循环：
+              cat 所有文件 进行替换分割符和800000行一个文件分割，并进行文件分割。
+              判断接口文件是否生成，处理完成，删除原始文件并退出循环
+              重试机制
+    step3:压缩
+       while true 死循环
+              for遍历所有处理完的文件
+                     进程控制再nproc内
+                     压缩
+              while true 死循环
+                     等待所有的压缩进程结束
+              判断是否还有没有处理完的进程
+    step4:开始生成校验文件
+       
+在线云待办事项
+一、数据链路打通                                                             
+1、cdp-kafka和营服网络已开通【完成】
+2、cache-core-new和营服网络已经开通【完成】
+3、营服flink解析数据入hive的ods已经完成【完成】
+4、营服flink解析数据入hashdata
+二、数据处理
+4、ods到dwd层数据清洗【完成】
+5、小时文件生成，天合并推送。
+6、多线程推送。
+5+6、接口机dacp关联和网络打通
+三、数据性能压测
+2+3、读取cache-core-kafka处理入hive性能测试-增加网络带宽
+5、小时生成文件，天合并性能测试
+6、多线程推送性能测试-增加网络带宽
+7、hashdata入库和查询性能
+四、数据监控
+      flink入库监控---怎么监控flink入库完成。
+
+
+
+'"WT_event": "P00000054171"'
+
+
+'lftp -u sftp_coc270,SFtp_cOc270! -p 3968 sftp://10.252.180.2/incoming/cocfiles/cm-to-qycs/
+
+/fsuvzh
+/qycsyhbq
+//chama-270/
+
+eventTime   服务端时间 
+clientTime  客户端时间
+
+各位老师好，
+       插码团队开发组成员张建超，特申请于4月16日晚上加班，
+加班内容：51007实时程序优化，保障实时业务。
+加班时间：19:00-23:00。希望各位领导批准。
+谢谢！
+
+【2024-05-07】CM系列切换中间表，domain下线。
+【2024-05-09】51001-51005、智慧中台接口切换中间表。
+【2024-05-09】营服和IT CM对数、77011 数据量及数据内容。
+【2024-05-09】营服和IT 51001-51005 、智慧中台。
+【2024-05-09】51007迁至33机器。
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+【2024-05-09】
+
+
+
+【20240520-20240526】
+#1、【林仁辉】智慧中台接口文件变更-13521341526 李老师，智慧中台。
+    这个是智慧中台一位老师的联系方式，需要将智慧中台的某一个调度改变一下上传的字段名，同时要修改智慧中台的一些配置
+#2、【林仁辉】CM001北京增加字段-周四23号。
+#3、【韩钰】区域曝光增加安卓和ios渠道号-周四23号。
+#4、【张建超】实时计划梳理、topic创建。
+#5、【张建超】离线任务切换至磐道。
+#6、【张建超】flume、质量纳管程序开发。
+    平台不支持flume组件，只能用其他方案替代。插码系统预算已经不足，插码实时资源预计6月中旬之前全部下线，6月7日之前完成所有实时程序迁移。我们需要在这之前进行数据切换，望两位老师理解，共同商讨解决方案。
+
+【20240527-20240531】
+#1、营服插码hive的udf重构。
+#2、ua+ip+protobuf机密性能问题。
+#3、手机号逻辑处理
+
+
+if (vjson.containsKey("userId")){
+    String user = vjson.getString("userId");
+    if (StringUtils.isNotBlank(userKey)&& "$basic_userId".equals(userKey)) {
+        if (StringUtils.isNotBlank(user)) {
+            //去掉长度限制
+            if (user.matches(".*==$")) {
+                try {
+                    result.put("mobile", UDFUtils.decrypt(user));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                result.put("mobile", user);
+            }
+        }
+    }else {
+        result.put("mobile",user);
+    }
+}
+
++YRITOXOFU38Zq99q6q30g==
+
+【20240603-20240609】
+1、@王峰   IT云采集topic分区从100扩充到199,准备上线报告。分省kafka策略打通。
+2、@单沛丰 新增两个topic:cdp-event-gd-collect,准备好protobuf消费速率测试程序。
+#3、@张建超 申请营服流处理平台实时资源。
+#4、工作量规划-交给仁辉
+
+
+5、实时程序对数
+    1、数据量
+    51007、51006、51010  取3 -5 个渠道
+    cm取CM001、CM002、CM003分别入一个省份的数据量
+    查询数据量
+    2、数据内容
+        1、按渠道号对数据量
+        2、对字段内容
+6、监控调度
+    ods、dwd、51006、51007、51010层数据监控 
+        1、天调度 每天下午13点执行前一天的账期
+        2、表结构 
+            分区-天、小时分区，
+            1、层级【ods层、client-dwd、dcslog-dwd、51006、51007、51010】
+            2、数据量。
+
+             dt、hour、层级-【数据量-2024-06-05、00、ods层、500】
+        3、创建调度
+            每天将以上的数据插入到数据库里面。
+7、资源分配问题
+资源监控
+消费kafka速度
+
+
+
+【20240610-20240616】
+1、实时接口对数
+    51006、51007、51010内容对数
+    1、取到所有的字段
+
+
+数据量
+    1、日总数据量   ---和离线一样
+    2、分渠道数据量 ---01fc\dd0b\加上两个51006的渠道\两个51010的渠道号
+    3、接口数据量   ---所有接口、\CM001\CM002各取一个
+
+数据内容-51006、51007、51010、51006imp、51007imp
+    1、取不同渠道的相同数据和离线数据进行对比。  确定所有的不为null的字段。
+    join取值 
+        2、attrubutes直接取值的字段抽取4-5个进行分组统计。 
+        3、包含逻辑处理的的字段都要进行验证
+            4G
+            8192
+            8G
+2、hive试用一下namespace-namenode
+
+内存 10
+slot 10-15
+cpu 5
+并行度30
+
+3、宁波资源池的网络开通
+
+cn.com.bsfit.pipeace.sql.function.scalar.aggTest
+
+
+        Input input1 = new Input("a","aaa","3");
+        Input input2 = new Input("a","aaa","6");
+        Input input3 = new Input("a","aaa","2");
+        Input input4 = new Input("a","aaa","3");
+        Input input5 = new Input("a","aaa","8");
+        Input input6 = new Input("a","aaa","0");
+        List<Input> accessList = new ArrayList<>();
+        accessList.add(input1);
+        accessList.add(input2);
+        accessList.add(input3);
+        accessList.add(input4);
+        accessList.add(input5);
+        accessList.add(input6);
+        System.out.println(accessList.toString());
+        accessList.sort(Comparator.comparing(Input::getCid).thenComparing(Input::getDcsdat));
+        System.out.println(accessList.toString());
+
+【20240617-20240623】
+1、实时字段填充
+wt_dcsref
+2、增加渠道号周二
+快应用小程序 b234b8d600b50f9f  51006
+3、增加曝光数据条件
+
+
+【20240624-20240630】
+1、kafka
+
+【20240701-20240707】
+1、event_key in ('imp');
+#2、增加一个51006渠道号-快应用小程序  b234b8d600b50f9f;
+   增加一个51007渠道号-鸿蒙原生     b0fa8d7efc1cddd1 
+gio-basicflow-b234b8d600b50f9f
+gio-basicflow-b0fa8d7efc1cddd1
+b234b8d600b50f9f
+b0fa8d7efc1cddd1
+3、曝光口径确认;
+#4、小程序性能改造---增加os和设备名、增加一个event=pfm_mpxtimesum
+
+
+由于联邦主机host配置问题导致实时程序频繁失败,实时数据核对进度延迟,实时接口无法完成迁移,此类问题请帮忙重点关注一下。
+
+首页https://h.app.coc.10086.cn/cmcc-app/app-pages/home.html
+商城https://h.app.coc.10086.cn/cmcc-app/mobile/mobileChannelNews.html
+余量查询https://h.app.coc.10086.cn/cmcc-app/setMealSurplus/setMealSurplusNew.html
+
+角色名称：发布管理-渠道支撑中心（大数据开发）-上线实施 ;适用范围：在线人员,合作伙伴 ; 角色描述：新发布管理中上线实施环节工单处理;
+
+邮箱
+
+发送：
+zhangjianchao@startdt.com
+抄送：
+panxiangfei@cmos.chinamobile.com
+chengang@startdt.com
+
+
+旧地址 
+新地址
+涉及到的任务
+随时具备个截图就
+旧机器
+
+谢江涛
+见信好：
+    应中心规划要求，插码采集系统正在进行从原IT呼池机房整体回迁至在线江苏淮安机房，目前插码实时程序已经基于营服流处理平台完成全部开发与数据核对工作，并稳定运行半个月，具备下游接入条件，目前所有分省已完成重新接入，主要还剩一级业务相关应用未完成重新接入，以下为流处理平台上新老Kafka集群及实时任务的迁移信息，期望在7月15日-7月19日完成迁移。以便IT机房硬件资源下线！
+        插码kafka实时程序迁移
+        1、集群信息
+        kafka老集群名称:
+            一级电渠实时数据推送(新)
+        kafka老集群地址:
+            10.255.96.130:9092,
+            10.255.96.100:9092,
+            10.255.96.116:9092,
+            10.255.96.137:9092,
+            10.255.96.119:9092,
+        kafka新集群名称:
+            cache-kafka-zx
+        kafka新集群地址:
+            kafka1.cdp-cache.core.cmos:9092,
+            kafka2.cdp-cache.core.cmos:9092,
+            kafka3.cdp-cache.core.cmos:9092,
+            kafka4.cdp-cache.core.cmos:9092,
+            kafka5.cdp-cache.core.cmos:9092,
+            kafka6.cdp-cache.core.cmos:9092,
+
+        2、任务信息
+            51006实时程序
+            51007实时程序
+            51010实时程序
+            77006实时程序(51007区域曝光)
+            77017实时程序(51006区域曝光)
+
+
+1、曝光方案
+https://wfufnh2442.feishu.cn/docx/JhGadXyuNo8XcGxe3pqc0tIonIc
+2、h5插码方案
+https://wfufnh2442.feishu.cn/docx/DcW0dJJaXoix7nxDEUHcBcexnth
+
+3、集运中心哈池业务数据接口规范
+https://www.kdocs.cn/l/cgpnkKQSsxEa
+
+
+
+4、工作需求分类
+https://docs.qq.com/sheet/DYW5kemtvRldhZWhR?tab=BB08J2&u=a0359979fffb42a490ad9a1f45de3fb2
+
+
+5、【腾讯文档】易数插码项目-程序员日常执行需求汇总
+https://docs.qq.com/sheet/DVFJnWlZoYVVzR3FG?tab=BB08J2
+
+
+
+客户轨迹
+夏老师日志整理
+https://vnopj6kbg9.feishu.cn/docx/YwA4dfafxoIA6lxByCCcZBg0nje?from=from_copylink
+
+
+进度反馈表
+https://www.kdocs.cn/l/ck4X1uHco4ni
+
+页面改造
+https://docs.qq.com/sheet/DYWtsTm9ndGhqTGxm?tab=BB08J2&u=7560457c10974f4caf55395c07d5b79c
+
+5月份工作预估
+https://docs.qq.com/sheet/DUkxhdXdjZmNMQlBv?tab=BB08J4
+
+
+【腾讯文档】插码工作量上报须知0518
+https://docs.qq.com/doc/DVENiWFlVWEJNbWFC
+
+
+易数插码项目-程序员日常执行需求汇总 
+https://docs.qq.com/sheet/DVFJnWlZoYVVzR3FG?tab=BB08J2
+
+
+系统架构图
+https://www.processon.com/v/64a637bcff46ef1fd028a1bb
+
+更新完成-岑俊杰
+https://www.processon.com/v/64ad246ad307b47f516d1930
+
+中移白皮书
+https://shimo.im/docs/1lq7MNWZawU72KAe/
+
+
+客户轨迹总结
+【腾讯文档】客户轨迹工具专项汇报
+https://docs.qq.com/doc/DVGtGekd1V05YdGtT
+
+【腾讯文档】分省数据接口人&进度
+https://docs.qq.com/sheet/DSm9SS21vbllmdXJU?tab=c80fjf
+
+
+客户轨迹流程图
+https://www.processon.com/v/64ccc19919ad082f10a29ddb
+
+app小程序插码方案：https://docs.qq.com/doc/DYVlmU0xNaUlwcWx1
+插码监控：https://nksk96okz4.feishu.cn/docx/doxcnm9nVc83h4gA0cmpNCxY8oh 
+
+
+
+
+     window_end      |   page   | uv  | load_avg | access_avg 
+---------------------+----------+-----+----------+------------
+ 2024-06-26 14:10:00 | 商城     |   3 |     1168 |          0
+ --2024-06-26 14:10:00 | 已订业务 |   1 |        0 |          0
+ 2024-06-26 14:10:00 | 我的     |  38 |        3 |        289
+ --2024-06-26 14:10:00 | 探索     |   1 |        0 |          0
+ 2024-06-26 14:10:00 | 流量查询 | 486 |     1150 |          0
+ --2024-06-26 14:10:00 | 账单查询 |   2 |        0 |          0
+ --2024-06-26 14:10:00 | 首页     |  33 |     1100 |          0
+
+ 套餐余量
+ 首页
+ 账单查询
+ 探索
+ 已订业务
+
+
+背景-陈刚
+测试方案-单沛丰
+实时离线改造方案-张建超
+割接计划-陈刚
+
+邮件恢复滕斐斐
+给李雯昕发送申请工单
+
+
+各位老师好，基于营服流处理平台已经完成51006、51007、51010实时接口数据核对及迁移工作，稳定运行半个月，请放心接入。预计7月19日到7月24期间进行IT云老集群实时程序下线，望各位老师知悉。
+
+
+会议纪要
+会议主题：插码实时接口51系列迁移割接
+会议时间：2024年7月18日 9点-10点
+参会人与：李雯昕、程朋祥、苏朋、薛依卓、张显彬、陈翔、王健
+会议内容：
+
+    1、确定本次割接的内容。
+        kafka老集群名称:
+            一级电渠实时数据推送(新)
+        kafka老集群地址:
+            10.255.96.130:9092,
+            10.255.96.100:9092,
+            10.255.96.116:9092,
+            10.255.96.137:9092,
+            10.255.96.119:9092
+        kafka新集群名称:
+            cache-kafka-zx
+        kafka新集群地址:
+            kafka1.cdp-cache.core.cmos:9092,
+            kafka2.cdp-cache.core.cmos:9092,
+            kafka3.cdp-cache.core.cmos:9092,
+            kafka4.cdp-cache.core.cmos:9092,
+            kafka5.cdp-cache.core.cmos:9092,
+            kafka6.cdp-cache.core.cmos:9092
+        任务信息
+            51006实时程序
+            51007实时程序
+            51010实时程序
+            77006实时程序(51007区域曝光)
+            77017实时程序(51006区域曝光)
+    2、新集群字段映射关系
+        线上链接如下，详情见附件。
+        https://docs.qq.com/sheet/DVFpDR2FqZ29FRGtC?tab=6v4m4r
+    3、割接排期
+        权益部门51系列实时接口已经完成割接。
+        app开发中心中心预计7月18日到7月24日内完成割接，具体排期请反馈。
+        系统平台中心预计7月23日凌晨完成77006和77017实时接口割接,7月25日前完成51006、51007、51010实时程序割接。
+
+
+5、shell命令
+    查看linux文件目录的大小和文件夹包含的文件数
+统计总数大小
+du -sh xmldb/
+du -sm * | sort -nr //统计当前目录大小 并安大小 排序 超级有用
+du -sk * | sort -n
+du -sk * | grep guojf //看一个人的大小
+du -ah . 查看所有文件包括隐藏文件
+
+--avg小程序启动时-4G网关取号调用
+select round(percentile_approx((b.time-a.time),0.5,999),2) as delta 
+from(SELECT  session_id
+       ,unix_timestamp(MIN(daytime)) time
+FROM dwd_bytedance_event_hi 
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220624_DYXCXB_JHY_QD'
+GROUP BY  session_id)a 
+inner join
+(SELECT  session_id
+       ,unix_timestamp(MIN(daytime)) time
+FROM dwd_bytedance_event_hi
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220624_DYXCXB_JHY_4GWGQH'
+GROUP BY  session_id)b
+on a.session_id=b.session_id ;
+
+--avg4G网关取号调用-推荐逻辑调用
+select round(percentile_approx((b.time-a.time),0.5,999),2) as delta 
+from(SELECT  session_id
+       ,unix_timestamp(MIN(daytime)) time
+FROM dwd_bytedance_event_hi 
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220624_DYXCXB_JHY_4GWGQH'
+GROUP BY  session_id)a 
+inner join
+(SELECT  session_id
+       ,unix_timestamp(MIN(daytime)) time
+FROM dwd_bytedance_event_hi
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220624_DYXCXB_JHY_TJLJ'
+GROUP BY  session_id)b
+on a.session_id=b.session_id ;
+
+
+--avg推荐逻辑调用-推荐逻辑推荐成功
+select round(percentile_approx((b.time-a.time),0.5,999),10) as delta 
+from(SELECT  session_id
+       ,MIN(dcsdat) time
+FROM dwd_bytedance_event_hi 
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220624_DYXCXB_JHY_TJLJ'
+GROUP BY  session_id)a 
+inner join
+(SELECT  session_id
+       ,MIN(dcsdat) time
+FROM dwd_bytedance_event_hi
+WHERE dt in ('2022-07-02','2022-07-03','2022-07-04','2022-07-05')
+AND event = '220630_DYXCXB_JHY_TJLJCG'
+GROUP BY  session_id)b
+on a.session_id=b.session_id ;
+
+猛爷汇报分省应用
+分省插码数据应用
+截止到2024年7月份，插码采集系统数据下发覆盖19个省份。包括：北京、上海、广东、江苏、四川及河南等。
+采集数据涉及手厅原生、小程序及H5三种业务形态，主要包含省份编码、地市编码、事件码、事件类型、营销编码、页面浏览时长等信息。
+分省数据主要运用在如下场景：第一，江苏使用插码数据应用于性能大屏监控，采集客户端CPU、内存、电量、页面打开时长等性能参数信息，通过对这些参数的监控，优化页面打开加载时长，有效提升用户体验。第二，上海使用采集的插码数据，实现报表可视化自助查询，解决人力成本高周期长和运营工具不灵活的问题。并通过插码手厅原生接口数据，构建“点击客户标签"，从而扩大”流量倍享礼包"活动推荐量。第三，河南使用插码数据分析用户业务退订原因，提取相关点位插码返回内容，深入分析用户退订各个业务的原因及分布，持续优化运营策略。第四，福建使用插码精准捕捉用户办理过程中的失败信息，通过精细化的数据运营，不仅优化用户体验，还显著提高了业务流程的转化。
+综上所述，通过插码系统采集数据，可以进行采集端全链路用户行为分析，助力于分省数据运营，提升在线用户体验。
+
+
+
+【20240722-20240726】
+#1、实时程序迁移【程朋祥、星空】
+2、联邦主机迁移【齐展锋】
+    模型中，周期类型和更新周期有什么区别
+    整理所有模型信息 32个
+    1、迁移方案。
+    2、保证程序没有变动。
+    3、设计到业务场景比较广、程序比较多。
+    4、表名、权限。
+    5、足够时间测试（一个月），不能急。
+
+    表建好，重跑。
+    不跑最好
+#3、质量纳管稳定性改造
+#4、权益超市问题排查。
+#5、51007增加当前时间的时间戳。-8月6日
+
+
+【20240729-20240726】
+1、版本管理平台版本号方案，关联维表
+
+select sdk_version,data_source_id,count(1)
+from TB_ODS_DO_CMCS_EVENT_ALL_HOUR_TRANSITION
+where statis_date='20240727'
+and data_source_id in ()；
+group by sdk_version,data_source_id
+
+版本 data_source_id  描述 终端类型 数据量
+
+2、质量纳管接口表改造
+    天调度写入，分钟生成文件。
+3、centOs镜像下载
+    https://developer.aliyun.com/mirror/
+4、系统平台中心实时整改
+    国飞老师、舒克老师，由于周末两天实时程序频繁失败，已经严重影响到生产数据的稳定性，业务方也非常重视这件事情，对我们插码数据稳定性的要求一再提高。营服平台这边是否能及时监控到集群的运行情况并及时作出调整，对于机器稳定性和集群稳定性是否有更好的保障方案，以后避免此类事情的发生。
+5、一级flume数据下发
+    1、下游相通过一个组件去接数据 流处理平台的ftp-sink。
+    2、下游和我们不在同一个机房。
+    3、你需要去了解清楚，怎么解决两个机房间如何去进行数据传输，确定好是否需要开通网络，如果需要就去找沛丰。
+    4、结果就是通过流处理平台把数据传输给下游（这个方案走不通可以和他们去商讨别的方案）。
+
+    流程：
+    1、确定是否能通过ftp组件把数据传给下游。
+    2、传输需求进行哪些操作（开策略，提供机房信息等等）。
+    3、协调沛丰把上下游的链路打通
+6、sdk埋点管理平台
+    原生       按照终端、SDK版本号、APP版本号 进行取数
+        Android sdk_version app版本号
+    小程序和H5  按照部门、渠道、SDK版本号进行取数
+        app运营中心 微信小程序 sdk_version
+
+【20240805-20240809】
+1、会议纪要
+    1、8月5日重启集群，任务失败40分钟。8月13日重启namenode，需要提前做好hdfs路径高可用适配。
+    4个namenode重启,重启集群,降低负载---需要沛丰修改hdfs路径,调整为高可用方式。
+    
+2、插码数据监控
+    ods层数据总量
+    51007
+    51006
+    51010
+
+3、hadoop联邦模式
+Hadoop联邦模式是一种分布式系统基础架构，由Apache基金会开发，旨在更好地利用数据资源，提高系统的可扩展性和可用性，实现更灵活的数据处理和管理。这种模式允许在一个HDFS集群中存在多个NameNode同时对外提供服务，这些NameNode分管一部分目录（水平切分），彼此之间相互隔离，但共享底层的DataNode存储资源。这种设计解决了单个NameNode资源使用达到上限和负载能力过高的问题，限制了HDFS的性能。在Hadoop联邦模式中，文件的元数据放在NameNode上，而数据本身存储在DataNode上。HDFS（Hadoop Distributed File System）是Hadoop的核心组件之一，它实现了一个分布式文件系统，其中HDFS有高容错性的特点，设计用来部署在低成本的硬件上，提供高吞吐量来访问应用程序的数据，适合处理超大数据集的应用程序。HDFS放宽了POSIX的要求，可以以流的形式访问文件系统中的数据。Hadoop的框架最核心的设计包括HDFS和MapReduce，其中HDFS为海量数据提供了存储，而MapReduce则为海量数据提供了计算能力1。
+
+Hadoop联邦模式的实施通过允许集群中存在多个NameNode来提高系统的可扩展性和灵活性。每个NameNode分管一部分目录，这样当某个NameNode的资源使用达到上限时，可以通过增加更多的NameNode来扩展系统的处理能力。这种设计不仅提高了系统的并发处理能力，还使得系统能够更好地适应不断增长的数据处理需求。此外，通过共享底层的DataNode存储资源，联邦模式有效地利用了硬件资源，降低了成本，同时保证了数据的高可用性和容错性23。
+
+
+1、这种模式允许在一个HDFS集群中存在多个NameNode同时对外提供服务，这些NameNode分管一部分目录（水平切分），彼此之间相互隔离，但共享底层的DataNode存储资源。这种设计解决了单个NameNode资源使用达到上限和负载能力过高的问题，限制了HDFS的性能。
+
+2、每个NameNode分管一部分目录，这样当某个NameNode的资源使用达到上限时，可以通过增加更多的NameNode来扩展系统的处理能力。这种设计不仅提高了系统的并发处理能力，还使得系统能够更好地适应不断增长的数据处理需求。
+
+
+1、架构图
+2、优劣点，列表
+3、方案
+4、分工
+
+
+联邦模式
+数据质量处理方案
+
+
+【20240805-20240809】
+#1、稽核平台项目部署、接口文档。【祝俊晖】
+#2、插码管理平台计划表。【赵雯鑫】
+3、批处理平台告警。【林仁辉】
+    失败告警-每一个调度都要加
+    数据量告警
+        1、正常每日推送-天调度，依赖【接口层】
+        字段值：接口【51006、51007、51010】、帐期、插入时间、数据量、日同比、月同比
+        2、数据波动值，异常告警依赖【dwd】
+        字段值：接口【dcslog、client】、小时帐期、插入时间、数据量、--、月同比。
+        异常条件，月同比少于80%。
+
+        接口、帐期、插入时间、当日数据量、
+        、   、   、       前日数据量、
+                          前月数据量、
+        select 接口、帐期、插入时间、当日数据量、
+        from a
+        
+    推送延迟告警
+
+4、实时topickafka集群切换。【韩钰】
+#5、51007时间戳字段增加,离线实时。【韩钰、任辉】
+#6、cm001区域曝光数据剔除，资源优化。
+
+
+【20240822】会议纪要
+1、新增渠道号、将51006轻载h5拆到51007
+2、wt_sr、上一条地址referri_page、wt_ct。
+3、51007字段采集对应，字段处理逻辑、中间吧处理规则 采集字段-处理逻辑-对应字段。
+4、普通曝光和区域曝光字段区分字段。
+
+sesiong m每次进页面都会变（30分钟失效）
+cookie 同H5页面不会变（清缓存失效）
+token 新增
+
+
+【20240825-20240831】
+1、api-core kafka集群部署
+kafka1.cdp-api.core.cmos:9092,kafka2.cdp-api.core.cmos:9092,kafka3.cdp-api.core.cmos:9092,kafka4.cdp-api.core.cmos:9092,kafka5.cdp-api.core.cmos:9092
+2、实时topickafka集群切换。【韩钰】
+
+
+数据处理平台Q&A
+
+https://kdocs.cn/l/ce0i2RoO6KEc
+
+插码离线口径梳理
+【腾讯文档】插码各接口数据口径汇总
+https://docs.qq.com/sheet/DUm5BVVJTZ2NWQUlj?tab=BB08J2
+
+1、新清洗字段：共8个字段 
+序号 字段名称 字段中文名称 
+1 WT_page_type 页面功能类型 
+2 WT_page_type_id 页面功能类型id 
+--3 title 页面标题 $title
+4 WT_token_id 客户端的登录token_id 
+5 WT_area_type_1 区域一级类型 
+6 WT_area_name 区域名称（弹窗名称） 
+7 WT_area_type_2 区域二级类型 
+--8 dcsdat 操作时间（时间戳格式） client_time
+2、有3个字段需要优化一下清洗规则：
+变更字段 
+序号 字段名称 字段中文名称 变更内容 
+1 WT_aav 客户端版本号 解析出来，不置空 ,恢复下发 
+2 WT_et 事件类型 不做填充 ,只取attributes
+3 WT_ti 页面名称 不做填充 ,只取attributes
+
+【202400902-202408913】
+#1、增加渠道号51007实时离线、77006实时【林仁辉、韩钰】。
+2、新增51007字段【林仁辉，韩钰】。
+9、51006中全网活动插码数据（datasourceid=913e6dc4915d470c）切换至51007
+3、77006新增字段。
+202409035816：77006接口新增清洗字段。
+202408294908：51007接口新增清洗字段。
+离线数据倒灌
+#4、接口告警上线【林仁辉】。
+5、切换topic集群【韩钰】。
+6、我们需要把曝光数据根据wt_et=imp清洗到77006里，不发往51007里了【张建超】
+7、然后性能的数据根据wt_et=pfm拆分出来，新做一个接口，我们怎么提需求啊。
+8、CM001增加鸿蒙渠道
+
+#10、需要将这个渠道的数据落一份到接口表里面。
+#12、kafka信息收集
+    由于下游业务方所消费的cache-kafka集群中的topic数据存储时长为4小时，数据存储时长过短可能导致下游消费程序异常造成数据丢失，因此需要将一部分业务迁移至API-kafka集群，延长数据存储时长来保证下游业务数据的稳定性。
+    超过1万TPS的保存8个小时；低于1万TPS的保存12个小时 
+    cdp-kafka  32% 
+    cachekafka  25% 
+    collectorkafka 10%
+#13、flink集群网卡修复
+14、超时告警
+24年工作总结
+完成21个离线程序及26个实时程序迁移。
+打造线上渠道行为分析系统，构建数据看板、自助分析、实时商机三大能力。
+现阶段正在做APP插码数据治理，在治理的过程中，发现触点的主要信息，依赖于配置的工单或者P码的名称，和前端展示信息不一致，不便于用户数据的筛选，而且目前正在进行行为系统的上线推广，需要前端信息的采集，现有的插码字段不满足数据的需求，需要新增字段，承载这些关键信息
+目前APP营销自研页面与权益等非自研页面共用同一套dataSourceId，且现有营销自研页面的插码数据存在pageid、P码等关键字段为空、商品信息字段缺失等问题。为提升插码数据质量，推广使用行为分析系统自助查询，支撑运营精细化分析数据需求，轻渠道数据侧已制定新版插码规范，为便于区分APP营销自研H5/小程序页面插码数据，特申请新增2个dataSourceId，并将插码数据同步至51007/77006接口。
+
+本年度完成21个离线程序及26个实时程序迁移至在线云平台，46次程序升级及维护，进行27次程序上线。
+配合App侧进行数据治理及数据质量把控，推广使用行为分析系统自助查询，支撑运营精细化分析数据需求，同时配合推行新版插码规范，以促进数据完整性和准确性。
+为线上渠道行为分析系统提供明细数据，构建数据看板、自助分析、实时商机三大能力。
+
+离线迁移21实时迁移26
+
+数据分级管理：根据数据的重要性进行分类，从采集前端进行打标，将采集数据分为核心数据、重要数据和一般数据，确保资源优先用于处理那些对业务影响最大的数据。
+系统负载监控：在不影响插码系统性能的前提下，合理设定插码数据采集的时间和频率，避免因为数据采集过程中的大量请求导致系统负载过高，影响用户体验或系统稳定性。
+实时异常检测与剔除：利用平时积累的业务规则，实现实时监控数据流，采用flink做数据清洗，及时发现和移除不符合预期的数据，将其存入clickhouse数据库，减少错误数据对后续分析的影响。
+异常数据分析报告：对于检测到的异常数据，需要形成详细的分析报告，包括但不限于异常类型、发生频率、可能的原因等信息，为后续的数据治理提供依据。
+跨部门协作：数据质量治理不是单一插码项目组的工作，需要和业务部门以及数据分析团队等多方面的合作，共同识别问题根源并提出改进措施。
+
+冯胜材料
+本项目内部多个系统模块之间采用 rpc 接口调用方式来实现系统间的同步请求响应，通信只在内网局域网中传输，减少了信息安全及信息泄露风险。本项目还依赖了-些外部系统，如一级卡券中心、全网权益平台、一级能开、省专系统等，与外部平台进行通信时采用 https 协议，入访和出访均要经过网关层，网关层进行来源 ip_的合法性验证、权限验证、请求转发等。
+
+本项目是一个复杂的大数据处理系统。将多种SDK（如Cube小程序SDK、微信小程序SDK等）所采集到的数据通过F5负载均衡器连接到Nginx服务器，然后数据流经Collector进入生产系统。生产系统分为批处理系统和流处理系统两部分。批处理系统中，数据从ODS经过计算处理进入DWD层，最后将处理后的数据接入到ADS层，同时也会流入OpenGauss套件。在流处理系统中，将实时数据接入到flink计算集群，计算后通过Kafka组件进行数据传输。经过处理后，数据会分别以离线数据输出和实时数据输出的形式提供给业务方使用。
+整个系统设计旨在高效地管理和处理大量数据，满足不同场景下的数据接入需求。
+
+
+当然可以。以下是经过润色后的描述：
+
+---
+
+本项目构建了一个高度集成且灵活的大数据处理系统。该系统通过多种SDK（如Cube小程序SDK、微信小程序SDK等）来收集多样化来源的数据，随后这些数据通过F5负载均衡器转发至Nginx服务器，确保了数据采集过程的可靠性和高效性。接着，数据流经Collector进入我们的核心生产系统，该系统进一步细分为批处理和流处理两大模块。
+在批处理模块中，数据首先被存储在操作数据层（ODS），随后通过一系列复杂的计算处理流程，转化为更高级别的数据明细层（DWD），最后将处理后的数据接入到应用数据层（ADS）。在流处理模块中，实时数据被直接导入到基于Flink构建的实时计算集群，实现数据的即时处理与分析。处理结果通过Kafka组件进行高效的传输与分发，保证了下游系统能够及时接收到最新处理的数据。最终，数据会分别以离线数据输出和实时数据输出的形式提供给业务方使用。满足其对数据的多样化需求。整体而言，这套系统的设计目标在于提供一个既能高效管理海量数据又能适应多变业务场景的解决方案。
+
+---
+
+本项目构建了在线用户行为大数据采集及处理系统。该系统通过多种SDK（如Cube小程序SDK、微信小程序SDK等）采集数据，随后这些数据通过F5负载均衡器转发至Nginx服务器，确保了数据采集过程的可靠性和高效性。数据流经Collector采集集群进入核心生产系统，该系统进一步细分为批处理和流处理两大模块。
+在批处理模块中，数据首先被存储在操作数据层（ODS），随后通过一系列复杂的计算处理流程，转化为更高级别的数据明细层（DWD），最后将处理后的数据接入到应用数据层（ADS）。在流处理模块中，实时数据被直接导入到基于Flink构建的实时计算集群，实现数据的即时处理与分析。处理结果通过Kafka组件进行高效的传输与分发，保证了下游系统能够及时接收到最新处理的数据。最终，数据会分别以离线数据输出和实时数据输出的形式提供给APP、权益、互联网及分省等业务方使用。
+
+
+【20240916-20240922】
+#1、新增51007字段【林仁辉，韩钰】。
+#2、51006中全网活动插码数据（datasourceid=913e6dc4915d470c）切换至51007
+3、77006新增字段。
+#202409035816：77006接口新增清洗字段。
+#202408294908：51007接口新增清洗字段。
+4、切换topic集群【韩钰】。
+5、我们需要把曝光数据根据wt_et=imp清洗到77006里，不发往51007里了。【张建超】
+6、然后性能的数据根据wt_et=pfm拆分出来，新做一个接口，我们怎么提需求啊。【张建超】
+7、CM001增加鸿蒙渠道。【林仁辉】
+8、超时告警【林仁辉】:ads层前加一个告警，超过5个小时就打电话
+9、IT云账号登录
+
+
+
+1 wt_page_type 页面功能类型 
+2 wt_page_type_id 页面功能类型id 
+3 title 页面标题 $title
+4 wt_token_id 客户端的登录token_id 
+5 wt_area_type_1 区域一级类型 
+6 wt_area_name 区域名称（弹窗名称） 
+7 wt_area_type_2 区域二级类型 
+8 dcsdat 操作时间（时间戳格式） client_time
+
+【20240923-20240929】
+
+
+客户端、小程序
+分级规划：
+原生、h5（分省、一级、专业公司）、小程序（名字细化）
+从业务发起
+
+开发中的插码流程管理工具与线上销售平台的集成方案
+
+
+
+
+
+
+【20241009-20241012】
+
+#1、【插码流程平台集成到线上销售平台】
+    1、网络打通
+    2、后端接口访问
+#2、【国庆之后】
+老师，我是数据组凌美杰，我们想把51006中直播短视频的数据直接接到51007中，到时候用51007一个表就可以了，这样可以吗，51006的trmnl_style( data_source_id)="9f8770a1dbd09047"，麻烦你这边评估下看可以不
+#3、kafka迁移
+#4、cm程序延迟问题
+5、曝光程序优化
+#6、51006扩增topic，51007和77006更换集群
+
+51007 
+陈光亮：wangrongrong2,
+张利君：liuzhongming,
+卞连生：peizeguang,fangpengcheng,
+权益：wangjian4,
+系统平台中心yuanhao,
+王纪超  数据智能中心|数据分析
+
+51007_imp
+宋利君：liuzhongming,
+系统平台中心：liwenxin
+51006
+卞连生：fangpengcheng,peizeguang
+张利君：liuzhongming,
+系统平台中心：songwenlong,
+陈光亮、蔡良羽：wangrongrong2
+
+    各位老师好，
+        由于51006topic数据增加，为了保障下游处理数据没有积压，计划10月15日将营服流处理平台cache-kafka-zx集群中apflow-cm51006topic由9个分区扩充到18个分区，操作前会通知大家重启，请各位老师提前做好程序适配，望悉知。
+
+    各位老师好：
+        为了更好的保障下游实时数据的稳定性，延长数据存储时长，我们计划将51007及77006实时接口topic由cache-kafka-zx集群迁移至api-kafka-zx集群，topic名称不变。两个kafka集群实时数据于10月14日-10月17日期间并行，于10月17日下午15点下线cache-kafka-zx集群topic中的数据，请各位老师及时联系我开通新集群的权限并进行程序改造。集群主要信息如下。
+
+        现有集群：
+            cache-kafka-zx：apflow-51007、apflow-51007-imp
+        迁移集群：
+            api-kafka-zx：  apflow-51007、apflow-51007-imp
+
+为了更好地进行SDK管理及监控，提供各版本SDK的详细信息以及用户使用情况，生成数据报表，进行数据监控。
+
+
+
+你们传的字段是attrubutes里面的userid，不是手机号字段。正常上报了，但是没有下发。
+
+
+
+
+
+
+中国移动APP实时行为轨迹数据的融通，在面向一线生产方面，价值在逐渐显现，APP行为轨迹的展示可以帮助坐席判断客户来电诉求，做好营销服务，避免客户重复描述、回捞商机等。
+
+为更好的满足运营分析需求，提升支撑的敏捷性，现打造线上渠道行为分析系统，以数据驱动业务，辅助提升业务决策效率，提高业务转化效果。
+
+
+protobuf格式数据传输
+Protocol Buffers（protobuf）是Google开发的一种与语言无关、平台无关的可扩展机制，用于序列化结构化数据。有一下优势：1、高效性：序列化后数据小，解析快。2、性能高：直接操作二进制数据，没有额外的文本解析开销，节省数据解析性能。3、安全性由于其二进制特性，难以被非授权方轻易读取或篡改内容。
+
+
+
+
+
+
+1. **高效性**：protobuf在编码时非常紧凑，相比XML等其他格式，其序列化后的数据大小通常更小，这使得它在网络传输中更加高效。解析速度也相对较快。
+
+2. **跨语言支持**：protobuf支持多种编程语言，包括但不限于C++、Java、Python、Go、Ruby等。这意味着你可以在不同的系统之间轻松地交换数据，而无需担心语言间的兼容性问题。
+
+3. **向前和向后兼容**：通过使用选项`optional`, `required`和`repeated`以及适当的版本控制策略，可以实现协议的平滑升级，同时保持对旧版本的支持。新增字段默认值设置为未定义，不会破坏现有代码；移除字段则需要小心处理以维持兼容性。
+
+4. **易于使用的工具链**：protobuf提供了一套完整的编译器和库来生成源代码，这些源代码可以直接被应用程序所使用。用户只需要定义一次数据结构，在.proto文件中描述消息类型，然后就可以自动获得所需的语言绑定。
+
+5. **强类型检查**：因为数据结构是在编译时定义好的，并且由编译器生成了特定于语言的类/接口，所以在编译阶段就能发现许多潜在错误，比如尝试访问不存在的消息字段。
+
+6. **性能优化**：由于protobuf直接操作二进制数据，没有额外的文本解析开销，因此在内存使用和CPU时间上都表现出色，特别是在处理大规模数据集时。
+
+7. **安全性**：虽然protobuf本身并不提供加密功能，但由于其二进制特性，相较于基于文本的格式如JSON来说，它更难以被非授权方轻易读取或篡改内容，当然这也取决于具体的应用场景及附加的安全措施。
+
+8. **自描述性**：尽管protobuf是以二进制形式存储数据，但每个消息都包含足够的信息来重建其结构，这就意味着即使没有原始的.proto文件，也可以解析出大部分内容。
+
+综上所述，protobuf是一种非常适合高性能服务间通信的数据格式，尤其是在分布式系统中有着广泛的应用。不过，对于一些需要人类可读性的场合，或者对于简单快速原型设计的情况，可能会考虑选择JSON或其他更为直观的格式。
+
+自动稽核白名单
+        通过实时获取后端接口，基于内存来更新白名单内容，从而筛选白名单数据进行数据稽核。实现稽核数据实时过滤。
+
+
+
+
+
+什么时间启动，什么时间结束，做了什么工作，目前成效
+
+总的启动时间
+
+离线启动结束时间、做了什么工作
+实时启动结束时间、做了什么工作
+采集启动结束时间、做了什么工作
+
+目前的成效
+插码系统迁移在线云工作从2023年12月20日开始，2024年8月8日结束。
+其中2023年12月20日至2024年4月30日为前期准备阶段，工作内容包括整体迁移方案的制定、穿越体验、硬件资源准备等。
+同时采集迁移工作时间从3月15日到8月8日，包括系统服务部署、平台侧兼容适配测试、业务侧兼容适配测试、网络策略开通、采集公网ip申请、采集程序的部署测试、内/外网ip全链路压力测试、cname割接申请、接入告警等部分。
+实时接口迁移工作时间从3月10日到7月19日，内容包括Kafka生产环境构建、中间态数据处理链路迁移、Seatunnel构建、中间态性能测试、20余个实时接口程序迁移、实时数据核对等工作内容。
+离线接口迁移工作时间从3月28日到5月21日，内容包括营服批处理平台Hive UDF兼容适配、文件接口机读写测试、测试程序的开发、20余个离线接口程序迁移、程序的兼容优化、离线数据的核对、新旧平台接口的切换等工作内容。
+
+成效：迁移后，采集系统整体并发量能达到tps80万/s（原40万/s），保证采集程序稳定正确运行；离线、实时接口接口稳定提升至为99.9%（这里有个迁移的报告没找到）。
+
+
+数据采集、数据处理、数据分发
+
+
+【20241021-20241027】
+
+1、区域曝光规则清洗
+    type单个条件过滤
+    P六个0改为P五个0
+    新增外层字段
+    内存增加XY字段
+2、插码流程管理工具
+    生成数据表
+    安装测试环境
+
+
+redis-cli -h localhost -p 6379
+
+
+【20241028-20241103】
+1、实时增加测试渠道
+    安卓原生测试环境 8d4bddcdd8b88037 
+    iOS原生测试环境 83c085e9ba2436d4 
+    鸿蒙原生测试环境 291rg3aejqzdl80c 
+    H5测试环境 x9nzkqwdpm680ta3 
+    小程序测试环境 ejzqmp3nw89ku5o6
+2、智慧中台上报agent上报
+    打通流处理平台和接口机的文件传输
+    安装部署agent服务
+    智慧中台接口编写
+
+    1、两级APP整合插码采集能力的服务形式为SDK类，由能力使用方部署于项目中使用，插码侧无法获取使用方的能力调用失败量，故无法统计能力调用总量；2、由于本能力涉及数据量过大（单日最大可达106亿），进行pv，uv，vv等实时统计将消费大量资源，影响生产。综上所述，两级APP整合插码采集能力无法对接实时数据，特此报备。
+
+3、智慧中台文档编写
+    实时
+    离线
+    安全
+
+4、江苏实时接入CM001、CM002、CM003
+
+5、质量管理平台
+    3张表的数据
+
+
+
+两级APP整合插码采集能力归属于SDK类，在运维演练类别中属于“能力提供方只提供代码/软件给使用方，使用方进行本地部署并负责后续维护工作的目前不强制要求进行演练。”，现进行邮件报备，申请不进行演练。
+
+收件人：dingbo@chinamobile.com。
+抄送：jiguangyong@chinamobile.com,xuziteng6189@139.com，ying_huya@139.com，tanghan@cmos.chinamobile.com
+
+
+周三上午我们开个会  大家分别介绍下  各自现在主要的工作内容  重点工作事项进展 风险   
+麻烦@数据开发组：组长张建超
+张建超：离线实时开发，需求对接，方案编写
+韩钰：实时开发
+林仁辉：离线开发
+
+运维组：组长单沛丰（远程南昌）
+单沛丰：运维工单提交，方案编写，沟通
+尚文强：重保，安全，运维
+
+前端核查组：组长马博
+马博：插码方案，需求对接
+董文凯：插码核查，前端代码编程
+陈昌烽：插码核查，Java代码编程
+陈敬晶：插码核查
+赵文鑫：产品经理
+
+张羚羚：主要对接工作量提报，结算，计提。
+工作内容
+
+1、离线、实时接口接入、维护、升级
+2、离线接口接入、维护、升级
+
+
+
+在线4a-营服平台
+淮安云桌面
+生产桌面云
+奇安信-vpn
+生产VPN
+在线4A（主机资源、营服流批处理）
+
+账号回收
+研发云桌面
+
+
+
+51006
+
+51010
+
+51007
+
+select
+count(case when wt_et ='pageview' then wt_co_f) as pv,
+count(distinct case when wt_et ='pageview' then wt_co_f) as uv
+from  51007中间表
+group by   wt_ti
+10月1号和11月1号
+
+山东
+视频直播H5
+app自h5
+江苏
+山东
+一级权益
+
+
+cocnutBattery使用
+
+
+
+@所有人 
+随着项目进入三期，我们即将实施文档的在线化管理，以提升团队协作效率与信息管理质量。为确保这一过渡顺利进行，现请大家配合完成以下工作：
+一、任务概述
+
+整理二期历史文档：包括但不限于会议纪要、设计文档、技术文档、测试报告、工作日志等。
+分类与归档：根据文档性质和内容，进行合理分类，如项目规划、技术实现、测试验证、团队管理等。
+上传至指定平台：将整理好的文档上传至我们选定的在线文档管理系统（如钉钉文档、腾讯文档、Google Docs等，具体平台后续通知）。
+二、具体步骤
+
+本地整理：
+创建一个文件夹，命名为“二期历史文档_[您的姓名]”。
+在该文件夹内，按类别创建子文件夹，如“会议纪要”、“设计文档”等。
+将相关文档移动至对应的子文件夹中，确保文件名清晰、易于识别。
+文档检查：
+审核每份文档，确保内容完整、格式规范、无敏感信息泄露。
+对过期或不再需要的文档进行标记，但暂不删除，待团队确认后再处理。
+上传操作：
+等待项目组通知具体的在线文档管理系统链接及权限分配。
+登录系统后，按照之前创建的文件夹结构，在线创建对应的文档夹与文档。
+上传文档时，填写必要的元数据（如标题、描述、创建日期等），以便日后检索。
+提交与确认：
+完成上传后，通过邮件或工作群聊方式，告知我或瑞锌，并提供文档管理系统的访问链接（如有必要）。
+我们将进行复核，确保所有文档已正确归类与上传。
+三、时间节点
+
+请于11月7日前完成文档整理与初步分类工作。
+上传操作需在收到在线文档管理系统访问权限后的[具体时间范围]内完成。
+
+
+
+纪委检查组过来检查
+易数：44个人 1人检查：浪潮
+北卓望：71 2人查 ：易数
+
+redis：12G，zookeeper：12G，es：48G，数据库：96G
+
+
+1、11.20晚磐道转发配置上线。
+2、11.21日开始数据源侧增加磐道系统上传， 网状网及磐道并行上传。
+3、待省侧全部迁移改造到磐道系统，源端停止网状网数据上传。仅保留磐道上传渠道。 预计11.26日停止网状网上传通道。
+
+
+一、项目管理
+----不用写 
+二：需求支撑
+需求支撑及时率：截至10月31日，研发云四季度有效需求234个，实现完成122个，排期内正常交付120个，延期交付2个，需求支撑及时率98%，已达需求支撑及时性的基础目标95%。
+
+重要活动支撑：
+1. 双十一全网活动
+负责内容：负责埋点方案的实施和数据校验工作。
+进展： 截至10月31日，共有938个业务参与双十一活动。在插码核验方面，已有485个业务提交了核验申请。其中，458个业务已成功完成正确埋点并顺利通过验收，其余业务正在如期进行验收中。
+
+2. 数据接口支撑
+背景：江苏分省业务方为了获取携转客户在离网前通过电子渠道（电渠）查询的话费、账单及余额等相关数据，以便更有效地应对携号转网带来的客户流失风险，并增强客户争夺能力，业务部门要求下发客户端插码、小程序插码、分省H5插码三个实时接口。这些实时接口将确保能够及时获取和分析客户行为数据，从而制定更具针对性的竞争策略，提升客户保留率和市场竞争力，特此申请下发插码CM001、CM002、CM003实时接口数据。
+进展：
+1.正在和省侧对接kafka网络。
+2.CM001、CM002、CM003三个实时接口已经开发完毕，正在测试，预计11月19日上线。
+
+三、系统运维保障
+
+1. 系统状态
+完成11月初插码系统重点保障工作，月初系统峰值TPS为每秒51.1万条。插码系统在高负荷状态下运行稳定，采集文件和Kafka均未有堆积情况。
+完成插码采集项目25年资源使用量估算，现有主机、数据库、中间件、网络策略资源梳理。
+
+2.网状网迁移到磐道
+背景：IT发起迁移，需将网状网接口迁移到磐道
+进展：本周制定迁移方案和计划：
+1）．于11.20晚磐道转发配置上线。
+2）．于11.21日开始数据源侧增加磐道系统上传， 网状网及磐道并行上传。
+3）．待省侧全部迁移改造到磐道系统，源端停止网状网数据上传。仅保留磐道上传渠道。 预计11.28日停止网状网上传通道。
+
+四、其他
+
+断点回归主要基于处理变量在连续变量的某个数值点附近的突变性质来引入处理变量的随机性，即操纵事物在某个点上产生了突变或转折。
+
+
+【20241111-20241117】
+
+11.32
+入职培训
+1、两个邮箱
+
+
+
+
+
+
+
+合作社打卡
+
+姓名：张建超
+身份证：150426199710250311
+出生年月：1997-10-25
+毕业院校：赤峰学院
+毕业时间：2020-06-18
+邮箱：zhangjianchao@startdt.com
+学历：本科
+学位：学士学位
+手机号：13948869613
+
+
+
+
+
+
+
+
+
+1、页面加载时长：app内固定的，和特定的。
+2、何勇现有方案沟通-用户停留时长。
+3、业界模型分析
+
+
+
+
+"attributes": {
+  "WT_pi": "首页",
+  "WT_channelid": "P00000063395",
+  "WT_area_type_2": "tab页签",
+  "WT_clientID": "EEAEC6E34F93405ABD3A5083ECE831DE",
+  "WT_plat": "30011",
+  "WT_city": "010",
+  "WT_prov": "100",
+  "WT_channel": "appstore",
+  "P00000090723": "{\"XY_gd_source\":\"qqd\",\"WT_next_url\":\"https:\\\/\\\/zhengqi.10086.cn\\\/h5fordq\\\/?channelId=P00000090723&yx=1081277078\",\"XY_brand_info\":\"其他非全球通用户\",\"WT_markId\":\"1081277078\",\"XY_env_type\":\"button\",\"WT_envName\":\"政企\",\"WT_event\":\"P00000090723\"}",
+  "P00000090722": "{\"XY_gd_source\":\"qqd\",\"WT_next_url\":\"https:\\\/\\\/wx.10086.cn\\\/website\\\/businessPlatform\\\/hallStorePage?secondWeb=ZHTshop&channelId=P00000090722&yx=1081277098\",\"XY_brand_info\":\"其他非全球通用户\",\"WT_markId\":\"1081277098\",\"XY_env_type\":\"button\",\"WT_envName\":\"附近厅\",\"WT_event\":\"P00000090722\"}",
+  "WT_ti": "首页",
+  "type": "once",
+  "WT_et": "imp",
+  "WT_page_type": "首页",
+  "P00000063396": "{\"XY_gd_source\":\"qqd\",\"WT_next_url\":\"https:\\\/\\\/h5.bj.10086.cn\\\/cmcc_app\\\/family-network\\\/index.html?appUrl=aijia-broadband&isTab=1&channelId=P00000063396&yx=1167440014\",\"XY_brand_info\":\"其他非全球通用户\",\"WT_markId\":\"1167440014\",\"XY_env_type\":\"button\",\"WT_envName\":\"爱家\",\"WT_event\":\"P00000063396\"}",
+  "WT_cid": "",
+  "P00000063395": "{\"XY_gd_source\":\"qqd\",\"XY_brand_info\":\"其他非全球通用户\",\"WT_markId\":\"1081277021\",\"XY_env_type\":\"button\",\"WT_envName\":\"推荐\",\"WT_event\":\"P00000063395\"}",
+  "WT_area_type_1": "tab",
+  "P00000063397": "{\"XY_gd_source\":\"qqd\",\"WT_next_url\":\"https:\\\/\\\/h5.bj.10086.cn\\\/cmcc_app\\\/cmcc-bjapp\\\/index.html?notab=1&channelId=P00000063397&yx=1167440008\",\"XY_brand_info\":\"其他非全球通用户\",\"WT_markId\":\"1167440008\",\"XY_env_type\":\"button\",\"WT_envName\":\"商城\",\"WT_event\":\"P00000063397\"}",
+  "WT_es": "CT00033",
+  "WT_av": "APP_ios_v11.5.0",
+  "WT_area_name": "tab页签",
+  "WT_a_dc": "000",
+  "area_id": "SYYSH_tab页签",
+  "WT_aav": "11.5.0"
+ },
+
+
+
+
+
+质量纳管数据
+20241118 平均在2秒
+
+
+
+一、页面访问用户数：10分钟之内指定页面的去重用户数。
+二、用户平均访问时长：10分钟之内指定页面的用户平均访问时长
+计算逻辑：
+1、取10分钟内指定页面的每一个用户的明细数据，通过客户端时间排序。
+2、通过该用户最后一个动作的时间减去第一个动作的时间来计算该用户的访问时长。
+3、10分钟之内指定页面的用户访问时长取平均值。
+三、页面平均加载时长：10分钟之内指定页面平均加载时长。
+计算逻辑：
+1、获取10分钟内指定页面加载时长小于10秒的所有数据。
+2、10分钟之内指定页面的页面加载时长取平均值。
+
+
+
+
+
+
+支撑时间来看，进行扩容
+app压测计划-插码侧怎么配合压测方案
+流量方向，会不会增长插码数据，还是测试环境压测。
+
+正式环境里压测
+
+1、下一次压测的时间，压测的数据量和范围
+2、周三的压测。
+3、正式和测试。
+
+
+
+马建、王幸、冯胜
+
+
+
+【关于互联网渠道应用平台插码技术支撑服务项目团队人员变更申请】
+
+尚文强、单沛丰
+各位老师好：
+
+    以下是插码技术支撑服务项目团队人员变更的最新情况。
+
+    人员变更原因说明：
+        项目同事由于个人原因打算回老家发展，我们不得不对项目团队的成员进行一些调整。这些变更将确保项目能够继续高效、顺利地进行。
+    具体人员变更情况：
+        单沛丰、尚文强将不再担任运维工程师职位，由卞国清、蓝景涛来吧接替他们的运维工作。他们拥有非常丰富的工作经验；熟悉网络策略、F5负载、NG等软负载；熟悉原生、H5、小程序插码架构，精通插码原始上报数据格式，精通插码方案编制，精通插码核查等相关工作；熟悉kafka、Hadoop、Flink技术生态。相信他们将为项目带来新的活力和视角。
+    交接事宜：
+        为了确保工作的连续性和项目的平稳过渡，新老团队成员将在接下来的一个月内共同工作，预计12月20日前完成工作交接并进行人员更替。
+    感谢各位老师的理解与支持。我们相信，尽管团队有所变化，我们也一定会确保项目正常推进，高质量完成工作。
+
+
+【关于互联网渠道应用平台插码技术支撑服务项目团队人员变更申请】
+
+陈敬晶
+各位老师好：
+
+    以下是插码技术支撑服务项目团队人员变更的最新情况。
+
+    人员变更原因说明：
+        项目同事陈敬晶由于个人原因打算回老家发展，我们不得不对项目团队的成员进行一些调整。这些变更将确保项目能够继续高效、顺利地进行。
+    具体人员变更情况：
+        陈敬晶将不再担任数据测试工程师职位，由赵雯鑫、董文凯、方志来接替她的数据测试工作。他们拥有非常丰富的工作经验；精通原生、H5、小程序插码架构，精通中国移动插码规范及用户行为分析体系；熟悉中国移动码表规则，掌握插码方案审核、插码核查及码表管理相关技能；熟悉原生、H5、小程序插码架构，精通插码原始上报数据格式，精通插码方案编制，精通插码核查等相关工作；相信他们将为项目带来新的活力和视角。
+    交接事宜：
+        为了确保工作的连续性和项目的平稳过渡，新老团队成员将在接下来的一个月内共同工作，预计25年1月16日前完成工作交接并进行人员更替。
+    感谢各位老师的理解与支持。我们相信，尽管团队有所变化，我们也一定会确保项目正常推进，高质量完成工作。
+
+1、生产vpn没有生产云桌面反问没有权限
+2、研发云监控kafka界面没有权限
+
+
+江西省侧计划接入实时CM系列接口，正在对接网络环境，已经提供集群信息。
+
+
+按过去三个月数据计，第一批6个省在19日APP端内订单为88.5万笔，占比APP端内当日充值量30%（全国296万），外部渠道当日共计109万。按照外部50%转化至APP渠道，当日APP订单将增加至350万，同比增长18%；如按照外部100%转化至APP渠道，则当日订单将增加至405万，同比增长36%
+
+app总体的插码量无法统计，不过充值中心的插码点位的数量加上充值页的弹窗插码大概100个左右，不包含充值收银台
+
+
+工单申请
+
+1、【申请】在线营服cache-kafka集群新增topic
+江西分省业务方申请接入插码实时数据，需要创建三个topic分别承载cm001、cm002、cm003的数据下发，供下游来消费数据。
+2、【下线】插码采集系统应用体验kafka集群下线申请
+插码采集系统应用体验阶段已经结束，体验kafka集群【kafka-ha-cmcjxt-uat】已经停止使用，特此申请下线该集群。
+3、【开通】江西一级行为数据到在线云分省kafka网络策略
+烦请按照下面信息开通江西访问在线插码系统分省Kafka集群网络策略，非常感谢
+
+
+11月13号，下午到现场办公
+
+
+【关于互联网渠道应用平台插码技术支撑服务项目团队人员打卡地点变更申请】
+【关于插码技术支撑服务项目团队人员打卡地址变更申请】
+各位老师好：
+    由于插码项目团队办公地点需要变更，特此申请变更合作社打卡地址，具体情况如下：
+    项目组人员张建超和马博由于工作需要暂时留在移动现场办公，不进行打卡地址更换。
+    项目组其他成员办公地点于2024年11月26日由杭州市上城区钱江新城中华钱塘航空大厦搬至杭州市余杭区梦想小镇创业大街1栋。
+特此说明，望批准。
+
+
+北京易数科技有限公司  张建超
+中国移动通信有限公司在线营销服务中心-渠道支撑中心
+邮箱：zhangjianchao@startdt.com
+手机号：13948869613
+
+
+
+各位老师好：
+现申请为插码采集项目组新增打卡地点“杭州市余杭区梦想小镇创业大街1栋”。
+根据双方合同约定，插码采集项目组办公地点需符合局方规定，现局方办公地址将在24年12月下旬变更为“杭州市余杭区余杭塘路1600号杭州研发中心”，项目组新打卡地址为“杭州市余杭区梦想小镇创业大街1栋”，新打卡地址距离公司办公地点3.2公里距离。该地址已同项目组局方沟通确认。烦请审批~
+
+
+
+11月25日巡检情况如下：
+一、系统巡检情况：
+1、当前采集tps为15万每秒；
+2、nginx集群响应正常，转发无异常报错；
+3、shotpot+collect采集集群接收处理正常；collector没有堆积，运行正常；
+二、接口巡检：
+实时、离线接口正常调度，无异常。
+以上，请阅知。
+
+
+
+### H5：
+
+```json
+[{
+    "eventType": "CUSTOM",
+    "eventName": "clk",
+    "pageShowTimestamp": 1732524938178,
+    "attributes": {
+        "WT_cid": "",
+        "WT_clientID": "EAD8D6383BBB4948869866B0A7DB66B6",
+        "WT_userBrand": "09",
+        "WT_loginProvince": "551",
+        "WT_loginCity": "0551",
+        "WT_prov": "551",
+        "WT_city": "0551",
+        "WT_av": "APP_ios_11.5.0.1",
+        "WT_aav": "11.5.0.1",
+        "WT_es": "https://testh.app.coc.10086.cn/cmcc-app-gray/navigation/category.html",
+        "WT_ti": "分类",
+        "WT_plat": "000_JTAPP",
+        "WT_et": "clk",
+        "WT_area_type_1": "一级分类",
+        "WT_area_type_2": "",
+        "WT_area_name": "",
+        "XY_env_type": "button",
+        "WT_envName": ""
+    },
+    "appVersion": "1.0.0",
+    "dataSourceId": "b95440ef47ec01fc",
+    "deviceId": "d62c6afc-1b31-40e0-b9f0-efa5cc05d971",
+    "domain": "testh.app.coc.10086.cn",
+    "gioId": "rNab3FaGntouvdtwVOYIyg==",
+    "language": "zh-CN",
+    "path": "/cmcc-app-gray/navigation/category.html",
+    "platform": "web",
+    "screenHeight": 812,
+    "screenWidth": 375,
+    "sdkVersion": "3.8.6",
+    "sessionId": "5f1676ad-4c60-4118-a285-424be8397148",
+    "timestamp": 1732524938982,
+    "title": "分类",
+    "userId": "rNab3FaGntouvdtwVOYIyg==",
+    "globalSequenceId": 12,
+    "eventSequenceId": 8
+}
+```
+
+### 安卓原生：
+
+```json
+[{
+    "dataSourceId": "a1f48d9ff4f42571",
+    "gioId": "r\/knbSWtOf5a8kryWb99OQ==",
+    "platform": "Android",
+    "platformVersion": "12",
+    "deviceId": "7efe27f9-189d-4e44-b155-0d8cc8454797",
+    "userId": "r\/knbSWtOf5a8kryWb99OQ==",
+    "sessionId": "6384e348-1c81-4ea4-aec7-5938caa29175",
+    "eventType": "CUSTOM",
+    "timestamp": 1732526690219,
+    "globalSequenceId": 81,
+    "eventSequenceId": 55,
+    "domain": "com.greenpoint.android.mc10086.activity",
+    "urlScheme": "growing.6777ff5a95d8f9e9",
+    "appState": "FOREGROUND",
+    "networkState": "WIFI",
+    "appChannel": "A0999",
+    "screenHeight": 2408,
+    "screenWidth": 1080,
+    "deviceBrand": "vivo",
+    "deviceModel": "V1986A",
+    "deviceType": "PHONE",
+    "appName": "中国移动内测",
+    "appVersion": "11.7.0",
+    "language": "zh",
+    "sdkVersion": "3.5.3",
+    "attributes": {
+        "WT_et": "pfm",
+        "WT_loginProvince": "571",
+        "WT_a_dc": "000",
+        "WT_channel": "A0999",
+        "WT_av": "APP_android_11.7.0",
+        "WT_event": "qwbn2112280002",
+        "WT_adverType": "122",
+        "WT_prov": "571",
+        "WT_token_id": "JSESSIONID=55c59810-0771-48a3-8fb6-71ea14d6c3a0; UID=mhrzaa6bc1514d9a9db0139a2e96e228; Comment=SessionServer-unity; Path=\/;HTTPOnly; ticketID=SuZhou; Secure",
+        "WT_aud": "1732524889490",
+        "XY_xk": "68507788e925350a3be862740d726d9e871c47a4d74c2a72d37094eb9e60962215c2f78a",
+        "WT_city": "0571",
+        "WT_clientID": "Ac3elAP8ZcjTQUlgJ5CVFxwh9HaZFsvz80iYQZ5OofYHKayVLn8twWh0mPF4U9TLvvEsDvpcX9iJa08wg37tPg==",
+        "WT_aav": "11.7.0",
+        "WT_plat": "30011",
+        "WT_userBrand": "09",
+        "WT_loginCity": "0571",
+        "WT_mobile": "r\/knbSWtOf5a8kryWb99OQ==",
+        "WT_cid": "Ac3elAP8ZcjTQUlgJ5CVFxwh9HaZFsvz80iYQZ5OofYHKayVLn8twWh0mPF4U9TLvvEsDvpcX9iJa08wg37tPg=="
+    },
+    "eventName": "pfm"
+}
+```
+
+### iOS原生：
+
+```json
+[{
+    "userId": "rNab3FaGntouvdtwVOYIyg==",
+    "eventType": "CUSTOM",
+    "deviceBrand": "Apple",
+    "language": "zh-Hans-CN",
+    "deviceId": "39292498-99AE-4608-9C74-94B431367CE4",
+    "globalSequenceId": 248,
+    "deviceType": "iPhone",
+    "appVersion": "11.5.0",
+    "eventName": "codeless_track",
+    "screenHeight": 1624,
+    "sessionId": "723C738C-1890-4F99-83A4-38B8249F74EF",
+    "networkState": "WIFI",
+    "domain": "cn.10086.app",
+    "platform": "iOS",
+    "appName": "中国移动",
+    "gioId": "rNab3FaGntouvdtwVOYIyg==",
+    "timestamp": 1732526255141,
+    "appState": "FOREGROUND",
+    "sdkVersion": "3.8.2",
+    "deviceModel": "iPhone12,1",
+    "screenWidth": 750,
+    "dataSourceId": "83c085e9ba2436d4",
+    "attributes": {
+        "WT_a_dc": "000",
+        "WT_mobile": "rNab3FaGntouvdtwVOYIyg==",
+        "WT_city": "0551",
+        "WT_prov": "551",
+        "WT_channel": "appstore",
+        "WT_plat": "30011",
+        "XY_brand_info": "其他非全球通用户",
+        "WT_av": "APP_ios_v11.5.0.1",
+        "WT_aav": "11.5.0",
+        "WT_adverType": "97",
+        "WT_clientID": "EAD8D6383BBB4948869866B0A7DB66B6",
+        "WT_userBrand": "09",
+        "WT_loginCity": "0551",
+        "WT_markId": "383380",
+        "WT_token_id": "b3280dc7-3e81-4511-bb08-56bd1d5bd929",
+        "WT_cid": "",
+        "WT_loginProvince": "551",
+        "WT_event": "ZF10001"
+    },
+    "platformVersion": "16.2",
+    "eventSequenceId": 152
+}]
+```
+
+### 小程序：
+
+```json
+[{
+    "eventType": "CUSTOM",
+    "eventName": "imp",
+    "pageShowTimestamp": 1732526955957,
+    "attributes": {
+        "WT_appId": "8008346418455216",
+        "WT_appqry": "pageId=1729324206243614720&channelId=P00000078181",
+        "WT_clientID": "EAD8D6383BBB4948869866B0A7DB66B6",
+        "WT_userBrand": "09",
+        "WT_loginProvince": "551",
+        "WT_loginCity": "0551",
+        "WT_prov": "551",
+        "WT_city": "0551",
+        "WT_av": "APP_ios_11.5.0.1",
+        "WT_aav": "11.5.0.1",
+        "WT_es": "pages/phoneCardZone/phoneCardZone",
+        "WT_token_id": "e6372e4b-27f0-4c6a-8d6d-f33b258fce1f",
+        "WT_plat": "30011",
+        "WT_cid": "",
+        "WT_ti": "号卡专区_小程序",
+        "WT_page_type": "专区页_号卡专区",
+        "WT_et": "imp",
+        "area_id": "HKXCX_DBicon",
+        "type": "once",
+        "scheme_id": "Applet_HKZQ",
+        "P00000103009": "{\"WT_event\":\"P00000103009\",\"WT_envName\":\"icon1\",\"WT_markId\":\"1024453001\",\"WT_next_url\":\"https://wap.zj.10086.cn/zjweb/sjyytv6/redirect/middlePage_WB.html?APP_YDRZ=050008_token&v=256516&chid_code=stjtap&WT.mc_id=ddllbjt230324&yx=1024453001&sellerId=P00000103009\"}",
+        "P00000103010": "{\"WT_event\":\"P00000103010\",\"WT_envName\":\"icon2\",\"WT_markId\":\"1024453002\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453002&sellerId=P00000103010\"}",
+        "P00000103011": "{\"WT_event\":\"P00000103011\",\"WT_envName\":\"icon3\",\"WT_markId\":\"1024453003\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453003&sellerId=P00000103011\"}",
+        "P00000103012": "{\"WT_event\":\"P00000103012\",\"WT_envName\":\"icon4\",\"WT_markId\":\"1024453004\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453004&sellerId=P00000103012\"}",
+        "P00000103013": "{\"WT_event\":\"P00000103013\",\"WT_envName\":\"icon5\",\"WT_markId\":\"1024453005\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453005&sellerId=P00000103013\"}",
+        "P00000103014": "{\"WT_event\":\"P00000103014\",\"WT_envName\":\"icon6\",\"WT_markId\":\"1024453006\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453006&sellerId=P00000103014\"}",
+        "P00000103015": "{\"WT_event\":\"P00000103015\",\"WT_envName\":\"icon7\",\"WT_markId\":\"1024453007\",\"WT_next_url\":\"https://wx.10086.cn/website/businessPlatform/shopDetail?productId=2148661&productCode=2020069&yx=1024453007&sellerId=P00000103015\"}"
+    },
+    "appChannel": "scn:0000",
+    "appVersion": "1.0.0",
+    "dataSourceId": "zh3odc94gfl86mtx",
+    "deviceBrand": "iPhone",
+    "deviceId": "2963cf48-e92c-4ff0-a3ab-70ff7afb92af",
+    "deviceModel": "iPhone12,1",
+    "deviceType": "Alipay-iOS",
+    "domain": "8008346418455216",
+    "gioId": "rNab3FaGntouvdtwVOYIyg==",
+    "language": "zh-Hans",
+    "operatingSystem": "Alipay-iOS",
+    "path": "pages/phoneCardZone/phoneCardZone",
+    "platform": "alip",
+    "platformVersion": "Alipay 11.5.0.1",
+    "screenHeight": 1624,
+    "screenWidth": 750,
+    "sdkVersion": "3.8.18",
+    "sessionId": "8c7ae988-311c-4187-add8-ca775367b3d5",
+    "timestamp": 1732526958216,
+    "userId": "rNab3FaGntouvdtwVOYIyg==",
+    "globalSequenceId": 5,
+    "eventSequenceId": 2
+}]
+
+
+11月27日巡检情况如下：
+一、系统巡检情况：
+1、当前采集tps为15.8万每秒，集群负载正常；
+2、nginx集群响应正常，转发无异常报错；
+3、shotpot+collect采集集群接收处理正常；collector没有堆积，运行正常；
+二、接口巡检：
+实时、离线接口正常调度，无异常。
+三、数据峰值情况
+10月份
+10-25日采集tps:14.4万每秒
+10-26日采集tps:15万每秒
+10-27日采集tps:15万每秒
+11月份
+11-25日采集tps:15万每秒
+11-26日采集tps:16.2万每秒
+11-27日采集tps:17.7万每秒
+
+插码采集整体数据相比上个月有上涨趋势，数据详情正在查询。
+
+插码采集数据峰值统计
+10月份
+10-25日采集tps:14.4万每秒
+10-26日采集tps:15万每秒
+10-27日采集tps:15万每秒
+11月份
+11-25日采集tps:15万每秒
+11-26日采集tps:16.2万每秒
+11-27日采集tps:17.7万每秒
+tps峰值据上个月增长8%左右，整体数据波动情况基本一致，在正常数据波动范围内。
+
+
+1、工单提报【开发组的开发工单要自己提】。
+2、文强补卡。
+3、月初邮件、重保汇报。
+4、确定模块。
+
+月初重保邮件
+
+
+
+
+优化起因
+优化前状况
+优化后状况
+
+
+
+【插码数据开发】
+【插码数据优化】
+
+数据采集
+具体工作任务涵盖插码方案文档的设计与审批、插码数据核查等技术支撑环节。保证所提供的插码采集SDK具备高度规范性、稳定性和全面性，同时针对插码采集系统所采集的数据进行数据分析及数据质量治理。
+
+数据应用
+基于营服流数据及批数据处理平台，对各线上触点采集的原始插码数据进行深度加工与优化，优化和开发实时离线程序，保证分发数据接口的效率，以提升业务运营分析的及时性。同时赋能线上精细化运营策略，线上用户行为实时洞察等场景的数据应用支撑。
+
+220+11 231。 223
+
+
+
+
+
+
+
+
+
+
+
+异常流量分析
+
+访问流量趋势
+
+
+
+
+
+1、手机号解密
+2、ip_prov、ip_city分割
+3、自定义字段合并
+4、页面url解析
+5、手机号回填
+6、时间字段解析
+7、Url解码
+
+1、列入审计和加进金库
+2、解决方案-避免使用rm命令
+
+自审计
+
+
+总结：
+今天对集团《软件信息安全及价值评估管理专项审计》问题进行整改方案宣贯，主要涉及以下几点内容：
+1、关于人为删除日志文件【*.log文件】的违规行为，已经纳入运维领域嵌入式廉洁风险防控手册，属于中央巡视整改重点关注事项。
+2、禁止人为删除日志文件，禁止通过rm命令删除日志、禁止rm -rf /*操作。原则上尽量不适用rm删除文件，如果必须使用，一定要匹配文件名。
+3、现有的删除文件脚本，建议也按照中心的方案进行自查修改，确保脚本写法符合规范。
+4、以上要求务必严格执行，以免后续被考核、审计通报。
+5、规范的日志删除方案请参考附件中系统平台中心发的方案
+
+
+
+
+11月30日巡检情况如下：
+一、系统巡检情况：
+1、当前采集tps为17万每秒，峰值18万每秒，集群负载正常；
+2、nginx集群响应正常，转发无异常报错；
+3、shotpot+collect采集集群接收处理正常；collector没有堆积，运行正常；
+二、接口巡检：
+离线实时接口运行正常。
+2024-11-29日账期推送情况如下：
+51006接口于11月30日01:39推送完毕；
+51010接口于11月30日01:51推送完毕；
+51007接口于11月30日06:14推送完毕。
+
+
+插码采集整体数据相比上个月有上涨趋势，数据详情正在查询。
+
+
+
+
+按照接口数量统计
+10月份
+51006:2.7亿
+51010:3.2亿
+51007:35.5亿
+11月份
+51006:3.5亿
+51010:2.2亿
+51007;36.5亿
+
+
+插码采集数据峰值统计
+10月份
+10-28日采集tps:31.7万每秒
+10-29日采集tps:14.3万每秒
+10-30日采集tps:22万每秒
+11月份
+11-28日采集tps:20.2万每秒
+11-29日采集tps:22.0万每秒
+11-30日采集tps:19.0万每秒
+
+
+1、两级APP整合插码采集能力的服务形式为SDK类，由能力使用方部署于项目中使用，插码侧无法获取使用方的能力调用失败量，故无法统计能力调用总量；
+2、由于本能力涉及数据量过大（单日最大可达140亿），进行pv，uv，vv等实时统计将消费大量资源，影响生产。综上所述，两级APP整合插码采集能力无法对接实时数据，特此报备。
+
+##0、告警机制-仁辉
+
+##1、分省迁移-停止下发预计在5号 -仁辉
+
+##2、下拉文件优化-韩钰
+
+###3、分省调度优化-
+
+新开队列
+#4、提高文件处理并行度-40
+
+##5、智慧中台-仁辉、冯胜账号权限
+
+#6、小时表历史数据清理-仁辉、韩语
+
+##7、实时统计优化 - 韩钰
+
+###8、原生的曝光数据挺---10号
+
+##9、上线工单
+
+10、小程序性能扩充topic
+
+11、河北实时接入
+
+25年插码项目入场宣贯
+
+1、两期合同没有执行完。
+2、合理合规。
+3、成本项目-项目管理办法。
+4、分工
+    合同的执行部门-渠道支撑中心-工作量管理是由系统平台中心管理。
+5、合作方管理-入场、离场人员管理【授权证明】。
+6、三场考试
+    规章制度【最低90】、安全、技术【插码项目组、面试可选】。
+7、工作量记录
+    支撑类项目-工作量记录上报、审核。
+    管理成本是人天、超过8小可以报加班。
+    最小工作工时0.25【两个小时】。
+    先检查，再上传系统。系统上传之前一定要检查。
+    时间-工作量产生三周内上传研发云系统，超过三周部门领导签字，由于需要至少要提前两星期上传。
+
+8、销售分公司【工作描述】、服务分公司。
+9、工作量填报-按照要求：重复不超过10个字【不要硬上报】。
+10、加班-单人单周 8.25 = 5 + 3.25【加班慎报】。
+11、对工作量负责的是项目经理。
+12、工作量核算
+    项目组组织评审，不少于5轮。。。
+    工作量评估报告
+    评分表
+
+13、合作方现场人员的管理
+    首次入场、与合同约束一致、后续人员按照技术规范书要求变更。
+    项目组安排认定，没有特别声明，灵活工作，8点半之前下班【10点钟之前到达现场，工作满8个小时】
+
+***14、安全、账号不要随意使用。
+15、上班时间9点-16点
+
+需求编号、需求名称、计划交付时间、当前节点、需求分析人员、需求实现人员、需求验收时间
+
+
+
+300k/80 = 3.75
+
+750k/120/60
+
+20241205需求
+
+潘湘飞：210需求、完成210
+冯胜：12个需求、完成9个
+
+1218
+潘湘飞：210需求、完成210
+冯胜：12个需求、完成10个
+
+1226
+潘湘飞：210需求、完成210
+冯胜：12个需求、完成10个
+
+【24年12月代办事项】
+#1、告警机制建立-仁辉【离线】、韩钰【实时】
+#2、分省迁移-仁辉
+#3、离线接口hadoop文件下拉到接口机性能优化-韩钰
+    hdfs下拉文件、删除小时接口文件
+
+#4、分省调度调度运行优化-仁辉
+#5、智慧中台权限变更为冯胜-仁辉
+#5、根据12月数据量进行实时程序资源优化 - 韩钰
+#6、离线接口51007原生的曝光数据停止下发，程序开发-林仁辉
+#8、上线申请工单流程权限申请-张建超
+#9、小程序性能扩充topic分区-韩钰
+#10、分省文件数扩充。
+#11、客户轨迹topic集群迁移。-韩钰、仁辉
+#12、windows电脑办公申请。
+#13、组织自审计和培训，并12月18号前上报审计报告和培训记录。
+#14、工单提报
+#15、周报、需求支撑及时率
+#16、测试每个工单需求是什么样的。
+#17、山东解密方法下发
+#18、河北网络开通，需要潘老师进行安全评审
+#19、运维告警机制及人员
+#20、三项安全培训
+#21、【12月20日前完成】关于全面开展勒索软件、木马病毒风险排查的通知
+22、分省河北网络评审
+#23、扩容成果汇报
+24、域名www.online-cmcc.net可以正常访问，网站名称需要和备案的系统名称一致【中移销售业务支撑系统】自查
+
+#25、告警处理流程工单。
+#26、尚文强、单沛丰退场，敬晶退场邮件。
+27、51系列pv和uv记录数据量记录
+28、你们把最近系统流量每天的数据拉出来和11月份同期做对比，看一下流量增长情况，同时预估一下1月1日的流量
+29、集团“清源肃网”账号管理专项治理行动工作-梧桐账号有效期调整
+30、数据流程时间计算程序-客户端点击时间和程序处理时间插值特别大定位原因
+    客户端时间未同步，不是当前最新时间。
+    网络延迟、app闪退等现象会导致插码数据缓存在堆栈中，当用户再次访问时激活历史数据和新数据一起发送出来。
+
+1、分省迁移
+2、分省文件数扩充。
+3、离线接口hadoop文件下拉到接口机性能优化-韩钰
+    hdfs下拉文件、删除小时接口文件
+
+
+
+实时程序资源使用情况
+
+
+
+
+
+
+12月初重保总结
+    
+    值班人员：张建超、林仁辉、韩钰、陈昌烽、董文凯、卞国清
+    重保时间：11月30日-12月4日
+    重保事项：24小时值班，12月1日凌晨出现数据高峰到12月3日凌晨期间每隔2个小时汇报一次系统情况。主要事项如下：
+        1、监控Nginx采集峰值情况。
+        2、collector负载及数据积压情况。
+        3、Kafka积压及数据增长情况。
+        4、离线程序运行及推送情况。
+        5、实时程序负载、数据积压及运行情况。
+
+
+
+    12月初系统情况总结：
+        12月1日插码采集峰值tps到达54.4万每秒，相比于上个月提升8%。日数据总量达到137亿，小时数据量峰值达到13.7亿，实时、离线程序运行正常。
+        1、Nginx集群CPU使用率10%，内存使用率16%，负载正常，转发正常。
+        2、Collecor负载80%，cpu利用率75%，内存利用率60%，存在部分文件积压，已经完成Collector扩容方案编写，本月内完成Collector扩容，保障1月初数据峰值平稳度过。
+        3、Kafka集群CPU使用率15%，内存使用率6%，负载正常，数据传输正常。
+        4、批处理任务正常，离线接口正常推送，文件下拉时长过长，需要进行优化。
+        5、流处理任务没有积压，实时接口正常下发，部分程序cpu使用率达到90%，需要进行优化。
+
+
+        1.2p 1p
+
+关于在线营销服务中心部分能力实时数据采集免上报的报备，两级APP整合插码采集能力的服务形式为SDK类，SDK服务部署在用户侧，无法获取到数据。
+
+
+
+由能力使用方部署于项目中使用，插码侧无法获取使用方的能力调用失败量，故无法统计能力调用总量。
+2、由于本能力涉及数据量过大（单日最大可达106亿），进行pv，uv，vv等实时统计将消费大量资源，影响生产。综上所述，两级APP整合插码采集能力无法对接实时数据。
+
+
+
+需求及时率
+
+冯胜12个
+完成9，正在进行3
+潘湘飞，210结束
+
+
+分省文件数扩充
+
+由于分省插码数据的日益增长，部分分省CM系列接口文件数即将超过1000个，目前CM系列接口编号位数已不满足需求，计划将CM系列接口编号位数由3位扩充为4位，于2024年12月19日上线，届时20241219账期起文件命名将以4位编号呈现。
+以下为变更前后的文件命名案例：
+变更前：
+a_10000_20241212_CM001_250_00_001.dat.gz
+a_10000_20241212_CM001_250_00_412.dat.gz
+变更后：
+a_10000_20241212_CM001_250_00_0001.dat.gz
+a_10000_20241212_CM001_250_00_0412.dat.gz
+
+1、可以改造，对于超过1000的文件单独处理。
+2、和分省对接人沟通，我们这种改造需求提前告知他们做适配就可以了。
+3、从使用的角度分析，文件序号位数一致，有利于做数据处理。
+
+
+安全培训
+    需提供培训或会议通知、培训PPT、现场签到表、现场照片等佐证材料
+离场证明
+
+1、小程序、原生和H5数据稽核常态化支撑，快应用等技术支撑，数据质量管控常态化支撑。
+2、51系列及CM系列实时及离线数据开发，数据支撑及优化。
+3、运维服务巡检及值班常态化支撑，插码采集系统稳定性常态化支撑。
+
+
+上线流程
+
+离线程序上线
+1、确认口径，开发代码，通过样例账期数据进行测试，验证减少或者增加的数据是否符合预期。
+2、提交安全工单，审批通过后提交上线工单，一般上线时间设定在9点到12点，变更后第一时间处理本天账期内的数据。
+3、在规定时间内进行原程序备份，新程序上线，重跑0点账期并验证数据是否符合预期。不符合预期则进行程序回滚，重跑0点账期。
+4、上线成功则重跑0点到当前小时账期数据。
+5、反馈给下游，观察后续账期的执行情况。
+6、完成上线工单。
+
+
+实时程序上线
+1、确认口径，开发代码，使用样例数据对开发的程序进行测试，检验数据处理的结果是否符合预期。
+2、提交安全工单，审批通过后提交上线工单。一般上线时间设定在14点到16点，变更后持续观察数据情况。
+3、程序上线:复制当前正在运行的程序，新程序命名结构为程序名称+上线日期，配置新消费者组进行数据消费。新程序启动无误后，下线老程序。
+4、程序监控:进去研发云-本部看板-中间件看板-kafka非容器化看板，观察数据生产消费曲线，进入流处理平台-kafka-选择具体topic，再次验证数据，确保数据正确。
+5、程序回滚:下线新程序，先恢复上一版本的程序，待问题修复后，在寻找新上线窗口期进行程序上线。
+6、反馈给下游，观察数据变更情况。
+7、完成上线工单。
+
+
+建超，
+
+
+
+请仔细阅读以下邮件，完成下述事项。
+1、针对1,2,3点完成对团队内的宣贯，请于今日或明日上午组织项目组全员会议，我、湘飞参加，务必传达到位，严格要求，避免故障引起的合同考核问题。反馈宣贯证明材料，宣贯会议纪要，打印并要求所有项目人员进行签字，拍照电子版留档。
+2、反馈关于生产系统变更管控问题、账号权限管控问题方面的自查整改结果。要求列出目前在项目侧运维范围内的机器、系统等账号以及角色。 明确相关变更（包括扩容、任务发布、SDK版本更新）的现有操作流程，并对风险点提出措施整改。 
+
+要求列出目前在项目侧运维范围内的机器、系统等账号以及角色。 
+明确扩容的现有操作流程，并对风险点提出措施整改。 
+
+
+1、内部过一下压测方案、是否符合上线标准
+2、压测流程
+3、人员配合
+
+王允抗
+
+
+1、敬晶离场
+2、智慧中台账号事项
+3、宣贯
+4、智慧中台
+5、李超军申请实时集群
+6、补卡
+7、安全审计材料
+
+
+
+张建超、林仁辉、韩钰、马博、董文凯、赵雯鑫、陈昌烽、陈敬晶、张羚羚、卞国清、杜东川、尚文强、单沛丰、杨彬彬、林璐、许张杰、蓝景涛、曾瑞锌、方志
+
+关于强化数据运维支撑团队基础运维管理和安全管理要求宣贯会议
+
+
+压测环境部署
+性能测试
+功能测试
+
+上线
+1、制定扩容方案并进行评审。
+2、申请主机，磁盘raid，安装依赖。
+3、collector采集服务部署。
+4、压测工具准备，制定性能压测方案并进行评审。
+5、制定功能测试方案并评审。
+6、进行功能和性能测试。
+7、和上下游对接需求，提价运维工单。
+8、上线发布，运行监控。
+
+
+有几个事项给大家同步一下
+1、合作社的卡一定不能缺，有事情也要找人帮忙打卡。
+2、vpn和云桌面的账号不要随意外借。
+3、调休要提前报备，并发邮件申请，发送给徐总、瑞锌哥、雅言姐、还有我
+
+
+
+插码需求分析
+
+1、登录及轨迹
+
+高频登录---登录接口/插码行为（事件码-张静、宋明明要）1s两次
+
+
+河北分省IP（10.255.76.149、10.255.76.89、10.255.131.50）访问插码kafka集群（10.254.216.133-10.254.216.138）的9092和2181端口，详情见附件。
+
+◎2024 中移在线服务有限公司 版权所有 豫ICP备15016518号-42
+ng配置变更
+域名申请流程
+备案流程
+
+申请端口，新起一个策略
+NG证书维护通知
+
+1.开发文档完善，并增加任务列表。@建超
+3.一月月初重保后，需要做节点扩充的准备＠建超
+4.安全审计月度事项，在excel事项跟进表中更新；@建超
+5.运维事项巡检日志记录@卞国清；
+6.程序处理时长问题，要有延迟监控的能力，可以监控kafka topic的延迟情况，后续以专题形式来讨论@建超；
+7.快应用卡片CUSTOM事件支持行为数据采集，需确认是否可做@马博；
+8.分析需求工单提工单＠王幸
+9.整月的４类异常用户提取＠马博；
+10.交接事项，交接文档要输出（含扩容文档），其中，交接文档格式线下同步；@建超
+
+
+1、excel事项罗列
+2、开发文档形式进行事项记录
+3、系统架构变动日志
+4、巡检日志记录
+5、机器告警机制
+6、程序处理时长-处理时长最长的程序作为参考依据
+7、沛丰、曾瑞锌交接事项梳理@曾瑞锌@卞国清
+8、扩容、压测、交接文档-机器清单、每台机器服务及部署账号&&日常运维巡检文档；插码稽核平台交接文档和运维文档；
+
+
+后续每两周的周三开周会  会议议程：
+1、双周工作内容同步 - 按文档说  @马博 核查以及分析需求类  @张建超 数据接口相关以及其他  @ 运维侧事项
+2、打卡考勤事项同步  @张建超 
+3、双周工作量事项同步以及抽查 - @王幸 负责插码核查类  @ 湘飞 负责 数据接口以及运维类
+
+周会罗列事项
+1、一月重保结束后，梳理collector节点方案，并具备紧急扩容条件。
+2、自动稽核平台部署、交接及运维文档。
+3、稽核平台已上线内容的产品架构图，代码说明等文档。
+4、稽核平台容器化改造部分的文档梳理。
+
+同时还提到本次采集扩容的成效，是否可以满足在月初数据量增长20%的数据情况下无积压产生。如果达不到是不是可以扣分。
+我和他说的是，因为咱们测试的环境无法还原月初的高并发场景，效果能达到70%到80%，具体情况还要月初的时候再观察。
+
+
+接口，client_time、event_time、process_time
+
+
+冯胜老师，之前上传线上销售平台的工作量被马老师驳回了，我昨天和王幸老师这边沟通，马老师这边审核规则有点变更，已经完成修改，需要你重新审核一下。
+一方面是更正的运维工单编号之前是【系统运维12月第一周次】-现在变更为【系统运维12月第一周次-机器运维】。
+另一方面是在工作量中有【1223-1229】重复，已经删除。
+
+
+
+daytime，ip，cs_host，wt_cid，wt_co_f，wt_city，wt_mobile，wt_event，wt_ti，wt_es，wt_markid，trmnl_style，wt_av，date，click_time，wt_prov，wt_si_x，wt_si_n，wt_si_s，wt_goods_id，wt_sku_id，wt_channelid，useragent，wt_os，wt_dm，wt_sv，wt_a_dc，wt_ct，wt_sr，wt_vt_sid，wt_userbrand，wt_loginprovince，wt_logincity，wt_appid，wt_channel，wt_dcsref，wt_et，wt_ed，wt_envname，wt_next_url，wt_errcode，wt_errmsg，wt_serial_no，wt_act_str_step_id，wt_group_id，wt_mr_id，wt_ad_step，wt_touch_tm，wt_appqry，wt_xy，wt_sid
+
+
+陈昌烽 15827866671  chenchangfeng@startdt.com 
+董文凯 18480658541  dongwenkai@startdt.com
+赵雯鑫 18268137097  zhaowenxin@startdt.com
+
+ source /Users/jianchao/.zprofile
+
+
+
+1、第一张图片记录的是客户端点击时间到程序处理的时间
+2、第二张图片记录的是采集服务采集时间到程序处理时间
+3、第一张出现分钟以上的数据是因为客户端存在缓存时间，所以数据不是准点发送到
+4、从服务端时间来看数据处理时间都在25s以内
+
+
+
+
+
+
+zhangjianchao1
+账号zhangjianchao密码用于openvpn,git等办公平台登录
+zhangjianchao1   RcJGeKLy8QLuQG6
+
+
+目前有这么一个问题：冯胜老师想看一下从客户端点击到数据处理耗费多长时间。
+    我查到的数据是90%的时间是在20s以内，0.5%在10分钟以内，还有0.5%在10分钟以外。同时客户端采集时间到数据处理都在1分钟以内。
+现在想排查客户端时间为什么早了很多。
+    想确定一下客户端调用SDK的机制，导致客户端时间提前很多的原因是什么。
+
+
+1、手机客户端时间错误。
+2、网络延迟。
+3、客户端时间问题。
+
+
+
+
+1 10 20 30 
+
+
+加班项目名称：中移插码项目
+加班时间：25年1月1日
+调休时间：25年1月2日
+调休期间职务代理人：林仁辉
+
+河北申请接入插码CM实时数据，程序已经开发完成，正在进行网络安全工单评审。
+潘老师和app测沟通，由app测提供安全评审证明，我们负责开通网络。
+目前安全评审材料还没有收到。
+©2024 中国移动 版权所有 豫ICP备15016518号-42
+
+
+
+
+20250102周报
+
+潘湘飞 33 33
+冯胜 128 82
+
+
+
+运维工作项
+1、河北网络安全评审，并开通网络
+2、域名www.online-cmcc.net域名页面配置
+3、collector异常数据排查
+4、单物理机多节点扩容
+5、文档准备
+    离线实时任务汇总表
+    一月重保结束后，梳理collector节点方案，并具备紧急扩容条件。
+    自动稽核平台部署、交接及运维文档。
+    稽核平台已上线内容的产品架构图，代码说明等文档。
+    稽核平台容器化改造部分的文档梳理。
+    巡检记录表
+
+
+
+
+开发工作项
+1、河北分省实时程序下发
+2、分省离线sql及文件下拉程序、文件处理程序优化。
+3、51007文件处理程序优化。
+4、监控每一个实时程序处理时长，形成自动化监控。
+    数据流程时间计算程序-客户端点击时间和程序处理时间插值特别大定位原因
+    1、客户端时间未同步，不是当前最新时间。
+    2、网络延迟、app闪退等现象会导致插码数据缓存在堆栈中，当用户再次访问时激活历史数据和新数据一起发送出来。
+5、51007曝光数据拆分曝光数据和性能数据
+
+工作量
+目前有很多协助的工作量，没有工单
+    分省数据重传，磐道转发失败，收不到文件。
+    批处理平台偶尔会有大批量任务执行不成功，需要进行sql切分，一段一段跑。
+
+
+1.开发文档完善，并增加任务列表。@建超
+3.一月月初重保后，需要做节点扩充的准备＠建超
+4.安全审计月度事项，在excel事项跟进表中更新；@建超
+5.运维事项巡检日志记录@卞国清；
+6.程序处理时长问题，要有延迟监控的能力，可以监控kafka topic的延迟情况，后续以专题形式来讨论@建超；
+7.快应用卡片CUSTOM事件支持行为数据采集，需确认是否可做@马博；
+8.分析需求工单提工单＠王幸
+9.整月的４类异常用户提取＠马博；
+10.交接事项，交接文档要输出（含扩容文档），其中，交接文档格式线下同步；@建超
+
+开发文档目录优化
+需求增加需求编号
+
+机器架构图
+巡检标准
+模块对应出现问题联系人
+运维服务的主机-对应到你巡检的内容（入口，主机IP）
+测算一下扩容节点的承受的数据量
+节前扩一台放进去
+加一个链接文档
+加一下重要的指标=巡检指标
+
+20250109
+1、51系列文件切割升级后情况复盘，HDFS文件下拉情况复盘@建超
+2、研发云需求提交（客户轨迹Kafka源端变更由业务方提交）@建超
+3、部分前期以运维工作体现的工作，还是以开发工单提交@建超
+4、测试组的文档，有对应记录的链接，做一个统一入口@马博
+5、流程管理平台工具业务侧沟通@马博@王幸
+6、项目所有文档统一共享，注意安全保密性@建超
+7、运维文档完善，例如：巡检事前准备中增加巡检目标，巡检准备部分，增加操作，运维服务的主机-对应到你巡检的内容（入口，主机IP）
+8、项目组人员退场事项，协调好项目组在场人员数量@建超
+
+
+
+
+20250122
+1、51系列文件切割升级后情况复盘，HDFS文件下拉情况复盘@建超
+2、研发云需求提交（客户轨迹Kafka源端变更由业务方提交）@建超
+3、部分前期以运维工作体现的工作，还是以开发工单提交@建超
+4、测试组的文档，有对应记录的链接，做一个统一入口@马博
+5、流程管理平台工具业务侧沟通@马博@王幸。---业务沟通、工具评审、拉相关业务方进行评审沟通。
+6、项目所有文档统一共享，注意安全保密性@建超-本周搞定
+7、运维文档完善，例如：巡检事前准备中增加巡检目标，巡检准备部分，增加操作，运维服务的主机-对应到你巡检的内容（入口，主机IP）
+8、项目组人员退场事项，协调好项目组在场人员数量@建超
+
+9、插码数据发送时间方案评估。
+10、实时程序延迟情况资源评估。
+11、曝光数据拆分和宋明明沟通。
+12、sdk版本交流，大版本上的升级变化。
+13、用户停留时长，产研方案、张静方案、何勇方案、时间差相减。
+14、节后进行collectr实例扩充，先扩17再20.
+15、运维告警指标，机制文档整理。
+16、巡检文档记录格式优化，记录错误的原因。
+
+
+20250123
+1、待文件切割升级及HDFS文件结束后，节后进行情况复盘。@建超
+2、测试组文档规划。@马博
+3、拉相关业务方进行插码流程管理工具评审，确定使用方需求后再进行开发改造。@王幸@潘湘飞
+4、项目所有文档统一共享管理，注意安全保密性，节前必须搞定。@建超
+5、插码SDK数据发送时间方案评估。@建超
+6、实时程序延迟情况资源评估。@张建超
+7、51007接口曝光和性能数据拆分事项引导。@建超
+8、用户停留时长，产研方案、张静方案、何勇方案、时间差相减。@建超、马博
+9、collectr单机器多节点扩容，节后稳定后节点扩充到17个，如月初稳定度过，再进行二次扩容。@国清
+10、运维告警指标整理。@国清
+11、巡检文档记录格式优化，记录问题原因。@国清
+
+
+
+
+潘湘飞 34 33
+冯胜 139 93
+总173 126
+
+/Users/jianchao/安装包/idea破解包/mac/micool_macconfig/configfile/jetbra/ja-netfilter.jar 
+
+将51007接口中曝光的数据拆分到77006中
+
+会议纪要
+一、会议主题：51007中的曝光数据和性能数据拆分
+二、会议时间：2025年1月10日上午10点
+三、参会人员：宋明明、张利君、卞连生、陈杨、夏颖、王健、薛依卓、潘湘飞
+四、会议内容：
+    1、将51007实时和离线接口中的曝光数据【wt_et=imp】拆分到77006接口中，已经和使用数据的下游进行沟通，除梧桐外不影响各方业务。
+    2、将51007离线接口中性能数据【wt_et=pfm】拆分到单独的离线接口中，已经和使用数据的下游进行沟通，除梧桐外不影响各方业务。
+    3、待梧桐数据使用方和宋明明老师确定好数据使用方式后，确定不影响现有业务，预计在春节前完成曝光数据的拆分，性能数据预计在春节后拆分到新的离线接口中。
+    4、辛苦陈杨老师和夏颖老师在下周三之前给予反馈，方便后续改造计划的进行。
+
+    各位老师对本次会议有什么疑问的地方请及时联系我，避免给大家造成困扰。
+
+
+https://passport.weibo.com/sso/signin?entry=miniblog&source=miniblog&url=https
+
+xueyz@asiainfo.com;
+gecx@asiainfo.com;
+gaochang3@asiainfo.com
+产品：蔡良羽 <cailiangyu@cmos.chinamobile.com>
+技术：陈光亮 <chenguangliang@cmos.chinamobile.com>
+
+
+本季度将深化埋点 SDK校验效率，确保埋点方案精准实施。强化与各中心的沟通，确保数据需求与问题反馈畅通无阻。同时，持续跟踪埋点数据质量，为业务决策提供有力支持。
+确保13台服务器的硬件运行状态正常，及时发现并处理硬件故障，保障服务器资源使用量充足。
+保障服务器上所以进程的正常运行，防火墙规则正确。
+监控并优化 Collector 实例的文件积压情况，确保数据传输稳定，无数据丢失。
+确保离线任务和实施任务按计划正常运行，任务成功率保持在 99%以上。
+保障14台 NGINX 服务器的高可用，监控并维持 NGINX 的 TPS 在正常范围内，确保业务流量稳定处理。
+
+
+
+
+
+一季度工作计划【内容太虚】
+采集核查方面：
+    本季度将深化埋点SDK校验效率，确保埋点方案精准实施。强化与各中心的沟通，确保数据需求与问题反馈畅通无阻。同时，持续跟踪埋点数据质量，为业务决策提供有力支持。
+数据开发方面：
+    重点保障春节期间的实时离线程序稳定运行，提高数据处理性能，保障业务数据的稳定性。完善程序自动化监控能力，加强自动化运维机制。优化51007接口数据内容，降低接口数据量，提高数据传输稳定性。同时需要进行客户轨迹迭代变更事项，保障业务方使用数据的稳定性。
+运维保障方面：
+    保障由插码项目组运维的13台机器的硬件及服务运行正常。监控并优化 Collector 实例的文件积压情况，确保数据传输稳定，无数据丢失。确保离线任务和实施任务按计划正常运行，任务成功率保持在 99%以上。持续关注并监控Kafka、Hadoop、Flink集群的负载情况，保障程序稳定。制定Collector单机器多节点扩容，并完成测试，做好随时扩容的准备。
+
+
+采集核查方面：【插码核查问题】
+    本季度预计支撑app开发运营中心、权益运营中心、互联网合作中心等250个核查需求，在核查过程中将深化埋点SDK校验效率，确保埋点方案精准实施。强化与各中心的沟通，确保数据需求与问题反馈畅通无阻。同时，持续跟踪埋点数据质量，为业务决策提供有力支持。
+数据开发方面：
+    重点保障春节期间的实时离线程序稳定运行，优化Hadoop集群下拉文件及数据文件切割的处理性能，降低数据处理时间，保障业务数据的及时性。完善程序自动化监控能力，针对实时程序异常、积压以及失败等场景进行自动化告警；针对离线程序数据量异常、数据处理流程失败等场景进行自动化告警，强化数据接口自动化运维机制。优化51007接口数据内容，拆分曝光和性能数据到新的接口中，降低51007接口数据量，提高数据传输稳定性。同时需要进行客户轨迹迭代变更事项，切换客户轨迹现有消费的kafka集群到目前离生产最近的数据源，保障业务方使用数据的及时性。
+运维保障方面：
+    保障由插码项目组运维的13台机器的硬件及服务运行正常。监控并优化 Collector 实例的文件积压情况，确保数据传输稳定，无数据丢失。确保离线任务和实施任务按计划正常运行，任务成功率保持在 99%以上。持续关注并监控Kafka、Hadoop、Flink集群的负载情况，保障程序稳定。制定Collector单机器多节点扩容，并完成测试，做好随时扩容的准备。
+
+采集核查方面：【最终版本】
+    本季度预计支撑app开发运营中心、权益运营中心、互联网合作中心等250个核查需求。重点支撑app、轻渠道部门进行营销专区插码重构、新电商原生化页面插码新增、鸿蒙新页面插码新增，增加并兼容互联网中心快应用卡片埋点数据采集，以及其他部门日常需求支撑。在核查过程中将深化埋点SDK校验效率，确保埋点方案精准实施。强化与各中心的沟通，确保数据需求与问题反馈畅通无阻。同时，持续跟踪埋点数据质量，为业务决策提供有力支持。
+
+
+
+
+
+
+开发并部署新的监控程序，提升数据处理的透明度和可控性。
+完成客户轨迹场景的数据切换，保障业务连续性。
+优化质量纳管和IOP小时程序，提升整体运维水平。
+二、具体工作安排
+1月
+1、进行实时离线程序日常运维保障。
+2、优化51007接口文件处理程序，进行测试，并部署至批处理平台，确保程序的正常运行。
+3、分析江苏、河南、浙江、山东分省CM001程序文件生成模块，制定、实施优化方案，完成测试并上线。
+4、启动实时离线程序春节重保计划，进行全面的系统检查和性能测试。制定日常运维保障方案，明确责任人和应急处理流程。
+2月
+1、进行实时离线程序日常运维保障。
+2、春节后，对实时离线程序进行全面检查和评估，确保恢复正常运行。
+3、完成实时数据延迟时长监控程序开发，并对各渠道数据处理时长进行初步分析，识别瓶颈和潜在问题。
+4、客户轨迹场景一至场景七源端数据切换并进行资源调整、配置优化，确保平稳过渡。
+3月
+1、进行实时离线程序日常运维保障。
+2、优化质量纳管分钟程序，进行初步测试。
+3、完成一级IOP小时程序的初步优化。
+
+
+三、资源分配与风险管理
+根据任务的重要性和紧急程度，合理分配人力资源和技术资源。
+建立风险预警机制，及时发现并处理潜在问题。
+加强团队协作和沟通，确保信息畅通无阻。
+四、监控与评估
+定期对各项任务的进展情况进行监控和评估。
+收集下游各方对反馈和意见，及时调整工作计划和优化方案。
+对一季度的工作进行全面总结，为未来的工作提供参考和借鉴。
+
+
+
+
+
+
+一、工作目标
+确保13台服务器的硬件运行状态正常，及时发现并处理硬件故障，保障服务器资源使用量充足。
+保障服务器上所以进程的正常运行，防火墙规则正确。
+监控并优化 Collector 实例的文件积压情况，确保数据传输稳定，无数据丢失。
+确保离线任务和实施任务按计划正常运行，任务成功率保持在 99%以上。
+保障14台 NGINX 服务器的高可用，监控并维持 NGINX 的 TPS 在正常范围内，确保业务流量稳定处理。
+
+
+二、主要工作内容
+1、服务器硬件维护
+每周定期检查13台服务器的硬件运行状态（CPU、内存、硬盘、网络接口等）。
+配置和维护硬件监控系统，设置告警规则，及时响应硬件故障。
+对出现故障的硬件，快速进行更换或修复，确保服务不中断。
+2、服务器进程和防火墙维护
+每天定期检查进程的运行状态和资源的使用，保证服务器有足够的资源使用给进程。
+配置适合的防火墙规则，保证所有进程需要的端口可以正常访问，同时关闭相对危险的端口保证服务器安全。
+定期检查服务器进程的日志文件和服务器的日志文件，保证服务运行的正常，不出现异常情况。
+3、Collector 实例维护
+定期检查 collector 的文件积压情况，分析可能的积压原因（磁盘IO、网络带宽、服务性能等）。
+优化 collector 配置参数，提升文件处理效率，减少数据积压。
+建立日志分析机制，记录和监控数据流量，防止任务延迟或失败。
+4、离线任务和实施任务管理
+1）任务运行状态检查：
+每日查看离线任务和实时任务的运行状态，确保任务按计划正常执行。
+2）失败任务处理：
+对运行失败的任务进行快速排查，分析日志定位问题。
+根据问题原因，直接重启任务或通知相关开发团队进行修复。
+对高频失败的任务做好记录并汇报，协助开发优化任务逻辑。
+任务运行报告：
+3）每日记录任务的运行情况定期汇总任务异常的常见原因，为后续改进提供数据支持。
+5、NGINX 服务维护
+每日监控14台 NGINX 服务器的运行状态，包括 CPU、内存、负载和 TPS。
+定期优化 NGINX 配置文件（如 worker_processes、worker_connections 等参数），提高性能。
+配置健康检查机制，及时发现后端服务异常，进行负载均衡调整。
+定期清理日志文件，防止磁盘空间占满。
+对高并发流量场景进行压力测试，确保 NGINX 稳定性。
+
+
+三、保障措施
+1、监控和告警
+使用 Prometheus 对所有服务器和服务进行实时监控。
+配置电话，确保异常第一时间通知到人。
+每日查看监控日志，记录潜在风险和解决方案。
+2、故障处理
+制定故障应急预案，包括硬件更换流程、服务切换流程、任务重试策略等。
+定期组织演练，提高故障响应速度。
+故障修复后，撰写总结报告，分析问题原因并提出改进措施。
+3、优化和提升
+针对硬件、服务配置和任务脚本定期优化，提高整体运行效率。
+每月进行一次运维汇总，总结工作中发现的问题并制定优化方案。
+
+
+后续目标
+完成13台服务器的硬件健康全面检查。
+排查和优化 collector 实例配置，确保单台服务器的 collector 实例可以增加到 20 台，且不影响服务器正常运行。
+制定全年硬件巡检和维护计划，明确责任分工。
+通过以上计划，确保业务稳定运行，同时提升系统性能和运维效率。
+
+
+远程值班邮件
+你走下邮件哈，发给昕哥和瑞锌，抄送给yuanyuan@startdt.com和我
+内容：由于什么原因，申请哪几天远程办公
+远程办公人员名单是谁
+
+
+
+
+江苏实时接口
+【CM001】tps：月初峰值16K/S   日常10K/S    分省消费存在积压
+【CM002】tps：月初峰值400/S   日常200/S
+【CM003】tps：月初峰值4.8K/S  日常3.2K/S
+
+江苏离线接口
+【CM001】
+【CM002】
+【CM003】
+
+
+
+调休邮件
+加班项目名称：中移插码项目
+加班时间：2024年11月30日-2024年12月1日。 
+调休时间：25年1月24日
+调休期间职务代理人：韩钰
+
+
+值班邮件
+见信好：
+    为应对春节期间中移插码采集服务高峰时数据流量，特申请张建超、林仁辉、韩语、卞国清、陈昌烽、董文凯在春节期间进行值班，后续可自行安排其他事件进行1天的调休，调休时请发送调休申请邮件。
+    具体事项：24小时值班，1月31日出现数据高峰到2月3日凌晨期间每隔2个小时汇报一次系统情况，监控实时离线任务运行情况并记录。
+    事项联系人：
+        任何状况：张建超
+        离线任务：林仁辉
+        实时任务：韩钰
+        主机情况：卞国清
+    值班人员:
+
+    注：请相关人员随时保持电话畅通，如有问题请第一时间上线处理，有问题及时电话沟通。
+
+
+远程邮件
+    见信好：
+        因中移项目需支撑到2025年1月27日，且项目上成员均已请假回家过年，为保障中移项目工作正常推进，特此为以下人员申请远程办公。
+        支撑时间：2025年1月26日-2025年1月27日
+        支撑人员：张建超、马博
+
+
+
+
+马老师，您好。我是易数这边的张建超，我们公司线上销售平台2024-12-23到2024-12-29的工作量您这边还没有审核，是有什么需要我们更正的地方吗？
+
+
+江苏问题评估
+1、曝光插码缺失（营销专区缺失40%）：已经推动部署了。23号上一批家庭专区、资费专区
+    1.1已于1.7上线套餐专区(H5)、套餐检测专区(H5&小程序)插码重构方案
+    1.2预计1.16上线套餐专区(小程序)、数字娱乐专区(H5)、家庭专区(H5&小程序),1.23上线政企&个人资费专区(H5&小程序)插码重构方案
+2、报表
+    8888670 全网活动曝光点击行为分析报表 
+    8895395 全网活动曝光点击行为分析分渠道报表
+
+3、11月8日-11月24日、11月25-12月1日
+
+马老师，您好。我这边还有个问题想请教一下。11月8日-11月24日、11月25-12月1日这两个周次的线上销售平台工作量审核没有通过，研发云那边时间到了我们就报上去了。审核不通过的原因有以下两点，您看，这个目前我们怎么处理一下。
+11月8日-11月24日：入场当天打卡时间不够，上传研发的那部分已经删掉了这部分工作量。
+11月25-12月1日：  审查不过的主要有两个原因：
+    1、本周次的巡检日期存在多个，例如：【11月4周次【1125-1201】。
+    2、另一个是接口名称和ip的信息重复，例如：【51006、51007、51010】、【对172.19.171.21】。
+
+
+潘湘飞 34 33
+冯胜 143 111
+总177 144
+
+一个是工作量补录的事情，还有一个是工作量上报的事情。
+
+
+
+
+
+1、需要补录的工作量：20241216-20241222
+2、1118-1124 扣除1118号
+3、1118-1124、1125-1201：线上销售平台审核不同过
+4、这周必须要上传：1223-1229
+    23 30 6 13
+
+
+11月7日项目启动-1118工作量填报
+11月
+1118-1124
+1124-1201
+12月
+1201-1208
+1209-1215
+1216-1222
+1223-1229 
+1230-0105
+1月
+0106-0112
+0113-0119
+0120-0126@
+0127-0202
+2月
+0203-0209 @
+0210-0216
+0217-0223
+0224-0302
+
+
+
+插码一级数据接口变更
+
+51007【手厅客户端插码原始日志】
+51006【互联网合作中心和权益】
+H5+小程序（微信、字节、京东、阿里、app轻载、快应用）+H5
+51010【分省H5插码数据日志+专业公司H5】
+77006【APP区域曝光实时接口】
+77011【分省小程序离线接口】
+77017【权益区域曝光实时接口】
+
+
+插码分省数据接口变更
+CM001接口【手厅H5+原生（ios+安卓+鸿蒙）】
+CM002接口【分省小程序】
+CM003接口【分省H5】
+
+
+插码数据程序监控开发
+小时接口数据入库监控
+数据接口日推送结果日志
+数据接口数据量推送日志
+
+
+运维
+采集服务升级
+插码系统安全
+系统平台维护
+插码系统重保
+
+
+
+
+
+
+
+
+
+
+1、工作量和个人挂钩
+2、每天查考勤
+
+
+
+
+
+合作社打卡-考勤9、10个小时
+
+预估计提
+
+工作量提交
+
+结算
+
+
+
+1、核查最重要的部分
+2、实时核查
+
+
+随着公司业务版图的迅速扩展和处理的数据量持续攀升，数据文件的传输速度已经成为制约业务效率提升的一个瓶颈。当前的数据拉取速度已经难以满足不断增长的业务需求，这不仅导致了数据处理上的延迟，同时也影响到了用户体验。
+为了改善这一状况，我们实施了以下具体措施来优化数据传输方式，以达到提高传输速度、确保数据及时性和可靠性的目的。
+1、实施营服平台接口机访问HDFS。
+引入营服平台的接口机作为中间件，直接连接到Hadoop分布式文件系统（HDFS）。通过这种方式，可以绕过传统的文件传输路径，减少不必要的中间环节，从而显著降低数据传输延迟。营服平台接口机将负责与HDFS进行高效交互，管理数据请求和响应流程，确保数据传输过程中的稳定性和安全性。
+2、多线程并行拉取数据文件
+为了进一步缩短数据传输时间，我们采用多线程技术实现对数据文件的并行拉取。每个线程独立处理一部分文件或文件片段，同时工作，这不仅能够充分利用网络带宽资源，还能最大限度地发挥服务器的并发处理能力。通过这种方式，即使面对海量的数据集，也能保证快速且稳定的数据获取速度。
+通过上述手段，达到了以下的效果。
+大幅提升传输效率：通过上述两项核心技术手段的应用，预计可使数据文件的传输速率得到数倍乃至数十倍的增长。
+增强系统的扩展性：此方案具有良好的横向扩展性，随着业务量的增长，可以通过增加更多的线程或者部署额外的接口机来持续提升性能。
+综上所述，通过营服平台接口机结合多线程并行拉取的方式，我们有信心解决当前面临的51系列数据文件传输速度瓶颈问题，进而提升整体业务效率和用户体验。
+
+
+
+20250122
+1、51系列文件切割升级后情况复盘，HDFS文件下拉情况复盘@建超
+2、研发云需求提交（客户轨迹Kafka源端变更由业务方提交）@建超
+3、部分前期以运维工作体现的工作，还是以开发工单提交@建超
+4、测试组的文档，有对应记录的链接，做一个统一入口@马博
+5、流程管理平台工具业务侧沟通@马博@王幸。---业务沟通、工具评审、拉相关业务方进行评审沟通。
+6、项目所有文档统一共享，注意安全保密性@建超-本周搞定
+7、运维文档完善，例如：巡检事前准备中增加巡检目标，巡检准备部分，增加操作，运维服务的主机-对应到你巡检的内容（入口，主机IP）
+8、项目组人员退场事项，协调好项目组在场人员数量@建超
+
+9、插码数据发送时间方案评估。
+10、实时程序延迟情况资源评估。
+11、曝光数据拆分和宋明明沟通。
+12、sdk版本交流，大版本上的升级变化。
+13、用户停留时长，产研方案、张静方案、何勇方案、时间差相减。
+14、节后进行collectr实例扩充，先扩17再20.
+15、运维告警指标，机制文档整理。
+16、巡检文档记录格式优化，记录错误的原因。
+
+
+20250123
+1、待文件切割升级及HDFS文件结束后，节后进行情况复盘。@建超
+2、测试组文档规划。@马博
+3、拉相关业务方进行插码流程管理工具评审，确定使用方需求后再进行开发改造。@王幸@潘湘飞
+4、项目所有文档统一共享管理，注意安全保密性，节前必须搞定。@建超
+5、插码SDK数据发送时间方案评估。@建超
+6、实时程序延迟情况资源评估。@张建超
+7、51007接口曝光和性能数据拆分事项引导。@建超
+8、用户停留时长，产研方案、张静方案、何勇方案、时间差相减。@建超、马博
+9、collectr单机器多节点扩容，节后稳定后节点扩充到17个，如月初稳定度过，再进行二次扩容。@国清
+10、运维告警指标整理。@国清
+11、巡检文档记录格式优化，记录问题原因。@国清
+
+
+值班
+打卡
+工作量
+
+
+潘湘飞 34 33
+冯胜 145 118
+王幸 28 12
+总207-163
+
+2025-02-06
+潘湘飞 34 33
+冯胜 152 126
+王幸 29 14
+总215-173
+
+2025-02-13
+潘湘飞 34 34
+冯胜 152 138
+王幸 28 20
+总214-192
+
+
+2025-02-20
+潘湘飞 34 34
+冯胜 151 140
+王幸 36 23
+总221-197
+
+可视化查询轨迹-3月底
+监控页面关闭的动作，采用关闭页面减去页面开始的时间
+经纬度是否可以采
+手机号检索数据功能---白名单（2月底）
+
+
+1、线上销售平台找楠哥去配置页面和角色权限，找苏唅去配路由转发【只配置路由最外层aa，在淮安容器上的分流服务再做转发】
+2、开通网络、配置ng转发【瑞锌哥确定访问title】
+3、配置CSF【API文档和权限工单申请】
+
+
+计提有点超前
+
+
+
+
+
+纸抽 30
+牛肉干 100
+鸭腿 20
+辣椒面 15
+九台热面 17
+甄实酸奶 30
+面筋 15
+麦片 70
+纸巾 10
+方便面 10
+油壶 70
+油 15
+天猫超市 60
+沐浴露 40
+麦片水果 46
+牛奶 34
+手机壳 24
+冰盒 17
+吸油纸 8
+餐盒 17
+648
+纸巾30
+酸菜10
+688
+
+110+50+50 周末消费
+
+
+
+内容没有什么问题
+优化点
+2月底之前开发
+实时查询，修复bug
+
+
+离线任务开发层面：
+1、离线任务经常会出现任务报错中止了或者被后台杀死了，但是任务列表里还是在运行状态，无法及时监控到状态
+2、离线任务无法看到详细的hive执行日志，有些问题无法定位，比如脏数据及数据倾斜问题。
+3、目前的离线任务任务失败告警机制是通过批处理SQL组件将告警信息写入告警库触发电话及短信告警，但是经常出现插入数据失败或者电话告警没有被触发的情况。
+实时任务开发层面：
+1、程序告警，配置了电话告警，存在部分程序失败了没有电话告警通知的情况。
+2、任务监控界面监控指标不稳定，无法拉长周期，无法显示具体日期内容。
+
+
+
+1、服务器部署的进程没有详细的部署文档，仅能通过部署后进程内的配置文件查看配置细节，但有些如环境配置和其余插件配置均无法详细查看。
+2、研发云工单中，部分工单上传的附件的参数不明确不知道该如何填写，也不清楚找谁进行参考。
+
+1、数据传输链路
+    针对日总采集数据峰值110亿的数据进行数据分流处理，并以离线接口的方式传输
+2、数据分发的方式
+
+3、主机监控的方式
+
+数据监控方式
+1.数据实时采集与写入：数据通过 Prometheus 的 Exporter 实时采集，这些 Exporter 可以从服务器收集指标数据。采集到的数据以时间序列的形式通过流处理的方式，实时写入到与 Prometheus 集成的存储系统（类比 HIVE 库小时表）确保数据的实时性和连续性。
+2.数据清洗与处理：借助 Prometheus 的规则引擎和批处理工具（类比批处理平台小时任务调度），按小时进行任务调度，对采集到的数据进行清洗操作。规则引擎可以根据预设的规则，过滤掉无效的数据、修正异常值或者进行数据聚合。例如，对 CPU 使用率、内存占用率等指标进行平滑处理和异常检测，确保数据的准确性和可用性。
+3.数据推送与下游使用：通过数据交换模块，将处理好的数据推送到 Grafana 用于数据可视化展示。
+4.自定义监控告警：通过研发云配置监控脚本输出不同的文本和数据，触发自定义告警的关键字模糊查询的配置，以此出发自定义的告警，通过短信和电话通知自定义告警中配置的人员。
+
+
+周会
+1.产品文档第二稿完成后发出来，时效性要高一点。 @王幸@潘湘飞
+2.重点针对插码方案管理内容，同张静、宋明明等沟通确认@王幸@马博
+3.延迟时间数据核查及总结@建超
+4.页面停留时长方案评估及报价@曾瑞锌
+5.营服流处理异常问题解决方案确认 @建超
+6.扩容工作，逐渐开展@国清
+7、服务部署文档和机器相关架构图@国清
+8、接口规范内容整理@建超
+接口规范：
+    1、包含哪些业务的数据【加上渠道号】
+    2、数据过滤条件方法。
+
+补录、周会、工作量
+
+1、进程甘特图【3月27日完成】
+2、离线核查功能【四月份完成】
+
+
+神农
+插码管理员
+    生产力、生产关系  管理方式进行控制
+    技术：安卓、IOS
+    渠道id：系统层面
+    版本层：插码规范版本
+    应用层：session（会话）
+
+
+插码质量问题：反向管控业务、由业务推动测试。
+性能：app的web
+用户停留时长
+页面停留时长
+
+业务和行为数据统一ID：将业务ID加入到行为数据中，进行数据绑定。
+
+触点的场景
+问题：也会出现个性化方案
+用户行为分析，，漏斗分析
+用户分群：
+
+业务系统监控。
+性能、重点用户来访。
+数据应用场景。
+根据相同的业务场景进行相同的业务插码进行对比。
+
+    
+
+
+
+领导
+1、不一定适用
+2、问题的本质是资源的规划和申请问题
+3、单独立项去做能力和建设能力
+4、能力方面：从生产中来到生产中去。
+5、数据说话，小步快跑：资源的使用率，资源迭代【用数据来说话，把需求拆解清楚】。
+
+
+江苏现状，建议优化：运维、运营、开发一体化。
+
+
+马老师，易数0203-0209和0210-0216的工作量帮忙审核一下，冯胜老师请假了，刚审批完成，辛苦您了。
+
+2025-02-10~2025-02-16、2025-02-03~、、2025-02-09
+
+
+
+
+物理机器：500多台
+告警机制：值班告警
+可视化告警平台
+具体告警指标：带宽、访问量、状态码
+
+行为日志、业务日志分析指标
+
+页面行为、页面点击、页面渠道
+
+
+行为数据和业务数据相结合进行数据转化率的计算
+
+用户行为展示【那一部分业务使用的次数比较高】
+
+
+wap.js.10086.cn/nact/resource/2504/html/index.html
+
+
+用户欺诈行为
+降低异常量，提高运营量。
+业务层数据 
+
+
+分析报告、分析数据
+
+不适合进行打分-智能质检-有没有按照我们的来说
+
+手厅实时营销
+实时客服反馈-根据用户沟通进行场景划分、意图分析
+
+用大模型赋能产能，不是技术的空架子，不需要质检来检测当前服务，而是需要发现新的商机。
+
+不是需要历史的技术进行机器学习，而是发现新商机，用AI推荐。
+实时营销：
+话务员质检：有没有达到我们营销的进度。
+省公司提要求、分中心进行数据分析。
+端智能实时智能营销。
+
+
+
+
+本次学习中，江苏侧一直在强调生产力和生产关系，要让我们的工作从生产中来到生产中去。最终的目标就是给我们提高效能。
+    1、我们要打造运维、运营、开发一体化，让各部门紧密联系在一起。把我们的行为数据和业务数据相关联从而来挖掘客户的潜在价值。
+    2、跟踪用户从业务活动的投放、用户的行为数据收集，再到业务数据的办理整条链路的转化率，来精确定位用户需求，从而定点分析，优化改进。
+    3、江苏插码的主要优势是精细化管理，在业务需求产生的那一刻就已经规划好自己想要什么数据，数据的雏形是什么样子的，通过10级域模型分层，从技术路线、渠道、版本、用户、触点等多级可以精确区分各层关系，和业务达成一致，保证插码数据质量，从数据开发源头进行数据质量把控。
+    4、江苏数据处理架构为，采用Nginx+Lua实现数据接收，将其缓存为文件，通过Flume传到Kafka，再通过Spark消费kafka入hive离线库。
+        集群稳定：数据稳定的秘诀就是充分利用机器资源，时刻关注机器资源的使用率。和业务系统对接，及时评估出数据涨势，小步慢跑，将机器及时的扩充到
+我们的集群中去，保持集群稳定运行。
+        运维监控：针对运维监控方面，江苏开发了数据大屏来进行数据稳定性运行监控，实时查看系统状态。结合我们自身的情况而言，我们可以把我们离线接口的生成时间，推送时间，数据量，数据趋势等方面通过大屏展示出来以便于我们做到更好的监控。
+        指标告警：同时要充分利用我们的告警资源，制定保证系统稳定的监控指标，第一时间监控到我们关系的指标。
+
+
+1.1、出具10级预模型规范是否可以推动（分册H5、小程序、IOS、安卓）
+    技术规范不一致
+    传值规范完全一致
+    【10套】所有的技术规范有多少，区别有多大
+    轻渠道、权益、APP
+    重点：确定每个部门是不是都有预模型里的字段【字段不同，可以把现状梳理出来】，预模型里没有的字段要补充进去。
+
+    手段：确定各部门的点位确定口径，推动预模型
+1.2、增加字段审核手段
+1.3、
+
+
+技术层面
+1、资源申请，及时预估资源使用率。
+2、运维监控，数据接口层面和服务运维方面增加监控指标。
+3、保证数据及时性。
+
+
+
+
+20250303
+1、｜异常
+周会
+1.产品文档第二稿完成后发出来，时效性要高一点。 @王幸@潘湘飞
+2.重点针对插码方案管理内容，同张静、宋明明等沟通确认@王幸@马博
+3.延迟时间数据核查及总结@建超
+4.页面停留时长方案评估及报价@曾瑞锌
+5.营服流处理异常问题解决方案确认 @建超
+6.扩容工作，逐渐开展@国清
+7、服务部署文档和机器相关架构图@国清
+8、接口规范内容整理@建超
+接口规范：
+    1、包含哪些业务的数据【加上渠道号】
+    2、数据过滤条件方法。
+
+补录、羚羚退场
+
+合作社补卡
+开发工作量
+东川负责写、韩钰负责审核
+
+
+
+目前江苏插码采集系统后端数据处理技术架构为采用Nginx+Lua实现数据接收，并将其缓存为文件，通过Flume组件传到Kafka，再通过Spark消费kafka入hive离线库。江苏目前是4台Nginx+4台Flume+3台Kafka的物理机部署方案，没有采用容器方案，处理用户日活峰值达1100万，数据日峰值10亿。从稳定性角度考虑，容器化方案并不适用高并发，高IO场景下的插码采集系统，建议重视插码采集系统，扩大硬件资源投入，根据硬件实际使用率，逐步增加硬件资源，完成系统扩容。我们渠道支撑中心插码采集系统技术架构为
+
+由Nginx+java程序的方式实现数据接收，并将其转发至Kafka中。通过Flink程序将数据发送至Hive离线库和Kafka实时Topic中。目前是14台Nginx+8台Collector+18台Flink的物理机部署方案。
+
+
+
+
+
+
+
+
+我们今天找个江苏提过来的触点没有曝光数据的原因，发现是开发这边写触点曝光的时候多写了一个type：once，导致这个数据在51007和77006里都没有，这个字段本身没有什么意义的，建议清洗逻辑不要以这个字段为判断条件，这是建议1.
+
+
+建议2是曝光清洗到一个接口里去
+
+建议1：
+开发这边写触点曝光的时候多写了一个type：once，导致这个数据在51007和77006里都没有。
+
+1、type：是区分单点曝光和区域曝光的标志，如果去除，区域曝光无法高效识别。
+
+是不是核查需求导致
+
+
+建议2：是曝光清洗到一个接口里去.
+1、已经和宋明明拉会沟通过，当时只有夏老师和陈杨老师没有表态，后来张利君老师也有关联报表涉及，就没有改造。
+2、建议从使用侧进行口径划分，我们只是技术侧接口。
+
+
+
+
+2025-03-07
+潘湘飞 38 34
+冯胜 150 144
+王幸 44 35
+总232-213
+
+
+
+1、业务方反馈接口中有一个字段的｜没有了，然后定位到是咱们的清洗程序处理了，下周四将这个口径去除掉。（补充一个邮件）
+2、浙江省侧数据异常问题主要有两点：（处理完，总结回复邮件）
+    第一点：文件后缀有时间戳和我们下发的不一致，是他们自己传输链路中的流程。
+    第二点：文件乱码，是因为我们下发的数据是加密的，需要解密之后才能用，已经让他们发送邮件申请解密密钥了。
+3、IOS开发反馈SDK有弹窗，经核实SDK本身不申请权限，不涉及弹窗事项，已经安排人跟进了，IOS的开发正在排查，还没有反馈。（根据一下后续结果）
+4、营服流处理异常问题解决方案确认-系统平台中心已经优化完成，并且我们已经进行测试，预计本月中上线。（后续跟进）
+
+
+1、页面停留时长方案评估及报价@曾瑞锌
+2、延迟时间数据核查及总结@建超
+3、扩容工作，逐渐开展@国清
+4、接口规范内容整理@建超
+5、业务方想变动XY字段中的“｜”，需要补充一个邮件，进行变动数据留痕。@建超
+6、浙江CM001文件乱码和传输问题持续跟进，总结邮件反馈。@建超
+7、IOS开发反馈SDK有弹窗，持续跟进是否与SDK有关。@建超
+8、区域曝光调研，并和张静沟通明确需求。@马博
+9、把几个部门现在的规范拿到，和江苏的规范进行比对，有没有需要增加的内容，针对需要增加的部分怎么制定规范内容（可以和现有业务沟通）。@马博@王幸
+10、流程管理工具开发前置工作梳理。@雯鑫@王幸
+11.梳理各部门现有插码采集字段，整理对比不同字段差异，沟通字段增加或变更的必要性，并同业务沟通最终方案@马博@王幸
+
+
+
+
+1、严禁使用各类云文档处理中心工作！！！
+2、严禁在研发云、线上销售平台、移动到家等系统中提交需求、工单、反馈、发文等场景时使用互联网上的在线文档、网盘存储和处理业务数据和文档。
+3、后续如因合作方违规被中心通报，导致我部门安全考核扣分，将严肃处理！
+
+
+杭州颖数科技有限公司
+
+
+
+背景：业务方要求在51007下发数据时需要下发订单编号数据中的标识符，做后期的轨迹分析，因此需要插码侧对下发逻辑进行改造。
+具体操作如下：
+1、对51007中间层下发wt_xy字段，并在处理时去除掉标识符的转义方法
+2、51007接口表中下发wt_xy字段
+3、验证字段格式并进行上线
+
+业务方要求在51007下发数据时需要下发订单编号数据中的标识符，做后期的轨迹分析，因此需要插码侧对下发逻辑进行改造。
+具体操作如下：
+
+51007离线接口中的wt_xy字段中订单数据编号标识符未进行下发，业务方需要在数据中进行使用，需要对这部分数据进行下发。
+具体操作如下：
+1、对51007中间层wt_xy字段中增加订单数据编号字段。
+2、51007接口表中下发wt_xy字段。
+3、验证字段格式并进行上线。
+
+1.新需求管理-需求运营分析中，进行筛选导出需求，每周三导出给建超
+选择列（√计划交付时间、√需求分析人员、√需求实现开发人员、√需求验收时间、√需求实际工时）之后，筛选【需求分析人员】三次，分别为潘湘飞、王幸、冯胜
+
+
+
+APPID---GIO_ID
+页面环境
+
+app自己埋的
+初始化日志
+退出日志
+
+离开页面日志---需要进行订定开【大概需要多少人天】
+心跳日志
+deviceId-设备ID【cookie】
+
+2025-03-07
+潘湘飞 38 37
+冯胜 150 144
+王幸 43 43
+总231-224
+
+
+临平数开问题排查
+
+
+20250317会议纪要
+一、确定插码的具体场景
+1、环境层能应用到哪些应用场景。
+2、环境层怎么去配置。
+3、停留时长直接计算好，直接上报一个停留时长的日志。
+4、wt_cof\device_id什么时候会变，H5、小程序和IOS的三个cof进行统一。
+5、刚下载app没有打开可不可以获取到这个场景的数据。
+6、白屏时间、正向流转标识
+7、退出插码-余利博提出的问题
+    用户安装app，用户卸载app，这些动作数据，有什么解决方案，有没有办法捕捉到
+
+
+javax.crypto.BadPaddingException: Given final block not properly padded. Such issues can arise if a bad key is used during decryption.
+解密后的字串是：null
+
+
+
+提留存
+
+精细一点的标签
+给什么样的用户推送什么活动
+wt_cid
+事件码：精确到点位
+高价值标签：大字版
+通过数据直接定位客户画像直接推算出流失用户需要什么，直接推送
+
+定义低粘用户、活跃用户（每个月访问1到3次）、沉默用户
+登陆次数、访问页面的类型
+
+关注的指标：
+充值渗透率
+月活
+
+用户定义：什么样的类型用户就可以通过什么方式拉回。
+结论：预测这个用户是不是会流失
+客户洞察直接展示用户客群
+正负样本2万条
+
+
+
+
+CM系列加密方法整理文档发送潘老师
+系统扩容下月中
+什么样的形式增加渠道号
+
+
+
+
+1.CM加密文件发潘老师@林仁辉；
+2.XY字段回复邮件@张建超；
+3.曝光方案调整进度同步@马博；
+4.跟青楠确认线上销售平台权限问题后，进行线上销售平台角色账号申请测试、账号使用测试@潘湘飞@王幸@张建超
+5.XY字段的安全规范，体现在插码规范中@马博；
+6.接口规范整理@张建超；
+7.4月中旬进行采集集群扩容@卞国清
+
+
+
+
+
+磐道策略变更
+上传磐道的账号为 sftp_coc270sz  -p 2302 
+
+优化一：分配一个新的端口进行数据上传。
+优化二：分配一个账号单独供分省使用【sftp_coc270szapp】。
+
+
+
+
+
+2025-03-20
+潘湘飞 38 38
+冯胜 150 147
+王幸 43 43
+总231-228
+
+
+之前goodsid 后来改成wt_goodsid
+
+
+Wangxing78!
+
+工作量填报【至少要填报三个人的工作量】
+1、报小工作量【1到2天，自己编写的工作量要清晰，一定要体现工作量】
+查数，问题排查【具体问题描述清楚】
+智慧中台维护，潘湘飞账户信息更正，加代码迭代【具体信息描述】
+流处理和批处理问题优化【小问题迭代】
+。。。
+2、平时归拢工作量，争取把每一项工作都转化为工作量，做这个工作的时候就去想能不能转化为工作量。
+
+实时程序兼容性参数调整
+背景：为了加强数据处理能力，调整kafka单条数据内容大小的参数，提升topic能承载数据的能力，
+保证所有的业务数据都能正常的下发处理，并优化下整体的链路结构。具体操作如下：
+1、在IP和UA解析程序的采集与输出表中新增kafka参数。
+2、重启程序，并监控程序运行状态，无异常。
+
+51007离线接口xy字段清洗口径优化
+背景：为保证xy自定义字段的准确性，同时避免脏数据导致程序出现异常，需要对其进行口径优化。 
+1、DWD和DWS层代码中优化xy字段清洗口径。
+2、上线变更后程序进行重跑并进行数据验证。
+
+
+python代码优化
+
+优化集合规则：
+1、将原有的稽核方法进行迭代，增加采集完整性稽核和埋点合理性稽核，提高数据处理性能（et、event、si_n等）。
+2、将通用逻辑抽象成统一的方法，时间、数据格式、数据源读取和写入等方法抽象成具体函数，kafka数据通过队列存储，提高代码可读性。
+3、白名单请求接口变更，将白名单存储数据库变更为实时数据库，进行数据的实时关联。 
+4、建立数据库连接检查机制，保证数据库的稳定链接。
+
+
+
+安卓和ios小程序没有全局参数展示。
+全局参数是否支持新增。
+跳转问题。
+
+运维事项
+按季度更新并反馈个人用户数据资产清单及权限管控清单
+弱口令pg密码修复
+智慧中台数据上报
+
+为提升 Postgres 数据库的安全性，我们计划对 postgres 用户的弱密码进行变更。目前，collector 实例、nginx 和 shotpot 均调用了该数据库。经过初步评估，我们发现此次月底进行密码变更可能会对 collector 的数据产生影响。考虑到数据的完整性和业务连续性，为避免在数据统计及关键业务处理的月初时段出现异常，我们建议将密码变更操作推迟至月初之后进行。
+
+2025-03-27
+潘湘飞 38 38
+冯胜 150 147
+王幸 43 43
+总231-228
+
+权益接口改造：WT_mc_ev=210315_QYCS
+实时
+离线接口
+区域曝光
+新接口怎么从51006、51007捞权益数据：
+51006：用datasourceid，一级超市datasourceid=aba9de4ce446b2d2
+51007：用wt_mc_ev，参考【腾讯文档】副本-权益业务营销活动码WT_mc_ev https://docs.qq.com/sheet/DYnNkcGdoZHJMbkVi?tab=BB08J2，'210315_QYCS%'、'230417_QYLQ'、'210902_QYLQTYY%'
+
+权益超市
+
+    
+中国移动是中国最大的通信运营商之一，在国内通信市场占据主导地位，拥有庞大的用户基础和广泛的网络覆盖。线上渠道业务覆盖全国所有地级市以上地区。为更好的满足运营分析需求，提升用户体验，并最终实现业务增长和价值创造。于2024年4月投资845万元，开发“线上渠道行为分析系统” 。我公司中标该项目的开发建设，任命我为项目经理，全面负责项目管理工作。该项目开发周期12个月，提供的核心功能包括：用户轨迹数据看板、事件分析、漏斗分析、用户留存分析、实时商机。该项目应用大数据分析技术，对用户的点击行为、浏览行为、曝光行为、用户访问时长、页面停留时长、平均加载时长等实时数据进行加工处理；生成活跃度指标、留存率指标、转化率指标、用户路径分析指标、时间分部指标、用户分群指标。以此构建并提供丰富灵活的数据分析产品功能，以数据驱动业务，辅助提升业务决策效率，提升用户满意度和忠诚度,提高业务转化效果。
+
+该系统使用GrowingIO埋点SDK服务和Nginx采集服务来获取线上渠道的行为日志数据，通过Kafka消息队列进行数据传输，将数据存储在Hive离线数据仓库和Clickhouse实时数据仓库中，基于Airflow离线调度处理平台和Flink实时计算组件进行离线和实时指标输出，将指标数据分析结果存储在MySql数据库中，最后基于SpringBoot框架开发数据分析平台进行数据分析和展示。根据项目的特点我组建了项目型团队，项目团队20余人，包括需求工程师2人、架构师1人、产品经理1人、算法工程师2人、java开发工程师4人、数据开发工程师8人、测试工程师4人。同时还聘请了某知名高校教授1名，负责指导运筹规划策略的研发工作，该项目覆盖业务范围广、开发难度大、精度要求高。为了保证系统能够如期上线，我作为项目经理，投入了大量的精力进行了严格的管理工作。
+
+
+大数据系统通过分析用户行为数据，可以提取出多种指标，并基于这些指标为企业或组织带来价值。以下是一些常见的行为数据指标及其潜在价值：
+
+### **一、用户行为数据指标**
+1. **活跃度指标**
+   - **定义**：衡量用户在特定时间段内的活跃程度。
+   - **指标**：
+     - 日活跃用户（DAU）、周活跃用户（WAU）、月活跃用户（MAU）。
+     - 用户登录频率、使用时长、操作频率（如点击、浏览、购买等）。
+   - **价值**：
+     - 了解用户对产品的使用频率和粘性。
+     - 识别高价值用户群体，优化产品功能和用户体验。
+
+2. **留存率指标**
+   - **定义**：衡量用户在首次使用产品后，持续使用产品的情况。
+   - **指标**：
+     - 次日留存率、7日留存率、30日留存率。
+   - **价值**：
+     - 评估产品的吸引力和用户忠诚度。
+     - 发现用户流失的原因，优化产品设计和运营策略。
+
+3. **转化率指标**
+   - **定义**：衡量用户从一个行为阶段到另一个行为阶段的转化情况。
+   - **指标**：
+     - 注册转化率、购买转化率、付费转化率。
+   - **价值**：
+     - 优化用户路径，提升用户体验。
+     - 提高关键业务目标的完成率（如注册、购买、订阅等）。
+
+4. **用户路径分析**
+   - **定义**：分析用户在产品中的操作路径。
+   - **指标**：
+     - 用户进入和退出页面、页面停留时间、操作流程。
+   - **价值**：
+     - 发现用户行为瓶颈，优化关键路径。
+     - 提升用户体验，减少流失。
+
+5. **时间分布指标**
+   - **定义**：分析用户行为在时间上的分布。
+   - **指标**：
+     - 用户活跃时间（如早晚高峰、周末等）。
+     - 用户行为的周期性（如每日、每周、每月）。
+   - **价值**：
+     - 优化推送时间、活动时间，提升用户参与度。
+     - 制定更符合用户习惯的运营策略。
+
+6. **用户分群指标**
+   - **定义**：根据用户行为特征进行分群。
+   - **指标**：
+     - 新用户 vs 老用户、活跃用户 vs 沉默用户、高消费用户 vs 低消费用户。
+   - **价值**：
+     - 针对不同用户群体制定个性化策略。
+     - 。
+
+### **二、行为数据的价值**
+1. **优化产品设计**
+   - 通过分析用户行为路径和停留时间，发现产品的功能瓶颈。
+   - 优化界面设计、交互流程，提升用户体验。
+
+2. **提升营销效果**
+   - 通过用户行为分析，识别高价值用户群体。
+   - 制定精准营销策略，提高转化率和ROI。
+
+3. **增强用户粘性**
+   - 通过分析用户活跃度和留存率，发现流失原因。
+   - 设计激励机制（如奖励、优惠、个性化推荐），提升用户粘性。
+
+4. **支持业务决策**
+   - 通过行为数据洞察用户需求，为产品迭代和功能开发提供依据。
+   - 帮助企业制定长期战略，优化资源配置。
+
+5. **风险识别与预警**
+   - 通过异常行为检测，识别潜在风险（如欺诈行为、恶意操作）。
+   - 提前预警并采取措施，降低损失。
+
+6. **个性化服务**
+   - 基于用户行为数据，提供个性化推荐、内容推送等服务。
+   - 提升用户满意度和忠诚度。
+
+### **三、具体应用场景**
+1. **电商行业**
+   - 分析用户浏览、搜索、购买行为，优化商品推荐算法。
+   - 提升转化率和复购率。
+
+2. **社交媒体**
+   - 分析用户互动行为（点赞、评论、分享），优化内容推荐。
+   - 提高用户活跃度和留存率。
+
+3. **游戏行业**
+   - 分析用户游戏时长、关卡完成率、付费行为，优化游戏设计。
+   - 提升用户留存和付费转化。
+
+4. **金融行业**
+   - 分析用户交易行为、登录频率，识别异常行为。
+   - 提升风控能力，保障用户资金安全。
+
+5. **教育行业**
+   - 分析用户学习路径、完成率，优化课程设计。
+   - 提升用户学习效果和满意度。
+
+### **总结**
+行为数据的分析可以帮助企业深入了解用户需求、优化产品与服务、。通过结合大数据技术，企业可以更高效地挖掘行为数据中的潜在价值，为决策提供有力支持。
+
+
+
+
+插码流程管理工具排期
+权益数据链路改造计划排期
+区域曝光方案评估
+51007曝光数据剔除
+51007-chancePhone手机号加密
+
+
+
+林璐2号，增瑞锌、方志3号 
+
+
+【20250402】和猛爷开会讨论核查工时，人天的问题。
+请各部加强质量就不写了，写写具体工作就可以了
+工作量的描述，是这个需求的全部工时，和当周的工时具体使用哪个。
+培训一下他们怎么去开发，不太会写的问题。
+统计一下开发7次的这个方案，10个事件发多少个问题，哪个部门，哪个团队，哪个人做的这个事情，将这个加到邮件里面。
+排查三次以上的要做培训，插码方案的描述。
+人天就不发了【什么不用发】
+
+问题：
+开发团队对插码不太清楚-建议4月进行培训【技术方案】
+SDK升级需不要去所有的开发团队都改掉-CDN接入，怎么去管理各个省份。【分省自建页面不需要APP管理】
+找张静的领导碰一下，提出了各种问题，需要解决就需要他们的支持。
+注意：
+数据量，内容，支撑情况
+发现的问题，进行培训，提高核查通过率。
+态度温柔一点，工作态度的问题。
+
+
+梳理业界情况，怎么增强插码，梳理目前的插码情况做好数据梳理。
+
+
+
+区域曝光方案跟进
+权益新接口方案制定
+培训事项和app共同制定
+小程序审核工单
+
+
+
+
+插码流程管理工具排期
+
+权益数据链路改造计划排期
+区域曝光方案评估
+51007曝光数据剔除
+51007-changePhone手机号加密
+分省小程序审核质量数据统计。
+10号和15号扩容
+
+给数智中心底层数据，让他们去做底层汇总
+
+
+
+1、曝光方案调整后的开发反馈情况@张建超
+2、权益新接口事项，对下游影响较大，同大数据进行沟通；APP曝光数据一起沟通；@张建超@马博
+3、停机充值需求跟进@张建超
+4、51007-changePhone手机号加密，需求明确@张建超
+5、流程管理工具进展同步@张建超
+6、开发培训-SDK引入的问题；协同张静一起培训；@马博
+7、小程序审核-需要统计目前每周审核的小程序有问题量是多少，需要根据数据情况判断是否要取消@马博@董文凯
+
+
+
+
+一、用户登陆次数（口径确认）
+取哪个时间的：31号来取。
+用户登陆表：用户登陆一条就有一条（排除微信登陆）
+
+登陆及活跃
+3月所有的用户的忠诚用户
+最近7天：本月该用户最后一次登陆的前七天登陆次数。
+
+低粘用户：T-1
+流失用户：
+忠诚用户：
+
+
+二、余量查询
+取近7天余量查询的手机号
+
+三、
+
+两天内走事件单，三天及以上走需求工单
+
+【插码分省接口数据文件缺失】XX省份XX接口yyyymmdd周期数据文件缺失
+省份
+接口编号
+缺失详情
+缺失原因
+
+
+【插码分省接口数据文件缺失】
+【插码问题排查】
+
+
+1、程序异常停止，临时维护支撑
+2、分省或者其他业务方问题支撑
+3、接口文档梳理以及一些临时取数文档的撰写
+4、日常接口的维护及升级
+5、配合营服或者其他业务方晚上支撑
+
+1、沟通需求。
+2、问题排查。
+3、接口答疑
+
+
+
+
+【中国移动】【流程提醒】张建超,您好，中移在线问题流程，工单号[sjzwt2025040335188174]，工单标题[8889519云平台5G终端销售日报数据排查]，已到达您的组待办超过20分钟，请尽快确认处理。【中移在线】
+
+
+EV2025040752204964
+
+研发云
+变更类别L角色调整
+事件流程中将合作伙伴张建超增加到大数据租户可视化系统（渠道支撑中心）组里面。
+
+项目背景：项目第一阶段的计划（需要跟项目计划方案一致）、项目执行情况、项目完成情况；
+
+插码采集作为线上运营的必备要求，当前已在数据采集及数据应用方面取得阶段性进展，有效支撑了线上运营工作的开展。
+1、统一采集支撑工作：支撑app开发运营中心、权益运营中心、互联网合作中心等250个核查需求。重点支撑app、轻渠道部门进行营销专区插码重构、新电商原生化页面插码新增、鸿蒙新页面插码新增，增加并兼容互联网中心快应用卡片埋点数据采集，以及其他部门日常需求支撑。在核查过程中将深化埋点SDK校验效率，确保埋点方案精准实施。强化与各中心的沟通，确保数据需求与问题反馈畅通无阻。同时，持续跟踪埋点数据质量，为业务决策提供有力支持。
+2、数据应用支撑工作：重点保障春节期间的实时离线程序稳定运行，优化Hadoop集群下拉文件及数据文件切割的处理性能，降低数据处理时间，保障业务数据的及时性。完善程序自动化监控能力，针对实时程序异常、积压以及失败等场景进行自动化告警；针对离线程序数据量异常、数据处理流程失败等场景进行自动化告警，强化数据接口自动化运维机制。优化51007接口数据内容，拆分曝光和性能数据到新的接口中，降低51007接口数据量，提高数据传输稳定性。同时需要进行客户轨迹迭代变更事项，切换客户轨迹现有消费的kafka集群到目前离生产最近的数据源，保障业务方使用数据的及时性。
+3、插码运维支撑工作：保障由插码项目组运维的13台机器的硬件及服务运行正常。监控并优化 Collector实例的文件积压情况，确保数据传输稳定，无数据丢失。确保离线任务和实施任务按计划正常运行，任务成功率保持在99%以上。持续关注并监控Kafka、Hadoop、Flink集群的负载情况，保障程序稳定。同时完成插码采集服务扩容，制定Collector单机器多节点扩容，并完成测试，做好随时进行第二阶段扩容的准备。
+第一季度持续支撑中国移动APP、权益、互联网全网线上渠道触点的迭代和新增，保障线上触点的数据采集及应用支撑；同时持续提升数据承载量，以满足支撑中国移动APP原生月活不断增长的数据采集量。 
+
+
+
+
+浙江省杭州市余杭区仓前街道天峻公寓7幢一单元1502
+
+
+
+1、工作量审核（冯、马）-结束
+2、sdk插码工作量，工单
+3、研发云工作量
+
+
+
+
+
+2025-03-27
+潘湘飞 8 3
+冯胜 7 5
+王幸 152 111
+总167-119
+
+
+1.统计下一季度的需求及时率
+2.总结下一季度的审计、安全之类的相关动作
+3.实时数据的监控、离线数据的优化  两个事情各总结几句话说一下进展和结果
+
+一、一季度需求支撑及时率
+研发云一季度有效需求231个，实现完成231个，排期内正常交付231个，延期交付0个，需求支撑及时率100%，已达需求支撑及时性的基础目标95%。
+二、审计、安全相关动作
+1、每月进行合作伙伴安全自审计（账号、人员、数据安全等信息）。
+2、每月提交插码主机系统安全漏扫报告与渗透测试报告。
+3、全面开展勒索软件、木马病毒风险排查，关闭存在风险的端口。
+4、关闭开源文件同步工具rsync多个安全漏洞。
+5、插码相关主机、数据库涉及个人用户数据处理的账号清单梳理。
+6、参与集团公司组织的“春耕行动”网络安全专项演习。
+7、在线文档数据外链清理。
+三、离线数据优化
+1、通过文件传输程序及处理程序到优化，51007离线接口月初（1日）23点小时账期文件生成时间从次日的5:20提前到了次日的1:43，日账期数据文件推送完成时间从次日的9:06提前到了次的3:25。
+分省数据接口如江苏CM001离线接口月初（1日）文件生成时间从次日的16:45提前到了次日的3:04，推送完成时间从次日的18:28提前到次日的4:12。
+2、51007、CM系列接口数据文件推送脚本重试模块优化完成，提高了数据文件推送的成功率，从重推成功率不足50%提升到了100%。
+3、大文件接口HDFS文件下拉模块应急方案实施完毕，确保文件中转主机异常时接口仍能按时精准推送文件至目标主机，有效提高了数据接口的容错能力。
+
+四、实时数据监控
+1、由于ODS层数据量庞大，在批处理平台开发了一个ODS层数据量记录程序，记录每天ODS层的总数据量，便于后期数据的分析及数据增长趋势的预测。
+2、为了精准的定位实时数据的延迟情况，将所有实时程序新增时间处理字段，并将监控的差值写入到离线数据库中便于后期分析与定位具体的数据延迟情况。
+3、使用流处理的组件，配置告警信息包括数据积压告警，失败告警等，通过短信和电话的形式通知告警人员，便于对实时程序状态的监控
+
+
+我们对5个离线接口进行文件传输程序及处理程序到优化，51007离线接口月初推送完成时间提前了6小时。江苏、河南、浙江、山东分省CM001数据接口月初推送完成时间平均提升了10个小时。
+
+
+权益区域曝光子标题字段
+
+YSTSI+子渠道号
+YSTSE+子渠道号
+
+
+
+
+
+@石涧_Spring 石老师，权益原生化页面的埋点中全局增加 子数据源 id字段  
+subdatasourceid  固定值：lwmocvna7yi1z6hq
+我们后续将利用这个字段把 51007 中权益 rn 数据清洗到 51006
+
+
+
+权益会议纪要
+会议时间：2025年4月17日
+参会人员：石涧、昝慧、张建超
+会议内容：
+    1、针对权益超市原生化页面数据过51006接口进行数据下发。
+    2、通过子数据源id字段 subdatasourceid：lwmocvna7yi1z6hq来区分权益原生化页面数据。
+    3、51006接口中本次主要增加13个字段，字段如下：
+
+
+
+权益 1天
+权益原生化数据变更：从起初制定的新增51011接口方案变更为51006接口新增字段方案，制定数据分流方案，确保权益原生化数据被唯一检索，同时进行新阶段的任务排期方案制定。
+行为数据 2天
+1、预流失用户预测和召回方案制定，同需求人制定并确认100多个行为特征的数据口径并进行验证。
+2、对数据方案进行可行性分析并制定排期，持续对数据检索性能进行优化。
+3、推动并执行方案
+数据表运维 3天
+
+
+潘老师好：
+针对APP运营所提出的基于用户行为数据进行预流失用户预测事项，本周插码行为特征数据整合进行中，数据整合进度30%，预计下周可完成数据整合工作并提供给数智中心进行模型训练准备。
+
+
+1、采集服务文件积压，实时离线数据传输延迟。
+2、数据存储周期变短。
+3、离线数据计算高负载持续运行。
+4、实时数据处理出现积压。
+5、数据接口及时性和稳定性大幅度降低。
+
+数据积压导致实时离线接口数据延迟
+磁盘空间不足导致数据存储周期过短
+计算集群高负载运行数据处理性能过低
+
+
+
+王幸老师自己做一下核查
+确定51007需不需要权益的数据
+需要谁来管理js代码，规划好，总是要有人来验收
+SDK开发完成，谁来进行代码验收：把这个问题提出来
+SDK更新是CDN更新【CDN更新的方式用一段话、流程图，讲解一下】，是不是已经达到了对所有的开发团队有没有干扰
+指标是不是有效-暂时的特征、确定比较核心的权重去进行预测---抓住用户的行为密码为什么不来（经验主义，符不符合常识、什么样的活动可以引流用户）。
+对数据有感知，精确定位数据，和数据进行沟通。
+页面量级是否可行
+怎么样有效果  怎么去挖掘用户行为画像、挖掘用户画像和潜在需求，把需求抄过来
+相应的轨迹案例上有没有成效的案例，轨迹应用案例。
+
+
+
+
+
+
+1、权益区域曝光、权益实时单独接口，需要单独再跟权益沟通，下个月沟通；@建超；
+2、权益业务规范文档更新，今天发出来；@马博；
+3、51007-changephone手机号加密@张建超；
+4、小程序审核工单问题：明确分中心、省公司如何跟我们对接需求，确认后续工单提交流程@王幸
+5、系统核查功能排期，确保4月底完成核心功能开发 @张建超；
+6、磐道传输链路优化问题定位@张建超；
+7、APP区域曝光业务规范更新及APP适配新方案的进展，是否还需要进行改造@马博
+8、行为特征数据进度情况同步@张建超；
+
+
+工作量上报监控方法
+
+安卓、IOS、鸿蒙渠道 
+subdatasourceid：lwmocvna7yi1z6hq
+
+
+
+
+
+@磐道韦雅儒 @盛英辉 
+周二给插码创建个新账号sftp_coc270cm，以及路由创建。原链路保存。切完后再删除原链路和sftp_coc270sz账号
+
+51010、51007、51006、51001、51003、51004、51005、51206、99001一级iop              
+lftp -u 'sftp_coc270sz,SFtp_coc1!%' -p 2302 sftp://10.250.33.7/incoming/cmccsales_270cm/                
+                
+分省-磐道               
+lftp -u 'sftp_coc270sz,SFtp_coc1!%' -p 2302 sftp://10.250.33.7/incoming/cmpt/               
+
+
+
+
+2025-04-25
+潘湘飞 10 7
+冯胜 7 6
+王幸 161 131
+总178-144
+
+
+
+
+1、统一每个页面的逻辑-统一一个方案
+2、谁来处理逻辑
+3、筛选策略【】
+4、唯一的ID和标识
+
+
+
+
+
+
+
+1、不是能力上的差异
+2、远程人员项目不可控，没有现场人员稳定
+
+
+
+
+
+1、系统迁移
+运维要求更高
+
+运维人员的技能要求高了
+    平台运维、平台容器化
+技术要求是越来越高的，响应要求越来越高，
+
+839  998
+
+
+1、项目本身都是高级的工作、找远程人员是为了降低成本
+2、远程人员同时具备高级人员的工作能力。
+3、由于不再现场办公导致工作响应不及时，管理制度不完善导致故障频发。
+
+410.5
+133
+188
+
+321
+
+2023-2024年，总计工作量4350人天，其中，高级工程师的工作量1750.5人天，占比40%，其中审计核查高级干中级远程工作量211人天，排除审计核查部分。通过自查，仍有321人天属于高级干中低级工作，（中级188人天，远程133人天）。如按照审计核算单价测算，仍有8.8万金额属于浪费。（中级1.8万，远程7万）
+
+527*133=70091
+100*188=18800
+
+这个是我们研发云工单需求支撑及时率的统计，工单有一个计划交付时间，在计划交付时间结束前没有关闭工单就会延期。赵雯鑫这个在计划交付时间之后才关闭，导致延期。
+那段时间工单少，赵雯鑫想再报一个周的工作量，导致延期。
+
+这个就是我们研发云报工作量的需求及时率，会有一个计划上线时间，这个工单在计划交付时间之间没有关闭就会延期
+
+
+
+工作内容分类补充、结束的工单时间、不同等级人员的重合部分、
+
+
+1、每个需求补充开发文档，包含关键信息（下次周会展示本周的开发文档，1个月内补齐之前所有的开发文档）
+2、文凯统计审核工作耗时，建议提工单
+3、5月16日开发完成，5月第3周开始跟业务人员演示
+4、统计近三个月每月活跃用户量（手机号去重）
+5、用插码监控渠道中心PC端页面（主要看PV/UV，@马博出个方案发给客户）
+6、需求及时率已被通报两次，一定要避免再发生（@建超盯紧马博）
+7、用实时核查功能先做一些简单核查
+8、补充运维文档（按事项记录）@国清补充
+9、运维-扩节点排期（周五跟客户同步排期计划）
+10、工作量发累计的表格（当周和累积分两个sheet）
+11、写工作量时加上关单时间，未关闭的写未关闭
+12、记录sdk每个版本的功能清单，且每个版本涉及多少个页面
+
+
+datasourceid
+page——type
+mr——id
+et clk、pageviwe
+
+
+
+
+数据开发类
+数据维护类
+数据核查类
+数据分析类
+数据融通类（离线）
+数据融通类（实时）
+数据输出类（离线）
+数据输出类（实时）
+数据API接口类
+数据分析类
+数据核查类
+
+
+主机账号排查
+张羚羚、陈敬晶
+集团4a账号状态
+日志保存6个月
+实时数据历史有哪个省份
+
+
+
+【250515】
+磐道数据传输速率
+10.250.208.251:2318    传输速率：6MB/S
+10.250.208.232:2302    传输速率：90MB/S
+10.250.208.233:2302    传输速率：90MB/S
+10.250.208.234:2302    传输速率：90MB/S
+10.250.208.235:2302    传输速率：90MB/S
+10.250.208.236:2302    传输速率：90MB/S
+
+
+
+
+
+
+
+
+
+
+
+
+
+业务系统部门主管领导
+1、采集端口网络
+2、部署文档
+
+整体方案
+
+应答方对项目的理解
+数据质量管理应用
+
+本周工作进展：
+**APP支撑保障方面：**
+1.本周流程管理工具已按期完成插码方案导入功能开发，预计下周完成实时查询筛选功能优化。
+2.本周针对APP协同专区客户行为数据支撑问题，基于业务所提供的插码埋点方案，明确了数据传输规则，本周完成实时数据传输程序开发，预计下周进行数据联调。
+3.本周针对河南省公司实时插码数据接入需求，本周正在进行网络安全协议签署，预计5月底进行实时数据传输程序开发。
+
+**项目管理方面：**
+1.本周完成插码投资项目产品需求文档初稿编写。
+
+
+
+
+
+根据3月28日与4月9日两次演示汇报领导要求与分中心调研情况，APP军团规划建设APP协同专区能力，针对家宽新装、套餐升档业务在中国移动APP办理过程中涉及互联网音频话务进线后，在坐席侧展示APP客户进线商机信息提示、客户标签、客户轨迹等信息，支持坐席一站式解决APP协同客户诉求，快捷完成业务办理。
+
+1、权益超市侧上线原生版本权益超市首页、H5页面（活动、权益领取等业务），改造51006接口和权益实时接口进行数据下发【权益原生化页面改造】。
+2、APP军团规划建设APP协同专区能力，针对家宽新装、套餐升档业务在中国移动APP办理过程中涉及互联网音频话务进线后，在坐席侧展示APP客户进线商机信息提示、客户标签、客户轨迹等信息，支持坐席一站式解决APP协同客户诉求，快捷完成业务办理，插码侧进行数据处理和数据支撑【app军团客户轨迹需求】。
+3、支撑分析用户行为及业务数据，通过深度学习等技术手段，输出用户可能流失的概率，并生成标签。该标签可用于流失用户挽回及精细化运营工作【数智中心大模型用户数据分析】。
+4、河南、江西申请接入插码实时数据，了解河南省客户端、小程序、分省H5的实时行为信息，以便于后续做出相应的分析及运营动作【河南、江西申请接入实时数据】。
+
+平台开发
+1.优化实时核查检索功能及性能，提高查询效率。
+2.新增定时任务，管理数据存储时长。
+3.开发插码自动稽核功能。
+4.开发excel导入插码方案功能。
+5.实时核查数据新增多手机号筛选功能。
+
+加强合作方数据安全管理工作邮件中的几个问题点
+1、营服平台账号申请的开始和截至时间
+2、入场时安全责任书签订时间
+3、安全培训内容以哪个为主
+
+
+插码数据分类协议
+包括用户插码数据D1-2 用户上网行为相关数据、手机号（加密
+
+
+
+SDK将采集到的JSON格式数据加密成Protobuf格式数据进行传输
+
+
+
+1、通过数据采集服务将各个端内的数据通过Nginx采集到数据处理服务，再由数据处理服务高效上报到在线营服数据处理平台，通过在线营数据处理平台中的Kafka集群进行数据流转。
+2、基于在线营服数据平台将SDK采集到的的数据进行解密并同步发送到离线数据库和Kakfa中，进行实时和离线数据分流。
+3、基于在线营服批处理平台进行51系列离线接口、分省CM离线接口以及IOP和小程序性能场景化等离线接口数据分发。
+4、基于在线营服流处理平台进行51系列实时接口、分省CM实时接口以及权益超市和区域曝光等实时接口数据分发。
+5、基于在线营服流处理平台和批处理平台进行埋点方案管理应用和数据质量管理应用的数据处理部分。
+
+痛点
+1、节省服务器资源，提升依托于在线营服数据平台实时数据及离线数据处理性能。
+截至2024年11月，日采集峰值数据量超140亿条，同比2024年1月份增长80%，可见数据增长迅速，同时为提高营服数据平台资源利用率，用最少的资源来支撑更大的数据量。主要方向分为程序本身性能优化，提高程序处理能力；系统架构优化，基于现有架构进行资源复用和数据统一化处理；
+
+
+
+2K+27寸+144HZ+srgb色域
+ROG PG27AQDM
+
+插码项目根据当前工作内容对高级、中级、远程的人员进行了工作模块的划分，以此来进行对应人员的工作安排。
+高级人员主要负责方案设计、采集SDK优化、异常数据解析和开发类相关工作。
+中级人员主要负责插码核查和日常运维支撑。
+远程人员仅负责日常任务巡检工作。
+附件中为具体的人员划分情况。
+
+
+
+1、加一个输入输出、实时离线都加上、任务详情、运维要点、代码目录
+
+
+权益原生化页面改造
+客户轨迹新场景加入
+数智中心支撑
+分省实时数据接入
+磐道数据迁移
+
+数据应用方面:
+1、中国移动APP用户规模提升规划，以“拓规模、提留存、强牵引”为核心工作主线，聚焦协同、精细运营，全力冲刺，加快打造APP“第一入口”。渠道支撑中心通过用户数据生成标签，经过深度学习进行预流失干预，提升用户留存。
+已经完成100+个标签分析，并与数智中心协作分析确定22+个影响用户流失的关键指标。
+2、APP军团规划建设APP协同专区能力，针对家宽新装、套餐升档业务在中国移动APP办理过程中涉及互联网音频话务进线后，在坐席侧展示APP客户进线商机信息提示、客户标签、客户轨迹等信息，支持坐席一站式解决APP协同客户诉求，快捷完成业务办理。渠道支撑中心侧提供并解析用户行为数据来支撑坐席进行信息检索。
+3、随着APP原生化业务推进，权益侧将部分H5页面迁移到原生端内，渠道支撑中心侧负责进行原生和H5页面数据整合，便于运营侧分析。
+4、完成江西和河南的实时数据开发，为省侧运营分析提供数据支撑。
+5、为保证离线数据稳定传输，协同磐道同事进行数据传输升级，目前已完成19个省侧CM001、CM002、CM003离线接口升级。
+
+
+1、提供了家宽专区和套餐专区的行为明细数据，对数据进行过滤和清洗。
+2、他们做了类似于客户轨迹的样式，将数据处理完展示到页面上面。
+
+广东 江西 山东 江苏 四川 云南 北京 河北 河南
+
+
+
+数据工具开发方面:
+针对插码流程管理工具的插码方案管理模块，新增了excel导入插码方案功能，便于用户使用。针对插码方案核查模块，新增了离线自动核查功能，并优化了实时核查的多用户检索功能，提升用户体验。
+
+
+运维高保障方面:
+1、月初重保工作，插码采集系统6月1日采集峰值tps到达42.9万每秒，日数据总量达到127亿，小时数据量峰值达到9.3亿，采集系统稳定，实时、离线程序运行正常。
+2、根据月初集群负载情况，进行服务器资源调整，将服务器硬件使用率保持在稳定范围之内，以此来保障集群稳定运行。
+3、为保障数据程序运行稳定性，基于研发云平台告警机制进行自定义告警监控，进行任务实时运行监控。
+4、根据安全部门要，每月对插码应用集群进行安全扫描，并对其进行漏洞修复。
+
+
+
+计划
+数据应用方面:
+1、基于前期为提升用户提供的数据标签，数据智能中心相关同事共同进行相关流失用户预测模型的数据准备和模型训练，现在需要按照模型最终明确的20+特征，进行相关特征数据报表的开发以及调度任务的设置。
+2、两级门户新增插码能力，协助APP部门完成两级门户埋点数据下发，助理精准分析用户对各类组件及按钮的关注和使用偏好。
+3、继分省数据完成磐道传输链路优化后，继续完成51系列接口的优化。
+运维高保障方面:
+1、collector扩容：根据业务数据增长情况，对单台机器新增多个节点的范式进行扩容，用于减少 collector 集群的服务压力。
+2、运维文档：详细记录服务器的整体架构、硬件配置等信息；整理监控系统的配置细节，如监控指标、告警规则等；汇总常见故障的处理流程和案例
+3、漏扫报告上传：根据安全部门发送的漏洞报告文件对可能出现的漏洞进行修复，并在修复完成后，将报告上传到智慧中台。
+
+
+
+
+
+目前测试模型已基于前期提供的行为数据样本完成构建和测试，
+计划两级门户开发 
+数智中心调度支撑
+分省数据字典扩充
+
+
+存储资源方面，截至4月底，Hadoop集群存储资源使用率64%（无变化），目前渠道支撑中心租户（csap665）存储使用率87.05%，请及时清理无效数据，避免因存储资源不足影响租户稳定性。
+计算资源方面，4月份Hadoop集群计算资源（内存）平均利用率为73.12%（↑0.81PP），其中云客服事业部计算资源利用率5.33%、渠道支撑中心14.04%、重要客户中心20.02%，严重低于40%的预警线，请以上单位尽快评估整改，提升资源使用效能，中心将对未整改单位的计算资源进行回收。
+目前
+
+存储资源方面：目前插码数据表存储周期分别为，两张中间表存储40天，一张ODS层表存储7天，其余ADS层表存储7天。存储空间占用较大是由于插码业务增长迅速，运营侧计划到25年底APP月活从2已提升到4亿，目前插码日峰值数据量已经达到140亿，因此插码数据存储资源使用较多。因数据下游数据使用方会有重传未来1个月数据的需求，中间表数据保留时间较长，为保障离线程序稳定性，需要将中间表的存储时长减短，以保障集群稳定运行。
+计算资源方面：目前插码支撑的离线任务周期主要是T-1，所以集群计算资源使用高峰分布在0点-7点，资源使用情况已经达到100%。为减轻集群负责，已经将大型任务拆分为小时接口，在每小时运行时也资源利用率也可达到70%。
+
+
+
+
+存储资源方面：目前插码数据采集的是中国移动APP、权益及互联网合作渠道线上用户行为数据，主要用于集、省、专线上运营分析。插码数据数仓架构分为三层，分别为ODS（原始数据层）、DWD（数据明细层）、ADS（接口层），其中各层表存储周期分别为，ODS层表存储7天，DWD层表存储30天，ADS层表存储7天。由于下游数据使用方有重传过去1个月数据需求，以及历史数据查数需求，因此DWD层数据保留时间设定为30天。
+当前插码数据占用存储空间较大是由于插码业务增长迅速，日峰值数据量已经达到140亿，因此插码数据存储资源使用较多，各层存储大小总计328T。另外中国移动APP到25年底月活目标从当前2亿提升到4亿，当前存储资源不满足25年底月活目标下插码数据的存储需求，至少还需要增加300T左右的存储空间。
+计算资源方面：由于大部分任务为小时任务，同时各层小时任务之间有依赖关系，导致任务为串行方式执行，此过程中占用计算资源由高到低，在接口层程序执行完毕后进入任务空闲时，等待下一个小时任务的执行，计算资源利用率随任务的执行与停止呈现峰谷状态，因此在该状态下计算平均使用率较低。
+
+
+
+数据应用支撑工作部分，主要由数据应用岗位完成，该岗位成员在第二期主要完成的工作包括：优化插码各层级代码，完成程序小文件治理，减少Hadoop集群数据存储压力。降低数据处理时间，保障业务数据的及时性，完成Hadoop集群下拉文件应急方案开发。完成基于行为数据流失用户预测模型数据支撑等集团、省、专方面数据支撑工作。完成权益侧H5页面原生化改造，老接口新数据接入、字段新增及新接口开发等工作。
+
+
+数据运维支撑工作部分，主要由数据运维岗位完成，该岗位在第二期主要完成地工作包括：监控 Collector 实例的文件积压情况；保障实时以及离线任务的正常运行、监控各集群的负载情况；根据服务器资源使用情况清理磁盘空间；根据部门的漏扫报告确认服务器漏洞并修复；编写自定义监控脚本保障监控范围更加全面。
+
+
+
+
+
+上午
+1、日报是当月的数据
+库存方面客户比较看重-库存是实时数据
+食品盖-一套逻辑
+扭开和饮料盖-一套逻辑
+2、应收报表问题比较多
+3、
+事业部
+铁铝
+饮料盖
+
+4、驾驶舱有脚本参考
+
+5、只有一个数据源头erp
+
+下午
+
+订单表的应收信息
+
+
+1、ods-dwd-ads数据流向、问题总结
+订单和库存
+按照你的作用与来划分
+
+2、重点的关注内容
+农夫项目
+
+
+上海H5页面原生化
+页面曝光、组件的曝光和点击
+
+1、根据你们需要的场景梳理一下51010里没有的字段
+2、曝光数据是区域曝光还是点位曝光
+3、
+
+
+@张建超 @马博 你们总结一下上半年的工作需求内容  一个是数据侧的 主要支撑的场景，一个是核查以及方案侧的  主要支撑的场景。 可以量化的带上数字，比如支撑了多少核查需求 多少次大型活动，多少的产品迭代，多少分省的数据需求。 然后重点的场景突出一下  比如用户流失预测的 然后还有什么其他的数据下游数据 周一上午给我一版哦
+
+
+
+
+一个是数据侧的 主要支撑的场景
+ 然后重点的场景突出一下  比如用户流失预测的 然后还有什么其他的数据下游数据 周一上午给我一版哦
+
+
+1、中国移动APP用户规模提升规划，以“拓规模、提留存、强牵引”为核心工作主线，聚焦协同、精细运营，全力冲刺，加快打造APP“第一入口”。渠道支撑中心通过用户数据生成标签，经过深度学习进行预流失干预，提升用户留存。
+已经完成100+个标签分析，并与数智中心协作分析确定22+个影响用户流失的关键指标。
+2、APP军团规划建设APP协同专区能力，针对家宽新装、套餐升档业务在中国移动APP办理过程中涉及互联网音频话务进线后，在坐席侧展示APP客户进线商机信息提示、客户标签、客户轨迹等信息，支持坐席一站式解决APP协同客户诉求，快捷完成业务办理。渠道支撑中心侧提供并解析用户行为数据来支撑坐席进行信息检索。
+3、随着APP原生化业务推进，权益侧将部分H5页面迁移到原生端内，渠道支撑中心侧负责进行原生和H5页面数据整合，便于运营侧分析。
+4、完成江苏、河北、江西和河南的实时数据开发，为省侧运营分析提供数据支撑。
+5、离线数据调度优化方面：
+    5.1优化传输链路：传输媒介从网状网升级到磐道，提升传输稳定性。再基于磐道系统进行多线程推送脚本开发，提升50%的性能，推送时间由5小时提升到2.5小时。
+    5.2、优化文件生成策略：改造HDFS数据获取方式，由接口机直接拉取，每小时文件下拉时长由4个小时提升至半个小时；优化文件处理方式，多线程并行处理文件，每小时文件处理时长由6个小时提升至半个小时。
+    5.3、接口机自动切换机制建立，主备节点自动切换程序开发。
+    通过以上方面的优化，在支撑日峰值数据量140亿的情况下，保证数据接口在9点前完成数据传输。
+
+
+
+18758565023
+二季度核减可追回847004.66（未核减前含税）-90428.6（核减含税）=756576.06（结算含税）
+这个
+一季度核减不可追回756576.06-71596.64=684979.42
+
+不含税799061-85310=713751
+
+
+高级86*1030
+中级68*
+154
+
+
+
+
+
+数据开发：
+一、数据调研（1人天）
+    1、盘点现有表数据是否满足要求、不满足则要设计其他方案
+    2、确认模型、字段清洗口径
+    3、确认传输方案
+    4、整体需求方案优化、确认
+二、测试数据接入、代码开发（1～3人天）
+    1、测试数据接入、验证
+    2、模型建立、上线
+    3、sql开发、优化、测试
+    4、调度配置
+三、数据接入、任务上线验证（0.5人天）
+    1、正式数据接入
+    2、任务上线
+    3、数据验证
+
+程序优化：
+一、问题排查（0.5～1人天）
+二、代码迭代优化、测试、上线（1～2人天）
+
+数据支撑：
+一、问题排查（0.5天）
+二、临时sql开发（0.5天）
+
+
+一、数据任务巡检（0.5人天）：
+1、通过监控查看27个实时任务的运行状态并对每个任务的状态和日志进行记录、136个的离线任务的运行状态对每个任务的状态进行记录、8台服务器上所有collector的积压情况、shotpot等8个服务的数据的采集、传输、存储过程中是否有异常；
+2、在服务器内巡检服务器的日志留存情况，配置的相关定时计划任务的运行情况和文件输出内容；
+2、在服务器内查看数据任务的执行日志，确认服务内是否存在error报错、为识别的文件内容和运行异常的报错，确保数据业务正常运转。 
+二、主机任务巡检（0.5人天）：
+1、针对服务器等设备，检查主机的运行状态，包括CPU、内存、磁盘等资源使用情况，对比更早的数据使用情况，大概预估数据的增长。
+2、主机上服务的启停状态、日志报错，以及主机的网络连通性、安全策略执行情况等，保障主机稳定承载业务。 
+
+
+
+系统运维
+一、数据任务巡检（0.5人天）：
+1、通过监控查看100余个离线实时任务、collector、shotpot等8个服务的数据的采集、传输、存储过程中是否有异常；
+2、在服务器内巡检服务器的日志留存情况，配置的相关定时计划任务的运行情况和文件输出内容；
+3、在服务器内查看数据任务的执行日志，确认服务内是否存在error报错、为识别的文件内容和运行异常的报错，确保数据业务正常运转。
+
+二、主机任务巡检（0.5人天）：
+1、针对服务器等设备，检查主机的运行状态，包括CPU、内存、磁盘等资源使用情况，对比更早的数据使用情况，大概预估数据的增长。
+2、主机上服务的启停状态、日志报错，以及主机的网络连通性、安全策略执行情况等，保障主机稳定承载业务。 
+
+三、系统维护（2 - 3人天）：
+1、涵盖对13台服务器的系统的补丁更新，确认系统漏洞存在的位置，确认修复流程，下载新的版本，更新后对其进行测试，查看系统日志是否完成修复。（1人天）
+2、系统配置优化，通过系统命令查看13台服务器中所有运行的服务，将非必要的服务删除或限制不重要的服务以此降低服务器CPU和内存使用情况；删除多余的日志文件或冗余文件此降低服务器的磁盘使用情况。（1-2人天）
+3、对13台服务器中内系统日志近1周的数据进行深度分析，排查潜在系统内可能存在的故障隐患，若发现系统存在故障，确认故障位置并对故障进行修复，完成后进行相关测试，在通过系统日志内进行二次查看（0.5人天）
+4、对13台服务器的系统依赖组件进行定期检查更新等，下载新的系统组件并进行更新，更新后持续对其进行监控，保障系统整体性能和稳定性（0.5人天）
+
+四、应用维护（2人天）：
+1、包含应用程序的版本迭代，下载最新的服务版本，在所有包含对应服务的服务器内更新，更新完成后对服务进行持续健康监控。（1人天）
+2、应用故障排查，对报错的应用确认报错发生在哪台服务器上，确认异常的频率和对异常进行风险评估；制定修复流程，修复完成后对应用进行持续的健康监控。（1人天）
+3、应用性能调优，根据服务实际运行情况和监控日志反馈，对服务使用的资源进行调整或对服务的配置文件进行修改，调整完成后通过日志和监控确认服务的运行状态和资源使用情况。 （0.5人天）
+
+五、安全维护（3人天）：
+安全策略升级，包括调整防火墙规则、访问控制策略，对不同服务的访问限制访问IP和访问量（1-2人天）
+安全设备巡检与日志分析，通过检测系统日志排查是否存在潜在攻击行为，如果存在对相关行为进行限制，如通过防火墙禁止其访问，关闭存在风险的端口。（1人天）
+安全合规检查，如检查应用、系统安全配置合规性，更新服务时通过杀毒软件确认安装包的安全性和可能存在的风险（1人天）
+
+
+
+
+四、极端情况如漏洞检查修复（10人天） ：
+1、当遇到重大系统漏洞，如系统存在较大安全漏洞，需全面扫描系统排查漏洞分布的位置和对服务器上服务的影响，制定修复方案，方案需要考虑业务兼容性、回退机制，确认对业务影响较小的时间段对其进行更新，更新后观察上下游的服务是否都在正常运行。 （7人天）
+2、修复后进行全流程验证，如对服务器功能进行测试，确保所有服务器都能正常运行，不会出现频繁的报错和异常停止的情况。（3人天）  
+
+
+
+小程序审核的标准-文凯补充一下
+20点位一人天
+没有多少点位信息的工作量怎么评估
+人工核查点位过程补充一下
+
+
+
+
+中级工作内容：
+1、离线任务自定义监控脚本编写
+2、编写 shotpot 自定义件脚本
+3、编写 outpot 自定义监控脚本
+4、clickhouse对应服务器异常修复
+5、系统漏斗修复后监控和测试
+6、服务器网络连通性测试
+7、监控指标调整
+高级工作内容：
+1、collector 扩容网络相关测试
+2、collector 扩容部署
+3、collector 扩容后压测
+4、postgres数据库部署和文档编写
+5、clickhouse数据库修复和文档编写
+6、服务漏洞修复
+7、collector 文档编写
+8、shotpot 配置调整并编写文档
+
+中级工作内容：
+系统监控
+1、离线任务自定义监控脚本编写
+2、编写 shotpot 自定义件脚本
+3、编写 outpot 自定义监控脚本
+4、系统漏斗修复后监控和测试
+5、监控指标调整
+系统维护
+1、clickhouse对应服务器异常修复
+2、服务器网络连通性测试
+程序及资源优化
+1、server-6 和 7 服务器磁盘空间优化
+
+
+高级工作内容：
+实施应急扩容
+1、collector 扩容网络相关测试
+2、collector 扩容部署
+3、collector 扩容后压测
+应用维护
+1、postgres数据库部署和文档编写
+2、clickhouse数据库修复和文档编写
+3、collector 文档编写
+4、shotpot 配置调整并编写文档
+安全运维
+1、服务漏洞修复
+
+
+hanyu6  15703755296  hanyu@startdt.com  北京易数科技有限公司
+zhangjianchao1 13948869613 zhangjianchao@startdt.com 北京易数科技有限公司
+
+
+
+针对各端数据采集需求，协助业务开发团队完成在页面埋点插码的集成及上线，并对插码数据进行有效验证。持续优化SDK采集能力及插码核查工具迭代。
+
+
+对各线上触点采集的原始插码数据进行深度加工与优化，包括分析业务具体需求，进行数据接口分发，以提升业务运营分析的及时性。加强实时数据接口开发，赋能线上精细化运营策略。
+
+负责数据任务的安装配置及日常巡检维护,确保数据任务高效稳定运行,对插码系统的稳定性做好保障。
+
+
+
+重保每月月初5天24小时响应，扩容及压测每2-3月一次；制定服务器上所有服务的调整修复方案，保障系统稳定高效。
+数据任务巡检，涵盖查看离线和实时任务运行状态、处理失败任务、记录关键日志，以及通过Grafana和服务器检查多种服务的运行状态、日志和性能数据；主机任务巡检，包括通过Grafana查看服务器硬件使用情况、分析磁盘空间和硬盘健康状态、检查关键日志文件。
+
+
+
+电力部直属的专科院校
+1.深圳职业技术学院
+2.石家庄邮电技术学院
+3山东电力高等专科学校
+4长沙航空职业技术学院
+5广州民航职业技术学院
+6黄河水利职业技术学院
+
+兽医
+护理
+2、铁路相关专业
+8、宠物养护与驯导专业
+
+交通类、轨道类
+公安联考能不能参加
+
+
+【插码统一采集支撑】Web SDK功能改造页面关闭及心跳：12
+1.页面关闭事件采集存储并编写数据同步保障机制：4
+2.心跳数据采集开发，建立核心事件监听体系：5
+3.创建数据映射及Vue、React等框架适配：3
+
+【插码统一采集支撑】Web SDK功能改造 页面停留时长功能开发：10
+1.页面停留时长判断及数据存储：6
+2.对页面崩溃信息进行兜底处理：4
+
+【插码统一采集支撑】WebSDK功能改造_白屏事件采集功能开发：13
+1.编写数据逻辑对白屏进行判断：6
+2.对数据进行持久化存储并编写结构逻辑：6
+3.对web端框架进行适配：1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+流程管理工具在推广阶段，存在一些设计的局限问题无法使用，存在多页数据无法同时选中问题，现需要对现有问题进行修复和改造，支撑插码自动核查。
+
+
+
+
+需求背景：流程管理工具正在推广阶段，存在一些设计的局限性无法使用，现需要对现有问题进行修复和改造，实现插码自动核查。
+
+需求内容：插码自动核查页面存在数据列表不能进行跨页面选择，现在为了优化使用体验，进行跨页面选中功能优化，开发完成后页面可以选中不同页面的插码数据，可勾选也可以取消勾选，通过用户选中数据进行插码核查。
+1、8次IP和UA数据解析程序异常失败恢复。
+2、20次kafka入hive程序异常失败恢复支撑
+3、渠道实时数据查询-白名单数据关联程序开发
+4、流处理平台click house数据库数据写入程序开发
+5、实时数据入opengauss数据库程序问题排查
+6、流处理平台flink 组件增加request参数链路验证
+7、51006、51010，CM001、CM002、CM003实时程序数据延迟时长监控程序开发
+8、新疆、浙江、广西、云南分省数据重传、任务恢复
+9、分省CM003云南实时数据一致性问题排查
+10、51007新增轻渠道门户H5渠道 
+11、2月份异常手机号排查
+12、实时核查表字段优化升级
+13、实时核查渠道数据整合
+14、统计实时程序TPS、NginxTPS、采集数据量TPS
+15、白名单维表关联程序升级优化
+16、3月份异常手机号取数
+17、4月3号新疆CM003数据重传
+18、江西-CM001数据分析支撑
+19、协助河北适配数据以及手机号解密支撑
+20、51011字段逻辑梳理确认
+21、3次质量纳管程序问题排查、任务恢复
+22、77006新曝光格式数据解析适配
+23、新曝光格式WT_xy字段自定义函数开发
+24、APP军团页面轨迹程序开发
+25、权益实时接口改造
+26、51007实时新增wt_charge_phone
+27、河南CM001、CM002、CM003实时程序开发
+28、77006实时程序下发mr_id字段
+29、51006实时程序双重手机号解密
+30、51006新增支付宝小程序渠道
+31、福建CM001、CM002、CM003实时程序开发
+32、51006新增95668458a65a702e渠道数据
+33、数智用户行为轨迹分析、模型开发、程序开发、数据汇总以及数据推送与洞察平台展示。
+
+
+1、通过程序优化将大文件接口文件生成速度提升数倍，其中51007小时任务文件处理速度提升了361.81%，月初日账期数据文件推送完成时间从次日的9:06提前到了次的3:25。其余大文件程序也各有提升。
+2、优化插码各层级代码，通过小文件治理解决HDFS接口目录下小文件过多的情况，其中原始层数据单日小文件数从12万多降到24个以内，大大提升数据清洗效率及存储空间的利用率。
+3、完成Hadoop集群下拉文件应急方案开发，完成基于行为数据流失用户预测模型数据支撑等集团、省、专方面数据支撑工作，完成老接口新数据接入、字段新增及新接口开发等工作。
+4、通过开发监控程序，实现自动化监控各接口的运行状态，程序异常后值班人员的应答时间由之前的1小时以上缩短至20分钟以内。
+5、网龄成长计划插码手机号码加密改造。
+6、51011两级门户用户登陆行为数据接口新增。
+7、视频直播gio数据回传。
+8、51系列，分省cm系列字段新增、口径变更等工作。
+9、日常取数支撑、临时程序开发、数据问题处理、数据重传等，重点保障月初月末插码程序正常运行。
+
+
+为应对51007离线接口月初日数据量突破40亿条的挑战，同时满足插码数据量快速增长的需求，插码侧实施了一系列优化方案，显著提升了数据清洗效率，确保了下游数据分析的时效性需求。为从源头上降低数据处理压力，我们对51007大接口进行了业务拆分，成功将部分业务迁移至新接口77006，有效降低了51007接口的数据处理压力，同时分担了插码系统数据传输压力。针对51007日接口数据量过大的问题，我们通过业务调研和系统资源评估，将日接口拆分为小时级接口进行清洗和文件生成，并按日进行文件合并后推送至下游系统。目前，插码侧离线数据处理流程如下：通过流处理平台实时写入HIVE库小时表，经批处理平台数据开发模块的小时任务清洗至中间表，再从中间表抽取51007离线接口数据写入51007小时表。51007离线接口每小时生成的数据文件，在当天23点小时任务完成后进行当天账期的数据文件合并调度，并通过数据交换模块推送至磐道供下游使用。在数据清洗效率优化方面，我们实施了多项优化措施：预合并小文件、合理设置输入输出文件大小、均衡数据分布至各执行端等，有效避免了数据倾斜和小文件问题，显著缩短了数据处理时长。同时，针对51007离线接口程序，我们对其文件处理程序进行了全面优化，主要优化措施包括：
+1. 实施营服平台接口机访问HDFS
+引入营服平台的接口机作为中间件，直接连接到Hadoop分布式文件系统（HDFS）。通过这种方式，可以绕过传统的文件传输路径，减少不必要的中间环节，从而显著降低数据传输延迟。营服平台接口机将负责与HDFS进行高效交互，管理数据请求和响应流程，确保数据传输过程中的稳定性和安全性。
+2. 多线程并行拉取数据文件
+为了进一步缩短数据传输时间，我们采用多线程技术实现对51系列数据文件的并行拉取。每个线程独立处理一部分文件或文件片段，同时工作，这不仅能够充分利用网络带宽资源，还能最大限度地发挥服务器的并发处理能力。通过这种方式，即使面对海量的数据集，也能保证快速且稳定的数据获取速度。
+3. 多接口机冗余部署方案
+为确保文件传输系统的高可用性，采用多接口机冗余部署方案。通过部署2-3台备用接口机与主接口机组成主备模式，当检测到主接口机故障时，系统将自动触发故障转移流程，停止向故障接口机发送传输请求，然后按照预设优先级顺序切换至备用接口机，最后重新建立传输会话，确保文件传输不中断。
+通过上述优化措施，51007离线接口小时任务的文件下拉及处理效率提升了361.81%。月初日账期数据文件推送完成时间从次日9:06（12月1日数据）大幅提前至次日3:25（1月1日数据），效率提升显著，数据处理时效性得到全面提升。
+
+插码核查支撑情况和需求支撑及时率
+
+平台的介绍-功能简述
+
+app军团
+根据中心打造“热线APP小循环”体系的要求，进一步做好热线与APP渠道间协同，高效解决用户需求问题。计划聚焦用户APP高频问题类型，构建APP专区，辅助生产前端，一方面聚焦APP来话，做好用户需求的预判与商机、卡券活动等疑问的高效处理，另一方面，聚焦普通10086拨号来话用户，在解决客户来话问题的基础上，基于APP引流标签及活动，择机开展APP协同引流。本次主要涉及的业务是家宽专区和店铺页套餐专区。
+
+
+两级门户新增插码能力，针对用户的登录行为进行详细分析，以区分旧平台登录和门户登录的用户群体，为后续的运营决策和产品优化提供数据支持，并以UV、PV埋点作为获取用户操作数据的详实依据，助力精准分析用户对各类组件、组件细分区域及按钮的关注程度与使用偏好。本次主要进行两级运营平台的改造，新增插码能力。
+数智中心
+日常工作-性能调优
+
+
+扩容
+
+监控
+
+
+需求背景：流程管理工具正在推广阶段，存在一些设计的局限性无法使用，现需要对现有问题进行修复和改造，实现插码自动核查。
+
+需求内容：
+1、插码自动核查页面存在数据列表不能进行跨页面选择，现在为了优化使用体验，进行跨页面选中功能优化，开发完成后页面可以选中不同页面的插码数据，可勾选也可以取消勾选，通过用户选中数据进行插码核查。
+2.核查模块下半部分展示的方案可能出现无数据的情况。
+3.修改测试信息填写功能的校验逻辑及数据获取的方式。
+4.插码核查时部分数据无法进行核查。
+5.插码全局参数列表进行参数新增。
+
+
+
+仁辉，你做一个表格（云桌面里面就可以），包含一下几点内容：
+1、常用的几张表的表名，查数的sql。
+2、51系列的数据开发和数据交换的名称。
+
+
+1、方案类型和SDK类型保持一致，便于识别。
+2、渠道怎么划分，渠道号规划、不统一。
+3、数据沉淀在系统上。
+4、插码使用情况搞一个视图，可视化大屏【规模、体量、支撑哪些方面、运行情况、插码的业绩、形态、
+维度、数据规模、多少个页面
+渠道、渠道排名、公司主体
+终端、原生、H5、小程序等
+部门使用情况】。
+5、方法论、江苏十级模型、成熟的案例
+6、流程管理工具沉淀
+
+没有cube小程序，应用的是原生的能力
+mpass
+天猫和淘宝小程序
+微信小程序
+支付宝小程序
+
+
+项目实施方案、no技术方案
+满足需求、了解需求
+采集前后端适配
+业务过度
+
+
+
+高级
+离线程序开发离线接口加字段
+实时数据程序开发
+
+
+
+
+ODS：
+SDK上报数据
+
+DWD：
+1、手厅原生，一级H5和小程序渠道、app营销自研渠道用户行为数日志数据；
+2、分省小程序和H5渠道、微信、京东、支付宝等小程序渠道、互联网、杭研、咪咕等专业公司的用户行为数日志数据；
+
+
+DWS：
+1、51007——手厅原生/H5/小程序渠道、轻渠道、app营销自研渠道用户行为日志数据
+2、51006——微信/阿里小程序、一级权益/互联网合作H5等用户行为日志数据
+3、51010——分省H5、政企（全国）H5/小程序、各专业公司H5/小程序
+4、CM001——分省手厅原生/H5渠道用户行为数据
+5、CM002——分省小程序渠道用户行为数据
+6、CM003——分省H5渠道用户行为数据
+
+
+
+一、面对近期的相关检查，传达宣贯4点要求：
+1、核实身份：
+接到电话咨询项目等相关问题，务必要核实对方身份，防范社会工程学等安全问题；
+2、客观回答：
+（1）只客观答复自身知道和涉及的内容，不描述、非客观反馈与自身无关的内容；
+（2）只客观答复自身确认的内容，不描述、非客观反馈自身不清楚的问题，不清楚的问题，可以下来核实后，后续再反馈；
+3、第一时间报备：
+接到咨询项目等问题的电话后，要第一时间报备
+
+二、询问的内容（不清楚的可以核实后回答）：
+1、是什么项目：插码技术支撑项目。
+2、每个人负责什么工作，之前也都培训过了，每周的工作量也在更新，把自己报的工作仔细的看一下。
+
+
+
+
+
+1、实时任务排查
+2、手机号替换逻辑
+3、新开发的任务到底有什么问题
+
+
+任务排期
+收到，针对以上问题，我们已经召开复盘会议，并开始进行全面排查，今天会反馈排查出来的问题及每个问题的改造计划。
+
+
+
+git config --global user.name "duandian"
+git config --global user.email "1940679723@qq.com"
+ssh-keygen -t ed25519 -C "1940679723@qq.com"
+
+
+KHDJY_01_10MI_XXXXXXXX.csv
+
+
+
